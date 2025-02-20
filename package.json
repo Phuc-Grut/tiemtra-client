@@ -3,6 +3,10 @@
 ***REMOVED******REMOVED***"version":***REMOVED***"0.1.0",
 ***REMOVED******REMOVED***"private":***REMOVED***true,
 ***REMOVED******REMOVED***"dependencies":***REMOVED***{
+***REMOVED******REMOVED******REMOVED******REMOVED***"@emotion/react":***REMOVED***"^11.14.0",
+***REMOVED******REMOVED******REMOVED******REMOVED***"@emotion/styled":***REMOVED***"^11.14.0",
+***REMOVED******REMOVED******REMOVED******REMOVED***"@mui/icons-material":***REMOVED***"^6.4.5",
+***REMOVED******REMOVED******REMOVED******REMOVED***"@mui/material":***REMOVED***"^6.4.5",
 ***REMOVED******REMOVED******REMOVED******REMOVED***"@testing-library/dom":***REMOVED***"^10.4.0",
 ***REMOVED******REMOVED******REMOVED******REMOVED***"@testing-library/jest-dom":***REMOVED***"^6.6.3",
 ***REMOVED******REMOVED******REMOVED******REMOVED***"@testing-library/react":***REMOVED***"^16.1.0",
@@ -13,6 +17,7 @@
 ***REMOVED******REMOVED******REMOVED******REMOVED***"@types/react-dom":***REMOVED***"^19.0.0",
 ***REMOVED******REMOVED******REMOVED******REMOVED***"react":***REMOVED***"^19.0.0",
 ***REMOVED******REMOVED******REMOVED******REMOVED***"react-dom":***REMOVED***"^19.0.0",
+***REMOVED******REMOVED******REMOVED******REMOVED***"react-router-dom":***REMOVED***"6.16.0",
 ***REMOVED******REMOVED******REMOVED******REMOVED***"react-scripts":***REMOVED***"5.0.1",
 ***REMOVED******REMOVED******REMOVED******REMOVED***"typescript":***REMOVED***"^4.4.2",
 ***REMOVED******REMOVED******REMOVED******REMOVED***"web-vitals":***REMOVED***"^2.1.0"
@@ -40,5 +45,8 @@
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***"last***REMOVED***1***REMOVED***firefox***REMOVED***version",
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***"last***REMOVED***1***REMOVED***safari***REMOVED***version"
 ***REMOVED******REMOVED******REMOVED******REMOVED***]
+***REMOVED******REMOVED***},
+***REMOVED******REMOVED***"devDependencies":***REMOVED***{
+***REMOVED******REMOVED******REMOVED******REMOVED***"@types/react-router-dom":***REMOVED***"5.3.3"
 ***REMOVED******REMOVED***}
 }
