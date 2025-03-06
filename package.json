@@ -17,7 +17,7 @@
 ***REMOVED******REMOVED******REMOVED******REMOVED***"@types/react-dom":***REMOVED***"^19.0.0",
 ***REMOVED******REMOVED******REMOVED******REMOVED***"react":***REMOVED***"^19.0.0",
 ***REMOVED******REMOVED******REMOVED******REMOVED***"react-dom":***REMOVED***"^19.0.0",
-***REMOVED******REMOVED******REMOVED******REMOVED***"react-router-dom":***REMOVED***"6.16.0",
+***REMOVED******REMOVED******REMOVED******REMOVED***"react-router-dom":***REMOVED***"6.15.0",
 ***REMOVED******REMOVED******REMOVED******REMOVED***"react-scripts":***REMOVED***"5.0.1",
 ***REMOVED******REMOVED******REMOVED******REMOVED***"typescript":***REMOVED***"^4.4.2",
 ***REMOVED******REMOVED******REMOVED******REMOVED***"web-vitals":***REMOVED***"^2.1.0"
