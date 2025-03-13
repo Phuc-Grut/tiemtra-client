@@ -1,13 +1,26 @@
 import***REMOVED***React,***REMOVED***{***REMOVED***useState***REMOVED***}***REMOVED***from***REMOVED***"react";
 import***REMOVED***{***REMOVED***TextField,***REMOVED***Button,***REMOVED***Container,***REMOVED***Typography,***REMOVED***Box***REMOVED***}***REMOVED***from***REMOVED***"@mui/material";
+import***REMOVED***{***REMOVED***login***REMOVED***}***REMOVED***from***REMOVED***"../services/Authencation/authService";
 
 export***REMOVED***default***REMOVED***function***REMOVED***LoginForm()***REMOVED***{
 ***REMOVED******REMOVED***const***REMOVED***[email,***REMOVED***setEmail]***REMOVED***=***REMOVED***useState("");
 ***REMOVED******REMOVED***const***REMOVED***[password,***REMOVED***setPassword]***REMOVED***=***REMOVED***useState("");
+***REMOVED******REMOVED***const***REMOVED***[error,***REMOVED***setError]***REMOVED***=***REMOVED***useState("");***REMOVED***
 
-***REMOVED******REMOVED***const***REMOVED***handleSubmit***REMOVED***=***REMOVED***(event:***REMOVED***React.FormEvent)***REMOVED***=>***REMOVED***{
+***REMOVED******REMOVED***const***REMOVED***handleSubmit***REMOVED***=***REMOVED***async***REMOVED***(event:***REMOVED***React.FormEvent)***REMOVED***=>***REMOVED***{
 ***REMOVED******REMOVED******REMOVED******REMOVED***event.preventDefault();
+***REMOVED******REMOVED******REMOVED******REMOVED***setError("");***REMOVED***//***REMOVED***Xóa***REMOVED***lỗi***REMOVED***trước***REMOVED***khi***REMOVED***gửi***REMOVED***API
 ***REMOVED******REMOVED******REMOVED******REMOVED***console.log("Email:",***REMOVED***email,***REMOVED***"Password:",***REMOVED***password);
+
+***REMOVED******REMOVED******REMOVED******REMOVED***try***REMOVED***{
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***const***REMOVED***userData***REMOVED***=***REMOVED***await***REMOVED***login(email,***REMOVED***password);***REMOVED***//***REMOVED***✅***REMOVED***Gọi***REMOVED***API***REMOVED***đăng***REMOVED***nhập
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***console.log("Đăng***REMOVED***nhập***REMOVED***thành***REMOVED***công:",***REMOVED***userData);
+
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***window.location.href***REMOVED***=***REMOVED***"/dashboard";***REMOVED***//***REMOVED***✅***REMOVED***Chuyển***REMOVED***hướng***REMOVED***sau***REMOVED***khi***REMOVED***đăng***REMOVED***nhập***REMOVED***thành***REMOVED***công
+***REMOVED******REMOVED******REMOVED******REMOVED***}***REMOVED***catch***REMOVED***(error:***REMOVED***any)***REMOVED***{
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***setError(error.response?.data?.message***REMOVED***||***REMOVED***"Đăng***REMOVED***nhập***REMOVED***thất***REMOVED***bại");
+***REMOVED******REMOVED******REMOVED******REMOVED***}
+***REMOVED******REMOVED******REMOVED******REMOVED***
 ***REMOVED******REMOVED***};
 
 ***REMOVED******REMOVED***return***REMOVED***(
@@ -27,6 +40,9 @@ export***REMOVED***default***REMOVED***function***REMOVED***LoginForm()***REMOVE
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***<Typography***REMOVED***variant="h5"***REMOVED***gutterBottom>
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***Đăng***REMOVED***nhập***REMOVED***tài***REMOVED***khoản***REMOVED***của***REMOVED***bạn
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***</Typography>
+
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***{error***REMOVED***&&***REMOVED***<Typography***REMOVED***color="error">{error}</Typography>}
+
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***<form***REMOVED***onSubmit={handleSubmit}***REMOVED***style={{***REMOVED***width:***REMOVED***"100%"***REMOVED***}}>
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***<TextField
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***label="Email"

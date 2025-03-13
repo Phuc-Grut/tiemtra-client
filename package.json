@@ -15,6 +15,7 @@
 ***REMOVED******REMOVED******REMOVED******REMOVED***"@types/node":***REMOVED***"^16.7.13",
 ***REMOVED******REMOVED******REMOVED******REMOVED***"@types/react":***REMOVED***"^19.0.0",
 ***REMOVED******REMOVED******REMOVED******REMOVED***"@types/react-dom":***REMOVED***"^19.0.0",
+***REMOVED******REMOVED******REMOVED******REMOVED***"axios":***REMOVED***"^1.8.3",
 ***REMOVED******REMOVED******REMOVED******REMOVED***"react":***REMOVED***"^19.0.0",
 ***REMOVED******REMOVED******REMOVED******REMOVED***"react-dom":***REMOVED***"^19.0.0",
 ***REMOVED******REMOVED******REMOVED******REMOVED***"react-router-dom":***REMOVED***"6.15.0",
