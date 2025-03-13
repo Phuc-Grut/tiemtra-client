@@ -11,7 +11,7 @@ const***REMOVED***Register***REMOVED***=***REMOVED***()***REMOVED***=>***REMOVED
 ***REMOVED******REMOVED***const***REMOVED***handleRegister***REMOVED***=***REMOVED***async***REMOVED***(name:***REMOVED***string,***REMOVED***email:***REMOVED***string,***REMOVED***password:***REMOVED***string)***REMOVED***=>***REMOVED***{
 ***REMOVED******REMOVED******REMOVED******REMOVED***try***REMOVED***{
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***await***REMOVED***register(name,***REMOVED***email,***REMOVED***password);
-***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***navigate("/login");***REMOVED***//***REMOVED***Chuyển***REMOVED***hướng***REMOVED***đến***REMOVED***trang***REMOVED***đăng***REMOVED***nhập***REMOVED***sau***REMOVED***khi***REMOVED***đăng***REMOVED***ký***REMOVED***thành***REMOVED***công
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***navigate("/login")
 ***REMOVED******REMOVED******REMOVED******REMOVED***}***REMOVED***catch***REMOVED***(err)***REMOVED***{
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***setError("Registration***REMOVED***failed.***REMOVED***Please***REMOVED***try***REMOVED***again.")
 ***REMOVED******REMOVED******REMOVED******REMOVED***}
