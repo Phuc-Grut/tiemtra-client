@@ -11,7 +11,7 @@ const Register = () => {
   const handleRegister = async (name: string, email: string, password: string) => {
     try {
       await register(name, email, password);
-      navigate("/login"); // Chuyển hướng đến trang đăng nhập sau khi đăng ký thành công
+      navigate("/login")
     } catch (err) {
       setError("Registration failed. Please try again.")
     }
