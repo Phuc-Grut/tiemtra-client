@@ -1,13 +1,26 @@
 import React, { useState } from "react";
 import { TextField, Button, Container, Typography, Box } from "@mui/material";
+import { login } from "../services/Authencation/authService";
 
 export default function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState(""); 
 
-  const handleSubmit = (event: React.FormEvent) => {
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
+    setError(""); // Xóa lỗi trước khi gửi API
     console.log("Email:", email, "Password:", password);
+
+    try {
+      const userData = await login(email, password); // ✅ Gọi API đăng nhập
+      console.log("Đăng nhập thành công:", userData);
+
+      window.location.href = "/dashboard"; // ✅ Chuyển hướng sau khi đăng nhập thành công
+    } catch (error: any) {
+      setError(error.response?.data?.message || "Đăng nhập thất bại");
+    }
+    
   };
 
   return (
@@ -27,6 +40,9 @@ export default function LoginForm() {
         <Typography variant="h5" gutterBottom>
           Đăng nhập tài khoản của bạn
         </Typography>
+
+        {error && <Typography color="error">{error}</Typography>}
+
         <form onSubmit={handleSubmit} style={{ width: "100%" }}>
           <TextField
             label="Email"
