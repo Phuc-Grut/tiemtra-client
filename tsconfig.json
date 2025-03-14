@@ -1,5 +1,8 @@
 {
 ***REMOVED******REMOVED***"compilerOptions":***REMOVED***{
+***REMOVED******REMOVED******REMOVED******REMOVED***"baseUrl":***REMOVED***"./",
+***REMOVED******REMOVED******REMOVED******REMOVED***"paths":***REMOVED***{
+***REMOVED******REMOVED******REMOVED******REMOVED***},
 ***REMOVED******REMOVED******REMOVED******REMOVED***"target":***REMOVED***"es5",
 ***REMOVED******REMOVED******REMOVED******REMOVED***"lib":***REMOVED***[
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***"dom",

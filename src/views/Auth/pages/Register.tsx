@@ -1,7 +1,7 @@
 import***REMOVED***{***REMOVED***useState***REMOVED***}***REMOVED***from***REMOVED***"react"
 import***REMOVED***{***REMOVED***useNavigate***REMOVED***}***REMOVED***from***REMOVED***"react-router-dom"
 import***REMOVED***RegisterForm***REMOVED***from***REMOVED***"../components/RegisterForm"
-import***REMOVED***{***REMOVED***register***REMOVED***}***REMOVED***from***REMOVED***"../services/Authencation/authService"
+import***REMOVED***{***REMOVED***register***REMOVED***}***REMOVED***from***REMOVED***"src/services/api/Authentication"
 //***REMOVED***import***REMOVED***"../styles/Register.css";
 
 const***REMOVED***Register***REMOVED***=***REMOVED***()***REMOVED***=>***REMOVED***{
