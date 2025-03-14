@@ -1,8 +1,7 @@
 import { Routes, Route } from "react-router-dom"
-import Register from "../views/Register"
-import Login from "../views/Login"
+import Register from "../views/Auth/pages/Register"
+import Login from "../views/Auth/pages/Login"
 import Dashboard from "../views/Dashboard"
-
 const AppRoutes = () => {
   return (
       <Routes>
