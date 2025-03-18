@@ -18,12 +18,16 @@
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
     "axios": "^1.8.3",
+    "nth-check": "^2.0.1",
+    "postcss": "^8.4.31",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-hook-form": "^7.54.2",
     "react-redux": "^9.2.0",
     "react-router-dom": "6.15.0",
     "react-scripts": "5.0.1",
+    "resolve-url-loader": "^5.0.0",
+    "svgo": "^3.3.2",
     "typescript": "^4.4.2",
     "web-vitals": "^2.1.0"
   },
@@ -53,5 +57,8 @@
   },
   "devDependencies": {
     "@types/react-router-dom": "5.3.3"
+  },
+  "resolutions": {
+    "nth-check": "^2.1.1"
   }
 }
