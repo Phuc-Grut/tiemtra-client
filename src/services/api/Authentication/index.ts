@@ -17,6 +17,11 @@ export***REMOVED***const***REMOVED***register***REMOVED***=***REMOVED***async***
 ***REMOVED******REMOVED***return***REMOVED***response.json()
 }
 
+const***REMOVED***authApi***REMOVED***=***REMOVED***{
+***REMOVED******REMOVED***login:***REMOVED***(params:***REMOVED***{***REMOVED***email:***REMOVED***string;***REMOVED***password:***REMOVED***string***REMOVED***})***REMOVED***=>***REMOVED***requester.post(AUTHENTICATION.URL_API.LOGIN_API,***REMOVED***params),
+***REMOVED******REMOVED***refreshToken:***REMOVED***(params:***REMOVED***{***REMOVED***refreshToken:***REMOVED***string***REMOVED***})***REMOVED***=>***REMOVED***requester.post(AUTHENTICATION.URL_API.REFRESH_TOKEN_API,***REMOVED***params),
+***REMOVED******REMOVED***//***REMOVED***register:***REMOVED***(params:***REMOVED***{***REMOVED***name:***REMOVED***string;***REMOVED***email:***REMOVED***string;***REMOVED***password:***REMOVED***string***REMOVED***})***REMOVED***=>***REMOVED***requester.post(AUTHENTICATION.URL_API.REGISTER_API,***REMOVED***params),
+}
 //***REMOVED***export***REMOVED***const***REMOVED***login***REMOVED***=***REMOVED***async***REMOVED***(email:***REMOVED***string,***REMOVED***password:***REMOVED***string)***REMOVED***=>***REMOVED***{
 //***REMOVED******REMOVED******REMOVED***try***REMOVED***{
 //***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***const***REMOVED***response***REMOVED***=***REMOVED***await***REMOVED***axios.post(`${API_URL}/login`,***REMOVED***{***REMOVED***email,***REMOVED***password***REMOVED***})
@@ -33,10 +38,5 @@ export***REMOVED***const***REMOVED***register***REMOVED***=***REMOVED***async***
 //***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***throw***REMOVED***error
 //***REMOVED******REMOVED******REMOVED***}
 //***REMOVED***}
-
-const***REMOVED***authApi***REMOVED***=***REMOVED***{
-***REMOVED******REMOVED***login:***REMOVED***(params:***REMOVED***{***REMOVED***email:***REMOVED***string;***REMOVED***password:***REMOVED***string***REMOVED***})***REMOVED***=>***REMOVED***requester.post(AUTHENTICATION.URL_API.LOGIN_API,***REMOVED***params),
-***REMOVED******REMOVED***//***REMOVED***register:***REMOVED***(params:***REMOVED***{***REMOVED***name:***REMOVED***string;***REMOVED***email:***REMOVED***string;***REMOVED***password:***REMOVED***string***REMOVED***})***REMOVED***=>***REMOVED***requester.post(AUTHENTICATION.URL_API.REGISTER_API,***REMOVED***params),
-}
 
 export***REMOVED***default***REMOVED***authApi

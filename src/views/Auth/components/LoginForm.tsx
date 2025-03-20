@@ -10,11 +10,16 @@ const***REMOVED***LoginForm:***REMOVED***React.FC***REMOVED***=***REMOVED***()**
 ***REMOVED******REMOVED***const***REMOVED***navigate***REMOVED***=***REMOVED***useNavigate()
 
 ***REMOVED******REMOVED***const***REMOVED***onSubmit***REMOVED***=***REMOVED***async***REMOVED***(data:***REMOVED***{***REMOVED***email:***REMOVED***string;***REMOVED***password:***REMOVED***string***REMOVED***})***REMOVED***=>***REMOVED***{
-***REMOVED******REMOVED******REMOVED******REMOVED***const***REMOVED***result***REMOVED***=***REMOVED***await***REMOVED***login(data)
+***REMOVED******REMOVED******REMOVED******REMOVED***const***REMOVED***result***REMOVED***=***REMOVED***await***REMOVED***login(data);
+***REMOVED******REMOVED******REMOVED******REMOVED***console.log("🚀***REMOVED***~***REMOVED***onSubmit***REMOVED***~***REMOVED***result:",***REMOVED***result)
+***REMOVED******REMOVED******REMOVED******REMOVED***//***REMOVED***console.log("🚀***REMOVED***~***REMOVED***onSubmit***REMOVED***~***REMOVED***result:",***REMOVED***result);
+***REMOVED******REMOVED***
 ***REMOVED******REMOVED******REMOVED******REMOVED***if***REMOVED***(result)***REMOVED***{
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***localStorage.setItem("access_token",***REMOVED***result.token);***REMOVED***//***REMOVED***✅***REMOVED***Lưu***REMOVED***Access***REMOVED***Token
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***localStorage.setItem("refresh_token",***REMOVED***result.refreshToken);***REMOVED***//***REMOVED***✅***REMOVED***Lưu***REMOVED***Refresh***REMOVED***Token
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***navigate("/dashboard");
 ***REMOVED******REMOVED******REMOVED******REMOVED***}
-***REMOVED******REMOVED***}
+***REMOVED******REMOVED***};
 
 ***REMOVED******REMOVED***return***REMOVED***(
 ***REMOVED******REMOVED******REMOVED******REMOVED***<Container***REMOVED***maxWidth="xs">

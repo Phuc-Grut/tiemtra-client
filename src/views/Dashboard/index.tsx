@@ -7,7 +7,7 @@ const***REMOVED***Dashboard:***REMOVED***React.FC***REMOVED***=***REMOVED***()**
 ***REMOVED******REMOVED******REMOVED******REMOVED***<div>
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***<h2>Đây***REMOVED***là***REMOVED***trang***REMOVED***Dashboard</h2>
 ***REMOVED******REMOVED******REMOVED******REMOVED***</div>
-***REMOVED******REMOVED***);
-};
+***REMOVED******REMOVED***)
+}
 
-export***REMOVED***default***REMOVED***Dashboard;
+export***REMOVED***default***REMOVED***Dashboard

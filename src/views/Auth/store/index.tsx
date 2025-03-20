@@ -16,7 +16,7 @@ export***REMOVED***const***REMOVED***loginApi***REMOVED***=***REMOVED***createAs
 ***REMOVED******REMOVED******REMOVED******REMOVED***try***REMOVED***{
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***const***REMOVED***response***REMOVED***=***REMOVED***await***REMOVED***authApi.login(params)
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***const***REMOVED***data***REMOVED***=***REMOVED***response.data;
-***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***console.log("🚀***REMOVED***~***REMOVED***data:",***REMOVED***data)
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***console.log("🚀***REMOVED***~***REMOVED***dataaa:",***REMOVED***data)
 
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***if***REMOVED***(!data?.success***REMOVED***||***REMOVED***!data?.token)***REMOVED***{
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***return***REMOVED***thunkAPI.rejectWithValue(data.message***REMOVED***||***REMOVED***"Sai***REMOVED***tài***REMOVED***khoản***REMOVED***hoặc***REMOVED***mật***REMOVED***khẩu!")

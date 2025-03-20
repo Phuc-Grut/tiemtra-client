@@ -7,21 +7,24 @@ export***REMOVED***const***REMOVED***useAuth***REMOVED***=***REMOVED***()***REMO
 
 ***REMOVED******REMOVED***const***REMOVED***login***REMOVED***=***REMOVED***async***REMOVED***(params:***REMOVED***{***REMOVED***email:***REMOVED***string;***REMOVED***password:***REMOVED***string***REMOVED***})***REMOVED***=>***REMOVED***{
 ***REMOVED******REMOVED******REMOVED******REMOVED***try***REMOVED***{
-***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***const***REMOVED***result***REMOVED***=***REMOVED***await***REMOVED***dispatch(loginApi(params)).unwrap();***REMOVED***//***REMOVED***✅***REMOVED***Bắt***REMOVED***lỗi***REMOVED***đúng***REMOVED***cách
-***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***return***REMOVED***result;***REMOVED***//***REMOVED***✅***REMOVED***Trả***REMOVED***về***REMOVED***kết***REMOVED***quả***REMOVED***nếu***REMOVED***thành***REMOVED***công
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***const***REMOVED***result***REMOVED***=***REMOVED***await***REMOVED***dispatch(loginApi(params)).unwrap()
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***console.log("🚀***REMOVED***~***REMOVED***login***REMOVED***~***REMOVED***result:",***REMOVED***result)
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***return***REMOVED***result
 ***REMOVED******REMOVED******REMOVED******REMOVED***}***REMOVED***catch***REMOVED***(error)***REMOVED***{
-***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***console.error("Lỗi***REMOVED***đăng***REMOVED***nhậppp:",***REMOVED***error);
-***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***return***REMOVED***null;***REMOVED***//***REMOVED***❌***REMOVED***Nếu***REMOVED***thất***REMOVED***bại,***REMOVED***trả***REMOVED***về***REMOVED***`null`
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***console.error("Lỗi***REMOVED***đăng***REMOVED***nhậppp:",***REMOVED***error)
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***console.log("🚀***REMOVED***~***REMOVED***login***REMOVED***~***REMOVED***error:",***REMOVED***error)
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***return***REMOVED***null
 ***REMOVED******REMOVED******REMOVED******REMOVED***}
-***REMOVED******REMOVED***};
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***
+***REMOVED******REMOVED***}
 
-***REMOVED******REMOVED***const***REMOVED***logoutUser***REMOVED***=***REMOVED***()***REMOVED***=>***REMOVED***dispatch(logout());
+***REMOVED******REMOVED***const***REMOVED***logoutUser***REMOVED***=***REMOVED***()***REMOVED***=>***REMOVED***dispatch(logout())
 
 ***REMOVED******REMOVED***return***REMOVED***{
 ***REMOVED******REMOVED******REMOVED******REMOVED***user,
 ***REMOVED******REMOVED******REMOVED******REMOVED***loading,
 ***REMOVED******REMOVED******REMOVED******REMOVED***error,
 ***REMOVED******REMOVED******REMOVED******REMOVED***login,
-***REMOVED******REMOVED******REMOVED******REMOVED***logout:***REMOVED***logoutUser,
-***REMOVED******REMOVED***};
-};
+***REMOVED******REMOVED******REMOVED******REMOVED***logout:***REMOVED***logoutUser
+***REMOVED******REMOVED***}
+}

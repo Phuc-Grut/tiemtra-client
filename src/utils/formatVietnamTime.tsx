@@ -1,0 +1,15 @@
+const***REMOVED***formatVietnamTime***REMOVED***=***REMOVED***(utcTimeStr:***REMOVED***string)***REMOVED***=>***REMOVED***{
+***REMOVED******REMOVED******REMOVED******REMOVED***const***REMOVED***utcDate***REMOVED***=***REMOVED***new***REMOVED***Date(utcTimeStr);
+***REMOVED******REMOVED******REMOVED******REMOVED***const***REMOVED***vietnamOffset***REMOVED***=***REMOVED***7***REMOVED*******REMOVED***60***REMOVED*******REMOVED***60***REMOVED*******REMOVED***1000
+***REMOVED******REMOVED******REMOVED******REMOVED***const***REMOVED***vietnamDate***REMOVED***=***REMOVED***new***REMOVED***Date(utcDate.getTime()***REMOVED***+***REMOVED***vietnamOffset)
+***REMOVED******REMOVED***
+***REMOVED******REMOVED******REMOVED******REMOVED***return***REMOVED***vietnamDate.toLocaleString("vi-VN",***REMOVED***{
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***hour:***REMOVED***"2-digit",
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***minute:***REMOVED***"2-digit",
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***day:***REMOVED***"2-digit",
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***month:***REMOVED***"2-digit",
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***year:***REMOVED***"numeric"
+***REMOVED******REMOVED******REMOVED******REMOVED***})
+***REMOVED******REMOVED***}
+***REMOVED******REMOVED***
+export***REMOVED***default***REMOVED***formatVietnamTime
