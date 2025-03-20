@@ -7,21 +7,24 @@ export const useAuth = () => {
 
   const login = async (params: { email: string; password: string }) => {
     try {
-      const result = await dispatch(loginApi(params)).unwrap(); // ✅ Bắt lỗi đúng cách
-      return result; // ✅ Trả về kết quả nếu thành công
+      const result = await dispatch(loginApi(params)).unwrap()
+      console.log("🚀 ~ login ~ result:", result)
+      return result
     } catch (error) {
-      console.error("Lỗi đăng nhậppp:", error);
-      return null; // ❌ Nếu thất bại, trả về `null`
+      console.error("Lỗi đăng nhậppp:", error)
+      console.log("🚀 ~ login ~ error:", error)
+      return null
     }
-  };
+      
+  }
 
-  const logoutUser = () => dispatch(logout());
+  const logoutUser = () => dispatch(logout())
 
   return {
     user,
     loading,
     error,
     login,
-    logout: logoutUser,
-  };
-};
+    logout: logoutUser
+  }
+}

@@ -7,7 +7,7 @@ const Dashboard: React.FC = () => {
     <div>
       <h2>Đây là trang Dashboard</h2>
     </div>
-  );
-};
+  )
+}
 
-export default Dashboard;
+export default Dashboard

@@ -10,11 +10,16 @@ const LoginForm: React.FC = () => {
   const navigate = useNavigate()
 
   const onSubmit = async (data: { email: string; password: string }) => {
-    const result = await login(data)
+    const result = await login(data);
+    console.log("🚀 ~ onSubmit ~ result:", result)
+    // console.log("🚀 ~ onSubmit ~ result:", result);
+  
     if (result) {
+      localStorage.setItem("access_token", result.token); // ✅ Lưu Access Token
+      localStorage.setItem("refresh_token", result.refreshToken); // ✅ Lưu Refresh Token
       navigate("/dashboard");
     }
-  }
+  };
 
   return (
     <Container maxWidth="xs">

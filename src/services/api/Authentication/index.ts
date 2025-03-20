@@ -17,6 +17,11 @@ export const register = async (name: string, email: string, password: string) =>
   return response.json()
 }
 
+const authApi = {
+  login: (params: { email: string; password: string }) => requester.post(AUTHENTICATION.URL_API.LOGIN_API, params),
+  refreshToken: (params: { refreshToken: string }) => requester.post(AUTHENTICATION.URL_API.REFRESH_TOKEN_API, params),
+  // register: (params: { name: string; email: string; password: string }) => requester.post(AUTHENTICATION.URL_API.REGISTER_API, params),
+}
 // export const login = async (email: string, password: string) => {
 //   try {
 //     const response = await axios.post(`${API_URL}/login`, { email, password })
@@ -33,10 +38,5 @@ export const register = async (name: string, email: string, password: string) =>
 //     throw error
 //   }
 // }
-
-const authApi = {
-  login: (params: { email: string; password: string }) => requester.post(AUTHENTICATION.URL_API.LOGIN_API, params),
-  // register: (params: { name: string; email: string; password: string }) => requester.post(AUTHENTICATION.URL_API.REGISTER_API, params),
-}
 
 export default authApi

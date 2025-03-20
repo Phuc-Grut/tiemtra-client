@@ -16,7 +16,7 @@ export const loginApi = createAsyncThunk(
     try {
       const response = await authApi.login(params)
       const data = response.data;
-      console.log("🚀 ~ data:", data)
+      console.log("🚀 ~ dataaa:", data)
 
       if (!data?.success || !data?.token) {
         return thunkAPI.rejectWithValue(data.message || "Sai tài khoản hoặc mật khẩu!")
