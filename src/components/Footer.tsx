@@ -13,7 +13,7 @@ const Footer: React.FC = () => {
       }}
     >
       <Typography variant="body2" color="textSecondary">
-        © {new Date().getFullYear()} GStore. All rights reserved.
+        © {new Date().getFullYear()} PhucGrunt. All rights reserved.
       </Typography>
     </Box>
   );
