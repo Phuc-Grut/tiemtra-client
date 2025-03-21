@@ -6,6 +6,13 @@ const Dashboard: React.FC = () => {
   return (
     <div>
       <h2>Đây là trang Dashboard</h2>
+      <h2>Đây là trang Dashboard</h2>
+      <h2>Đây là trang Dashboard</h2>
+      <h2>Đây là trang Dashboard</h2>
+      <h2>Đây là trang Dashboard</h2>
+      <h2>Đây là trang Dashboard</h2>
+      <h2>Đây là trang Dashboard</h2>
+      <h2>Đây là trang Dashboard</h2>
     </div>
   )
 }
