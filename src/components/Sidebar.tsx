@@ -13,8 +13,6 @@ import***REMOVED***{
 ***REMOVED******REMOVED***People,
 ***REMOVED******REMOVED***Settings,
 ***REMOVED******REMOVED***CategoryOutlined,
-***REMOVED******REMOVED***AlignHorizontalLeft,
-***REMOVED******REMOVED***AlignHorizontalRight,
 ***REMOVED******REMOVED***ChevronLeft,
 ***REMOVED******REMOVED***ChevronRight,
 }***REMOVED***from***REMOVED***"@mui/icons-material";
