@@ -65,15 +65,13 @@ const***REMOVED***CategoryTable***REMOVED***=***REMOVED***()***REMOVED***=>***RE
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***sx={{
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***flexGrow:***REMOVED***1,
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***display:***REMOVED***"flex",
-***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***flexDirection:***REMOVED***"column",***REMOVED***//***REMOVED***Đảm***REMOVED***bảo***REMOVED***bảng***REMOVED***full***REMOVED***màn***REMOVED***hình
-***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***//***REMOVED***maxHeight:***REMOVED***"100vh",
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***flexDirection:***REMOVED***"column",
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***backgroundColor:***REMOVED***"#fff",
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***borderRadius:***REMOVED***"8px",
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***paddingTop:***REMOVED***"0px",
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***boxShadow:***REMOVED***"0px***REMOVED***2px***REMOVED***5px***REMOVED***rgba(0,***REMOVED***0,***REMOVED***0,***REMOVED***0.1)",
-***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***//***REMOVED***minHeight:***REMOVED***"70vh",
-***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***minHeight:***REMOVED***"50vh",***REMOVED***//***REMOVED***✅***REMOVED***Đảm***REMOVED***bảo***REMOVED***bảng***REMOVED***không***REMOVED***quá***REMOVED***nhỏ***REMOVED***khi***REMOVED***dữ***REMOVED***liệu***REMOVED***ít
-***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***overflow:***REMOVED***"auto",***REMOVED***//***REMOVED***✅***REMOVED***Tạo***REMOVED***thanh***REMOVED***cuộn***REMOVED***nếu***REMOVED***bảng***REMOVED***có***REMOVED***quá***REMOVED***nhiều***REMOVED***dữ***REMOVED***liệu
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***minHeight:***REMOVED***"50vh",
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***overflow:***REMOVED***"auto",
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***maxHeight:***REMOVED***"calc(100vh***REMOVED***-***REMOVED***198px)",
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***}}
 ***REMOVED******REMOVED******REMOVED******REMOVED***>
@@ -171,7 +169,6 @@ const***REMOVED***CategoryTable***REMOVED***=***REMOVED***()***REMOVED***=>***RE
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***</Table>
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***</TableContainer>
 
-***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***{/****REMOVED***Phần***REMOVED***phân***REMOVED***trang***REMOVED****/}
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***<Box***REMOVED***mt={0}***REMOVED***display="flex"***REMOVED***justifyContent="center"***REMOVED***paddingBottom={0.5}***REMOVED***>
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***<CustomPagination
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***pageNumber={pageNumber}
