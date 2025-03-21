@@ -15,14 +15,14 @@ const PageHeader: React.FC<PageHeaderProps> = ({ title, onAddClick, sx }) => {
     <Box
       sx={{
         backgroundColor: "#fff",
-        padding: "8px", // 🔥 Giảm padding để thu nhỏ chiều cao
-        height: "30px", // 🔥 Giảm chiều cao
+        padding: "8px",
+        height: "30px",
         boxShadow: "0px 2px 5px rgba(0, 0, 0, 0.1)",
         borderRadius: "8px",
         marginBottom: "0",
         marginTop: 3,
         display: "flex",
-        alignItems: "center", // 🔥 Canh giữa theo chiều dọc
+        alignItems: "center",
         justifyContent: "space-between",
         ...sx
       }}
@@ -36,8 +36,8 @@ const PageHeader: React.FC<PageHeaderProps> = ({ title, onAddClick, sx }) => {
         color="primary"
         size="small"
         startIcon={<AddIcon />}
-        onClick={onAddClick} // ✅ Xử lý khi nhấn nút
-        sx={{ textTransform: "none", justifyContent: "center"}} // 🔥 Giữ nguyên chữ "Thêm", không viết hoa
+        onClick={onAddClick}
+        sx={{ textTransform: "none", justifyContent: "center"}}
       >
         Thêm
       </Button>

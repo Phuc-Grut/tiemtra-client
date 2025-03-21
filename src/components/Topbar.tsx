@@ -20,7 +20,6 @@ const TopBar = () => {
           <Menu />
         </IconButton>
 
-        {/* Tiêu đề (hoặc có thể để trống) */}
         <Typography variant="h6" sx={{ flexGrow: 1, color: "#333", fontWeight: "bold" }}>
           
         </Typography>
@@ -32,19 +31,13 @@ const TopBar = () => {
         </IconButton>
 
         <IconButton sx={{ marginRight: 2,  }}>
-          {/* <Badge badgeContent={3} color="error"> */}
             <Call />
-          {/* </Badge> */}
         </IconButton>
 
-        {/* Nút thông báo */}
         <IconButton sx={{ marginRight: 2,  }}>
-          {/* <Badge badgeContent={3} color="error"> */}
             <NetworkWifi3Bar />
-          {/* </Badge> */}
         </IconButton>
 
-        {/* Avatar + Tên user */}
         <Typography variant="body1" sx={{ marginRight: 2, fontWeight: "bold" }}>
           PhucNh
         </Typography>

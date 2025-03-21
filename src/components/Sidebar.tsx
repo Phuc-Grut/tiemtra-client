@@ -45,7 +45,6 @@ const Sidebar: React.FC = () => {
         },
       }}
     >
-      {/* Danh sách menu (VẪN Ở TRÊN) */}
       <List sx={{ width: "100%" }}>
         <Tooltip
           title="Dashboard"

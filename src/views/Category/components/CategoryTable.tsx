@@ -65,15 +65,13 @@ const CategoryTable = () => {
       sx={{
         flexGrow: 1,
         display: "flex",
-        flexDirection: "column", // Đảm bảo bảng full màn hình
-        // maxHeight: "100vh",
+        flexDirection: "column",
         backgroundColor: "#fff",
         borderRadius: "8px",
         paddingTop: "0px",
         boxShadow: "0px 2px 5px rgba(0, 0, 0, 0.1)",
-        // minHeight: "70vh",
-        minHeight: "50vh", // ✅ Đảm bảo bảng không quá nhỏ khi dữ liệu ít
-        overflow: "auto", // ✅ Tạo thanh cuộn nếu bảng có quá nhiều dữ liệu
+        minHeight: "50vh",
+        overflow: "auto",
         maxHeight: "calc(100vh - 198px)",
       }}
     >
@@ -171,7 +169,6 @@ const CategoryTable = () => {
         </Table>
       </TableContainer>
 
-      {/* Phần phân trang */}
       <Box mt={0} display="flex" justifyContent="center" paddingBottom={0.5} >
         <CustomPagination
           pageNumber={pageNumber}
