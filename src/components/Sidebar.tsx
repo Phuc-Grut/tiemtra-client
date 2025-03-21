@@ -1,6 +1,23 @@
 import React, { useState } from "react";
-import { Drawer, List, ListItem, ListItemIcon, ListItemText, IconButton, Tooltip } from "@mui/material";
-import { Dashboard, People, Settings, ChevronLeft, ChevronRight, CategoryOutlined } from "@mui/icons-material";
+import {
+  Drawer,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  IconButton,
+  Tooltip,
+} from "@mui/material";
+import {
+  Dashboard,
+  People,
+  Settings,
+  CategoryOutlined,
+  AlignHorizontalLeft,
+  AlignHorizontalRight,
+  ChevronLeft,
+  ChevronRight,
+} from "@mui/icons-material";
 import { Link } from "react-router-dom";
 import { useTheme } from "@mui/material/styles";
 import { useMediaQuery } from "@mui/material";
@@ -32,50 +49,103 @@ const Sidebar: React.FC = () => {
     >
       {/* Danh sách menu (VẪN Ở TRÊN) */}
       <List sx={{ width: "100%" }}>
-        <Tooltip title="Dashboard" placement="right" disableHoverListener={expanded}>
-          <ListItem component={Link} to="/dashboard" sx={{ cursor: "pointer", justifyContent: "center" }}>
-            <ListItemIcon><Dashboard /></ListItemIcon>
+        <Tooltip
+          title="Dashboard"
+          placement="right"
+          disableHoverListener={expanded}
+        >
+          <ListItem
+            component={Link}
+            to="/dashboard"
+            sx={{ cursor: "pointer", justifyContent: "center" }}
+          >
+            <ListItemIcon>
+              <Dashboard />
+            </ListItemIcon>
             {expanded && <ListItemText primary="Dashboard" />}
           </ListItem>
         </Tooltip>
 
-        <Tooltip title="category" placement="right" disableHoverListener={expanded}>
-          <ListItem component={Link} to="/category" sx={{ cursor: "pointer", justifyContent: "center" }}>
-            <ListItemIcon><CategoryOutlined /></ListItemIcon>
+        <Tooltip
+          title="category"
+          placement="right"
+          disableHoverListener={expanded}
+        >
+          <ListItem
+            component={Link}
+            to="/category"
+            sx={{ cursor: "pointer", justifyContent: "center" }}
+          >
+            <ListItemIcon>
+              <CategoryOutlined />
+            </ListItemIcon>
             {expanded && <ListItemText primary="Danh Mục" />}
           </ListItem>
         </Tooltip>
 
-        <Tooltip title="Users" placement="right" disableHoverListener={expanded}>
-          <ListItem component={Link} to="/users" sx={{ cursor: "pointer", justifyContent: "center" }}>
-            <ListItemIcon><People /></ListItemIcon>
+        <Tooltip
+          title="Users"
+          placement="right"
+          disableHoverListener={expanded}
+        >
+          <ListItem
+            component={Link}
+            to="/users"
+            sx={{ cursor: "pointer", justifyContent: "center" }}
+          >
+            <ListItemIcon>
+              <People />
+            </ListItemIcon>
             {expanded && <ListItemText primary="Users" />}
           </ListItem>
         </Tooltip>
 
-        <Tooltip title="Settings" placement="right" disableHoverListener={expanded}>
-          <ListItem component={Link} to="/settings" sx={{ cursor: "pointer", justifyContent: "center" }}>
-            <ListItemIcon><Settings /></ListItemIcon>
+        <Tooltip
+          title="Settings"
+          placement="right"
+          disableHoverListener={expanded}
+        >
+          <ListItem
+            component={Link}
+            to="/settings"
+            sx={{ cursor: "pointer", justifyContent: "center" }}
+          >
+            <ListItemIcon>
+              <Settings />
+            </ListItemIcon>
             {expanded && <ListItemText primary="Settings" />}
           </ListItem>
         </Tooltip>
       </List>
 
-      {/* Nút Toggle (Căn giữa theo chiều dọc, menu vẫn ở trên) */}
-      <IconButton 
+      <IconButton
         onClick={() => setExpanded(!expanded)}
         sx={{
           position: "absolute",
-          top: "50%", // Đặt giữa Sidebar theo chiều dọc
-          transform: "translateY(-50%)", // Dịch lên 50% để chính giữa
-        //   marginRight: "3px",
-          right: 0,
+          top: "50%",
+          transform: "translateY(-50%)",
+          right: "-15px",
+          backgroundColor: "#ffffff",
+          boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.2)",
+          borderRadius: "50%",
+          width: "40px",
+          height: "40px",
+          transition: "all 0.3s ease",
+          "&:hover": {
+            backgroundColor: "#0B29F4",
+            color: "white",
+            transform: "translateY(-50%) scale(1.1)",
+          },
         }}
       >
-        {expanded ? <ChevronLeft /> : <ChevronRight />}
+        {expanded ? (
+          <ChevronLeft fontSize="large" />
+        ) : (
+          <ChevronRight fontSize="large" />
+        )}
       </IconButton>
     </Drawer>
-  )
-}
+  );
+};
 
-export default Sidebar
+export default Sidebar;

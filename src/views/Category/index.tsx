@@ -7,7 +7,7 @@ const Category: React.FC = () => {
   return (
     <Box sx={{ padding: 3 }}>
       <Typography variant="h4" sx={{ mb: 3 }}>Trang Danh Mục</Typography>
-      <Form />
+      {/* <Form /> */}
       <CategoryTable />
     </Box>
   )
