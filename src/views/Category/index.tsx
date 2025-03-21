@@ -1,7 +1,6 @@
 import React from "react"
 import { Box, Typography } from "@mui/material"
 import CategoryTable from "./components/CategoryTable"
-import Form from "./components/CategoryForm"
 
 const Category: React.FC = () => {
   return (

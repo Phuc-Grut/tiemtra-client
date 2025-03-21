@@ -13,8 +13,6 @@ import {
   People,
   Settings,
   CategoryOutlined,
-  AlignHorizontalLeft,
-  AlignHorizontalRight,
   ChevronLeft,
   ChevronRight,
 } from "@mui/icons-material";
