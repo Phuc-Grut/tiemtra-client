@@ -13,7 +13,7 @@ const***REMOVED***Footer:***REMOVED***React.FC***REMOVED***=***REMOVED***()***RE
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***}}
 ***REMOVED******REMOVED******REMOVED******REMOVED***>
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***<Typography***REMOVED***variant="body2"***REMOVED***color="textSecondary">
-***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***©***REMOVED***{new***REMOVED***Date().getFullYear()}***REMOVED***GStore.***REMOVED***All***REMOVED***rights***REMOVED***reserved.
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***©***REMOVED***{new***REMOVED***Date().getFullYear()}***REMOVED***PhucGrunt.***REMOVED***All***REMOVED***rights***REMOVED***reserved.
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***</Typography>
 ***REMOVED******REMOVED******REMOVED******REMOVED***</Box>
 ***REMOVED******REMOVED***);
