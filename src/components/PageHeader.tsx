@@ -24,6 +24,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({ title, onAddClick, sx }) => {
         display: "flex",
         alignItems: "center",
         justifyContent: "space-between",
+        minHeight:'35px',
         ...sx
       }}
     >
@@ -37,7 +38,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({ title, onAddClick, sx }) => {
         size="small"
         startIcon={<AddIcon />}
         onClick={onAddClick}
-        sx={{ textTransform: "none", justifyContent: "center"}}
+        sx={{ textTransform: "none", justifyContent: "center", maxHeight: '27px'}}
       >
         Thêm
       </Button>

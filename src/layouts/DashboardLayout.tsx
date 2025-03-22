@@ -13,7 +13,9 @@ const MainLayout: React.FC = () => {
         flexDirection: "column",
         minHeight: "100vh",
         backgroundColor: "#EEEEEE",
-        overflowX: "hidden",
+        // overflowX: "hidden",
+        overflowX: "auto",
+        width: '100vw'
       }}
     >
       <TopBar />
@@ -25,7 +27,7 @@ const MainLayout: React.FC = () => {
           <Box
             sx={{
               flexGrow: 1,
-              padding: "10px",
+              marginTop: "10px",
               display: "flex",
               flexDirection: "column",
             }}

@@ -68,14 +68,36 @@ const CategoryTable = () => {
         flexDirection: "column",
         backgroundColor: "#fff",
         borderRadius: "8px",
-        paddingTop: "0px",
         boxShadow: "0px 2px 5px rgba(0, 0, 0, 0.1)",
-        minHeight: "50vh",
+        minHeight: "calc(100vh - 178px)",
         overflow: "auto",
         maxHeight: "calc(100vh - 198px)",
       }}
     >
-      <TableContainer component={Paper} sx={{ overflowX: "auto", flexGrow: 1, }}>
+      <Box
+        sx={{
+          padding: "6px 6px",
+          borderBottom: "3px solid #ddd",
+          height: "33px",
+          display: "flex",
+          alignItems: "center",
+        }}
+      >
+        <input
+          type="text"
+          placeholder="Tìm kiếm..."
+          style={{
+            width: "100%", // Cho phép co giãn
+            maxWidth: "220px",
+            height: "130%",
+            fontSize: "13px",
+            padding: "0px 8px",
+            borderRadius: "4px",
+            border: "2px solid #ccc",
+          }}
+        />
+      </Box>
+      <TableContainer component={Paper} sx={{ overflowX: "auto", flexGrow: 1 }}>
         <Table stickyHeader>
           <TableHead>
             <TableRow>
@@ -86,73 +108,54 @@ const CategoryTable = () => {
                   fontWeight: "bold",
                   backgroundColor: "#007bff",
                   color: "white",
+                  borderRight: "1px solid rgb(236, 234, 234)",
                 }}
               >
                 STT
               </TableCell>
+              <TableCell sx={Styles.tableCell}>Mã danh mục</TableCell>
+              <TableCell sx={Styles.tableCell}>Tên Danh Mục</TableCell>
               <TableCell
                 sx={{
                   fontWeight: "bold",
                   backgroundColor: "#007bff",
                   color: "white",
-                }}
-              >
-                Mã danh mục
-              </TableCell>
-              <TableCell
-                sx={{
-                  fontWeight: "bold",
-                  backgroundColor: "#007bff",
-                  color: "white",
-                }}
-              >
-                Tên Danh Mục
-              </TableCell>
-              <TableCell
-                sx={{
-                  fontWeight: "bold",
-                  backgroundColor: "#007bff",
-                  color: "white",
+                  borderRight: "1px solid rgb(236, 234, 234)",
                 }}
               >
                 Mô tả
               </TableCell>
-              <TableCell
-                sx={{
-                  fontWeight: "bold",
-                  backgroundColor: "#007bff",
-                  color: "white",
-                }}
-              >
-                Người tạo
-              </TableCell>
-              <TableCell
-                sx={{
-                  fontWeight: "bold",
-                  backgroundColor: "#007bff",
-                  color: "white",
-                }}
-              >
-                Cập nhật
-              </TableCell>
+              <TableCell sx={Styles.tableCell}>Người tạo</TableCell>
+              <TableCell sx={Styles.tableCell}>Cập nhật</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {categories?.length > 0 ? (
               categories.map((category: ICategory, index: number) => (
                 <TableRow key={category.categoryId}>
-                  <TableCell sx={{ textAlign: "center" }}>
+                  <TableCell
+                    sx={{
+                      textAlign: "center",
+                      borderRight: "1px solid rgb(236, 234, 234)",
+                    }}
+                  >
                     {(pageNumber - 1) * pageSize + index + 1}
                   </TableCell>
-                  <TableCell>{category.categoryId}</TableCell>
-                  <TableCell>{category.categoryName}</TableCell>
-                  <TableCell>
+                  <TableCell sx={Styles.tableCellBody}>
+                    {category.categoryId}
+                  </TableCell>
+                  <TableCell sx={Styles.tableCellBody}>
+                    {category.categoryName}
+                  </TableCell>
+                  <TableCell sx={Styles.tableCellBody}>
                     {category.categoryName || "Không có mô tả"}
                   </TableCell>
-                  <TableCell>
+                  <TableCell sx={Styles.tableCellBody}>
                     {category?.creator?.fullName || "Không có dữ liệu"}
                   </TableCell>
-                  <TableCell>{formatVietnamTime(category.updatedAt)}</TableCell>
+                  <TableCell sx={Styles.tableCellBody}>
+                    {formatVietnamTime(category.updatedAt)}
+                  </TableCell>
                 </TableRow>
               ))
             ) : (
@@ -169,7 +172,7 @@ const CategoryTable = () => {
         </Table>
       </TableContainer>
 
-      <Box mt={0} display="flex" justifyContent="center" paddingBottom={0.5} >
+      <Box mt={0} display="flex" justifyContent="center" paddingBottom={0.5}>
         <CustomPagination
           pageNumber={pageNumber}
           setPageNumber={setPageNumber}
@@ -180,4 +183,16 @@ const CategoryTable = () => {
   );
 };
 
-export default CategoryTable
+export default CategoryTable;
+
+const Styles = {
+  tableCell: {
+    fontWeight: "bold",
+    backgroundColor: "#007bff",
+    color: "white",
+    borderRight: "1px solid rgb(236, 234, 234)",
+  },
+  tableCellBody: {
+    borderRight: "1px solid rgb(236, 234, 234)",
+  },
+};
