@@ -24,6 +24,7 @@ const***REMOVED***PageHeader:***REMOVED***React.FC<PageHeaderProps>***REMOVED***
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***display:***REMOVED***"flex",
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***alignItems:***REMOVED***"center",
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***justifyContent:***REMOVED***"space-between",
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***minHeight:'35px',
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***...sx
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***}}
 ***REMOVED******REMOVED******REMOVED******REMOVED***>
@@ -37,7 +38,7 @@ const***REMOVED***PageHeader:***REMOVED***React.FC<PageHeaderProps>***REMOVED***
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***size="small"
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***startIcon={<AddIcon***REMOVED***/>}
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***onClick={onAddClick}
-***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***sx={{***REMOVED***textTransform:***REMOVED***"none",***REMOVED***justifyContent:***REMOVED***"center"}}
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***sx={{***REMOVED***textTransform:***REMOVED***"none",***REMOVED***justifyContent:***REMOVED***"center",***REMOVED***maxHeight:***REMOVED***'27px'}}
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***>
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***Thêm
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***</Button>
