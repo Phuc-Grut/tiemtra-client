@@ -1,4 +1,3 @@
-import React from "react";
 import { AppBar, Toolbar, IconButton, Typography, Badge, Avatar } from "@mui/material";
 import { Notifications, Menu, Call, NetworkWifi3Bar } from "@mui/icons-material";
 

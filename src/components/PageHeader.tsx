@@ -8,9 +8,7 @@ interface PageHeaderProps {
   sx?: SxProps<Theme>; 
 }
 
-const PageHeader: React.FC<PageHeaderProps> = ({ title, onAddClick, sx }) => {
-
-
+const PageHeader = ({title, onAddClick, sx} : PageHeaderProps ) => {
   return (
     <Box
       sx={{

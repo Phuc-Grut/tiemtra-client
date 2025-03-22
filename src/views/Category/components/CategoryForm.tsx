@@ -1,7 +1,6 @@
-import React from "react";
 import { Box, TextField, Button, Typography } from "@mui/material";
 
-const CategoryForm: React.FC = () => {
+const CategoryForm = () => {
   return (
     <Box sx={{ display: "flex", flexDirection: "column", gap: 2, maxWidth: 400 }}>
       <Typography variant="h6">Thêm Danh Mục</Typography>

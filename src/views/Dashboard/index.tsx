@@ -1,6 +1,6 @@
 // import { useNavigate } from "react-router-dom"
 
-const Dashboard: React.FC = () => {
+const Dashboard = () => {
   // const navigate = useNavigate()
 
   return (

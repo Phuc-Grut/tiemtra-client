@@ -1,9 +1,8 @@
-import React from "react";
 import { Box } from "@mui/material";
 import PageHeader from "src/components/PageHeader";
 import CategoryTable from "./components/CategoryTable";
 
-const Category: React.FC = () => {
+const Category = () => {
   return (
     <Box
       sx={{

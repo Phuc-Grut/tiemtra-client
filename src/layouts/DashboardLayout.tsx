@@ -1,11 +1,10 @@
-import React from "react";
 import { Box } from "@mui/material";
 import Sidebar from "../components/Sidebar";
 import { Outlet } from "react-router-dom";
 import TopBar from "src/components/Topbar";
 import Footer from "src/components/Footer";
 
-const MainLayout: React.FC = () => {
+const MainLayout = () => {
   return (
     <Box
       sx={{
