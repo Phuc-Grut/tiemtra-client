@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import categoryApi from "src/services/api/Category";
 import { ICategory } from "src/Interfaces/ICategory";
@@ -6,6 +6,7 @@ import formatVietnamTime from "src/utils/formatVietnamTime";
 import CustomPagination from "src/components/CustomPagination";
 import {
   Box,
+  MenuItem,
   Paper,
   Table,
   TableBody,
@@ -13,19 +14,30 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  TextField,
 } from "@mui/material";
+import { useNavigate, useParams } from "react-router-dom";
 
 const CategoryTable = () => {
   const [pageNumber, setPageNumber] = useState(1);
   const [maxPages, setMaxPages] = useState<number>(1);
-  const pageSize = 10;
+  const [pageSize, setPageSize] = useState(10);
+
+  const { id } = useParams();
+  const isDetail = !!id;
+  useEffect(() => {
+    if (isDetail && id) {
+      setPageNumber(Number(id)); // Đồng bộ pageNumber khi id thay đổi
+    }
+  }, [id]);
+  const navigate = useNavigate();
 
   const {
     data: categories,
     isLoading,
     error,
   } = useQuery({
-    queryKey: ["categories", pageNumber],
+    queryKey: ["categories", pageNumber, pageSize],
     queryFn: async () => {
       const response = await categoryApi.getPagingApi({ pageNumber, pageSize });
 
@@ -37,6 +49,20 @@ const CategoryTable = () => {
     },
     placeholderData: (previousData: any) => previousData,
   });
+
+  const { data: categoryDetail } = useQuery({
+    queryKey: ["category", pageNumber],
+    queryFn: () =>
+      categoryApi.getByIdApi({
+        categoryId: pageNumber,
+        pageNumber: 1,
+        pageSize: 1,
+      }),
+    enabled: isDetail && !!pageNumber,
+    select: (res) => res?.data?.items?.$values?.[0],
+  });
+  
+  console.log("🚀 ~ CategoryTable ~ categoryDetail:", categoryDetail);
 
   // let startPage = Math.max(1, pageNumber - 1);
   // let endPage = Math.min(maxPages ?? 1, pageNumber + 1);
@@ -59,6 +85,9 @@ const CategoryTable = () => {
     return (
       <p style={{ color: "red", textAlign: "center" }}>Lỗi: {error.message}</p>
     );
+
+  const rows = isDetail && categoryDetail ? [categoryDetail] : categories || [];
+
 
   return (
     <Box
@@ -130,9 +159,16 @@ const CategoryTable = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {categories?.length > 0 ? (
-              categories.map((category: ICategory, index: number) => (
-                <TableRow key={category.categoryId}>
+            {rows.length > 0 ? (
+              rows.map((category: ICategory, index: number) => (
+                <TableRow
+                  key={category.categoryId}
+                  hover
+                  sx={{ cursor: isDetail ? "default" : "pointer" }}
+                  onClick={() =>
+                    !isDetail && navigate(`/category/${category.categoryId}`)
+                  }
+                >
                   <TableCell
                     sx={{
                       textAlign: "center",
@@ -148,7 +184,7 @@ const CategoryTable = () => {
                     {category.categoryName}
                   </TableCell>
                   <TableCell sx={Styles.tableCellBody}>
-                    {category.categoryName || "Không có mô tả"}
+                    {category.description || "Không có mô tả"}
                   </TableCell>
                   <TableCell sx={Styles.tableCellBody}>
                     {category?.creator?.fullName || "Không có dữ liệu"}
@@ -171,14 +207,52 @@ const CategoryTable = () => {
           </TableBody>
         </Table>
       </TableContainer>
+      <Box
+          mt={0}
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          paddingBottom={0.5}
+          gap={2}
+        >
+          <CustomPagination
+            pageNumber={pageNumber}
+            setPageNumber={(newPage) => {
+              setPageNumber(newPage);
+              if (isDetail) {
+                navigate(`/category/${newPage}`); // hoặc gọi lại API getByIdApi với ID = newPage
+              }
+            }}
+            totalPages={maxPages}
+          />
 
-      <Box mt={0} display="flex" justifyContent="center" paddingBottom={0.5}>
-        <CustomPagination
-          pageNumber={pageNumber}
-          setPageNumber={setPageNumber}
-          totalPages={maxPages}
-        />
-      </Box>
+          <Box display="flex" alignItems="center" gap={1} maxHeight={25}>
+            <TextField
+              select
+              value={pageSize}
+              onChange={(e) => {
+                setPageSize(parseInt(e.target.value));
+                setPageNumber(1);
+              }}
+              size="small"
+              variant="standard"
+              sx={{
+                width: 80,
+                maxheight: "25px",
+              }}
+            >
+              {[1, 5, 10, 15, 20].map((option) => (
+                <MenuItem key={option} value={option}>
+                  {option}
+                </MenuItem>
+              ))}
+            </TextField>
+
+            <Box fontSize="12px" color="#555">
+              Bản ghi/trang
+            </Box>
+          </Box>
+        </Box>
     </Box>
   );
 };

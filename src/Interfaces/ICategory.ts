@@ -2,6 +2,7 @@ export interface ICategory {
     categoryId: number
     parentId: number
     categoryName: string
+    description: string
     creator?: ICreator
     createAt: Date | string
     updatedAt: string

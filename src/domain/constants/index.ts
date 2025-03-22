@@ -21,12 +21,14 @@ export const AUTHENTICATION = {
 export const CATEGORY = {
     ACTION_TYPES: {
         GET_ALL: 'CATEGORY/GET_ALL',
+        GET_BY_ID: 'CATEGORY/GET_BY_ID_API',
         CREATE: 'CATEGORY/CREATE',
         UPDATE: 'CATEGORY/UPDATE',
         DELETE: 'CATEGORY/DELETE',
     },
     URL_API: {
         GET_ALL_API:  `${BASE_URL}/category/get-paging-category`,
+        GET_BY_ID_API:  `${BASE_URL}/category/get-by-id`,
         CREATE_API:  `${BASE_URL}/category`,
         UPDATE_API:  `${BASE_URL}/category`,
         DELETE_API:  `${BASE_URL}/category`,
