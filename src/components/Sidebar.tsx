@@ -1,4 +1,4 @@
-import***REMOVED***React,***REMOVED***{***REMOVED***useState***REMOVED***}***REMOVED***from***REMOVED***"react";
+import***REMOVED***{***REMOVED***useState***REMOVED***}***REMOVED***from***REMOVED***"react";
 import***REMOVED***{
 ***REMOVED******REMOVED***Drawer,
 ***REMOVED******REMOVED***List,
@@ -20,7 +20,7 @@ import***REMOVED***{***REMOVED***Link***REMOVED***}***REMOVED***from***REMOVED**
 import***REMOVED***{***REMOVED***useTheme***REMOVED***}***REMOVED***from***REMOVED***"@mui/material/styles";
 import***REMOVED***{***REMOVED***useMediaQuery***REMOVED***}***REMOVED***from***REMOVED***"@mui/material";
 
-const***REMOVED***Sidebar:***REMOVED***React.FC***REMOVED***=***REMOVED***()***REMOVED***=>***REMOVED***{
+const***REMOVED***Sidebar***REMOVED***=***REMOVED***()***REMOVED***=>***REMOVED***{
 ***REMOVED******REMOVED***const***REMOVED***[expanded,***REMOVED***setExpanded]***REMOVED***=***REMOVED***useState(true);
 ***REMOVED******REMOVED***const***REMOVED***theme***REMOVED***=***REMOVED***useTheme();
 ***REMOVED******REMOVED***const***REMOVED***isMobile***REMOVED***=***REMOVED***useMediaQuery(theme.breakpoints.down("md"));

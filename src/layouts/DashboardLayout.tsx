@@ -1,11 +1,10 @@
-import***REMOVED***React***REMOVED***from***REMOVED***"react";
 import***REMOVED***{***REMOVED***Box***REMOVED***}***REMOVED***from***REMOVED***"@mui/material";
 import***REMOVED***Sidebar***REMOVED***from***REMOVED***"../components/Sidebar";
 import***REMOVED***{***REMOVED***Outlet***REMOVED***}***REMOVED***from***REMOVED***"react-router-dom";
 import***REMOVED***TopBar***REMOVED***from***REMOVED***"src/components/Topbar";
 import***REMOVED***Footer***REMOVED***from***REMOVED***"src/components/Footer";
 
-const***REMOVED***MainLayout:***REMOVED***React.FC***REMOVED***=***REMOVED***()***REMOVED***=>***REMOVED***{
+const***REMOVED***MainLayout***REMOVED***=***REMOVED***()***REMOVED***=>***REMOVED***{
 ***REMOVED******REMOVED***return***REMOVED***(
 ***REMOVED******REMOVED******REMOVED******REMOVED***<Box
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***sx={{

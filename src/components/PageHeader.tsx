@@ -8,9 +8,7 @@ interface***REMOVED***PageHeaderProps***REMOVED***{
 ***REMOVED******REMOVED***sx?:***REMOVED***SxProps<Theme>;***REMOVED***
 }
 
-const***REMOVED***PageHeader:***REMOVED***React.FC<PageHeaderProps>***REMOVED***=***REMOVED***({***REMOVED***title,***REMOVED***onAddClick,***REMOVED***sx***REMOVED***})***REMOVED***=>***REMOVED***{
-
-
+const***REMOVED***PageHeader***REMOVED***=***REMOVED***({title,***REMOVED***onAddClick,***REMOVED***sx}***REMOVED***:***REMOVED***PageHeaderProps***REMOVED***)***REMOVED***=>***REMOVED***{
 ***REMOVED******REMOVED***return***REMOVED***(
 ***REMOVED******REMOVED******REMOVED******REMOVED***<Box
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***sx={{

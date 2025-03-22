@@ -1,9 +1,8 @@
-import***REMOVED***React***REMOVED***from***REMOVED***"react";
 import***REMOVED***{***REMOVED***Box***REMOVED***}***REMOVED***from***REMOVED***"@mui/material";
 import***REMOVED***PageHeader***REMOVED***from***REMOVED***"src/components/PageHeader";
 import***REMOVED***CategoryTable***REMOVED***from***REMOVED***"./components/CategoryTable";
 
-const***REMOVED***Category:***REMOVED***React.FC***REMOVED***=***REMOVED***()***REMOVED***=>***REMOVED***{
+const***REMOVED***Category***REMOVED***=***REMOVED***()***REMOVED***=>***REMOVED***{
 ***REMOVED******REMOVED***return***REMOVED***(
 ***REMOVED******REMOVED******REMOVED******REMOVED***<Box
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***sx={{

@@ -1,7 +1,7 @@
 import***REMOVED***React***REMOVED***from***REMOVED***"react";
 import***REMOVED***{***REMOVED***Box,***REMOVED***Typography***REMOVED***}***REMOVED***from***REMOVED***"@mui/material";
 
-const***REMOVED***Footer:***REMOVED***React.FC***REMOVED***=***REMOVED***()***REMOVED***=>***REMOVED***{
+const***REMOVED***Footer***REMOVED***=***REMOVED***()***REMOVED***=>***REMOVED***{
 ***REMOVED******REMOVED***return***REMOVED***(
 ***REMOVED******REMOVED******REMOVED******REMOVED***<Box
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***sx={{

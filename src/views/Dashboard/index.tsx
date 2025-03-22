@@ -1,6 +1,6 @@
 //***REMOVED***import***REMOVED***{***REMOVED***useNavigate***REMOVED***}***REMOVED***from***REMOVED***"react-router-dom"
 
-const***REMOVED***Dashboard:***REMOVED***React.FC***REMOVED***=***REMOVED***()***REMOVED***=>***REMOVED***{
+const***REMOVED***Dashboard***REMOVED***=***REMOVED***()***REMOVED***=>***REMOVED***{
 ***REMOVED******REMOVED***//***REMOVED***const***REMOVED***navigate***REMOVED***=***REMOVED***useNavigate()
 
 ***REMOVED******REMOVED***return***REMOVED***(

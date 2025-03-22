@@ -1,7 +1,6 @@
-import***REMOVED***React***REMOVED***from***REMOVED***"react";
 import***REMOVED***{***REMOVED***Box,***REMOVED***TextField,***REMOVED***Button,***REMOVED***Typography***REMOVED***}***REMOVED***from***REMOVED***"@mui/material";
 
-const***REMOVED***CategoryForm:***REMOVED***React.FC***REMOVED***=***REMOVED***()***REMOVED***=>***REMOVED***{
+const***REMOVED***CategoryForm***REMOVED***=***REMOVED***()***REMOVED***=>***REMOVED***{
 ***REMOVED******REMOVED***return***REMOVED***(
 ***REMOVED******REMOVED******REMOVED******REMOVED***<Box***REMOVED***sx={{***REMOVED***display:***REMOVED***"flex",***REMOVED***flexDirection:***REMOVED***"column",***REMOVED***gap:***REMOVED***2,***REMOVED***maxWidth:***REMOVED***400***REMOVED***}}>
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***<Typography***REMOVED***variant="h6">Thêm***REMOVED***Danh***REMOVED***Mục</Typography>

@@ -1,4 +1,3 @@
-import***REMOVED***React***REMOVED***from***REMOVED***"react";
 import***REMOVED***{***REMOVED***Provider***REMOVED***}***REMOVED***from***REMOVED***"react-redux";
 import***REMOVED***{***REMOVED***BrowserRouter***REMOVED***}***REMOVED***from***REMOVED***"react-router-dom";
 import***REMOVED***AppRoutes***REMOVED***from***REMOVED***"./routes/AppRoutes";
@@ -8,7 +7,7 @@ import***REMOVED***{***REMOVED***ThemeProvider***REMOVED***}***REMOVED***from***
 import***REMOVED***theme***REMOVED***from***REMOVED***"./assets/styles/theme";
 import***REMOVED***{***REMOVED***CssBaseline***REMOVED***}***REMOVED***from***REMOVED***"@mui/material";
 
-const***REMOVED***App:***REMOVED***React.FC***REMOVED***=***REMOVED***()***REMOVED***=>***REMOVED***{
+const***REMOVED***App***REMOVED***=***REMOVED***()***REMOVED***=>***REMOVED***{
 ***REMOVED******REMOVED***const***REMOVED***queryClient***REMOVED***=***REMOVED***new***REMOVED***QueryClient();
 
 ***REMOVED******REMOVED***return***REMOVED***(
