@@ -87,7 +87,7 @@ const CategoryTable = () => {
           type="text"
           placeholder="Tìm kiếm..."
           style={{
-            width: "100%", // Cho phép co giãn
+            width: "100%",
             maxWidth: "220px",
             height: "130%",
             fontSize: "13px",
