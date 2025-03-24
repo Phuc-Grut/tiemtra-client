@@ -27,9 +27,9 @@ const CategoryTable = () => {
   const isDetail = !!id;
   useEffect(() => {
     if (isDetail && id) {
-      setPageNumber(Number(id)); // Đồng bộ pageNumber khi id thay đổi
+      setPageNumber(Number(id));
     }
-  }, [id]);
+  }, [id, isDetail]);
   const navigate = useNavigate();
 
   const {
@@ -47,19 +47,20 @@ const CategoryTable = () => {
 
       return response.data.data.$values;
     },
+    enabled: !isDetail,
     placeholderData: (previousData: any) => previousData,
   });
 
   const { data: categoryDetail } = useQuery({
-    queryKey: ["category", pageNumber],
+    queryKey: ["category", id, pageNumber, pageSize],
     queryFn: () =>
       categoryApi.getByIdApi({
-        categoryId: pageNumber,
+        categoryId: Number(id),
         pageNumber: 1,
-        pageSize: 1,
+        pageSize: 10,
       }),
     enabled: isDetail && !!pageNumber,
-    select: (res) => res?.data?.items?.$values?.[0],
+    select: (res) => res?.data?.items?.$values,
   });
   
   console.log("🚀 ~ CategoryTable ~ categoryDetail:", categoryDetail);
@@ -86,7 +87,10 @@ const CategoryTable = () => {
       <p style={{ color: "red", textAlign: "center" }}>Lỗi: {error.message}</p>
     );
 
-  const rows = isDetail && categoryDetail ? [categoryDetail] : categories || [];
+    const rows = isDetail && categoryDetail ? categoryDetail : categories || [];
+
+
+  console.log("🚀 ~ CategoryTable ~ rows", rows);
 
 
   return (
@@ -165,9 +169,11 @@ const CategoryTable = () => {
                   key={category.categoryId}
                   hover
                   sx={{ cursor: isDetail ? "default" : "pointer" }}
-                  onClick={() =>
-                    !isDetail && navigate(`/category/${category.categoryId}`)
-                  }
+                  onClick={() => {
+                    setPageNumber(1);
+                    setPageSize(10);
+                    navigate(`/category/${category.categoryId}`);
+                  }}                  
                 >
                   <TableCell
                     sx={{
@@ -175,7 +181,7 @@ const CategoryTable = () => {
                       borderRight: "1px solid rgb(236, 234, 234)",
                     }}
                   >
-                    {(pageNumber - 1) * pageSize + index + 1}
+                    {((pageNumber ?? 1) - 1) * (pageSize ?? 10) + index + 1}
                   </TableCell>
                   <TableCell sx={Styles.tableCellBody}>
                     {category.categoryId}
@@ -219,8 +225,12 @@ const CategoryTable = () => {
             pageNumber={pageNumber}
             setPageNumber={(newPage) => {
               setPageNumber(newPage);
-              if (isDetail) {
-                navigate(`/category/${newPage}`); // hoặc gọi lại API getByIdApi với ID = newPage
+              if (!isNaN(Number(id))) {
+                // chỉ navigate khi user đang xem theo category ID (không phải phân trang)
+                navigate(`/category/${id}?page=${newPage}`);
+              }
+              else {
+                navigate(`/category?page=${newPage}`);
               }
             }}
             totalPages={maxPages}
