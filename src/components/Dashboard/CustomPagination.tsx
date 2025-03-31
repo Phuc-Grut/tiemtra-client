@@ -26,11 +26,11 @@ const CustomPagination =({ pageNumber, setPageNumber, totalPages }: PaginationPr
               {...item}
               sx={{
                 "&.Mui-selected": {
-                  backgroundColor: "rgba(53, 128, 214, 0.8)",
+                  backgroundColor: "rgba(157, 164, 172, 0.8)",
                   color: "white",
                 },
                 "&:hover": {
-                  backgroundColor: "rgba(53, 128, 214, 0.8)",
+                  backgroundColor: "rgba(157, 164, 172, 0.8)",
                   color: "white",
                 },
               }}
