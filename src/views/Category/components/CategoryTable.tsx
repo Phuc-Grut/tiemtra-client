@@ -1,11 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import categoryApi from "src/services/api/Category";
 import { ICategory } from "src/Interfaces/ICategory";
 import formatVietnamTime from "src/utils/formatVietnamTime";
-import CustomPagination from "src/components/CustomPagination";
+import CustomPagination from "src/components/Dashboard/CustomPagination";
+import DeleteIcon from "@mui/icons-material/Delete";
 import {
   Box,
+  Button,
+  Checkbox,
   MenuItem,
   Paper,
   Table,
@@ -16,26 +19,51 @@ import {
   TableRow,
   TextField,
 } from "@mui/material";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import AttributeTable from "../../Attribute/components/AttributeTable";
+import GenericContextMenu from "src/components/Dashboard/GenericContextMenu";
+import { categoryContextMenuItems } from "../contextMenu";
 
-const CategoryTable = () => {
+interface CategoryTableProps {
+  onTypeChange?: (type: string) => void;
+  onParentInfoChange?: (id: number | string, name: string) => void;
+}
+
+const CategoryTable = ({
+  onTypeChange,
+  onParentInfoChange,
+}: CategoryTableProps) => {
+  const navigate = useNavigate();
+  const location = useLocation();
+
   const [pageNumber, setPageNumber] = useState(1);
   const [maxPages, setMaxPages] = useState<number>(1);
   const [pageSize, setPageSize] = useState(10);
 
-  const { id } = useParams();
-  const isDetail = !!id;
-  useEffect(() => {
-    if (isDetail && id) {
-      setPageNumber(Number(id));
-    }
-  }, [id, isDetail]);
-  const navigate = useNavigate();
+  const pathWithoutQuery = location.pathname.split("?")[0];
+  const relativePath = pathWithoutQuery.replace(/^\/category\/?/, "");
+
+  const pathIds = relativePath.split("/").filter((id) => id.trim() !== "");
+  const isDetail = pathIds.length > 0;
+  const currentCategoryId = pathIds[pathIds.length - 1];
+
+  const [selected, setSelected] = useState<number[]>([]);
+
+  const [anchorEl, setAnchorEl] = useState<
+    HTMLElement | { mouseX: number; mouseY: number } | null
+  >(null);
+  const handleSelect = (id: number) => {
+    setSelected((prev) =>
+      prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
+    );
+  };
+
+  const [contextItem, setContextItem] = useState<ICategory | null>(null);
 
   const {
     data: categories,
     isLoading,
-    error,
+    // error,
   } = useQuery({
     queryKey: ["categories", pageNumber, pageSize],
     queryFn: async () => {
@@ -43,55 +71,93 @@ const CategoryTable = () => {
 
       const realTotalPages = response.data.totalPages ?? 1;
       setMaxPages(realTotalPages);
-      console.log("🚀 ~ queryFn: ~ realTotalPages:", realTotalPages);
 
       return response.data.data.$values;
     },
-    enabled: !isDetail,
+    enabled: !isDetail && pageNumber > 0,
     placeholderData: (previousData: any) => previousData,
   });
 
   const { data: categoryDetail } = useQuery({
-    queryKey: ["category", id, pageNumber, pageSize],
+    queryKey: ["category", currentCategoryId, pageNumber, pageSize],
     queryFn: () =>
       categoryApi.getByIdApi({
-        categoryId: Number(id),
+        categoryId: Number(currentCategoryId),
         pageNumber: 1,
         pageSize: 10,
       }),
-    enabled: isDetail && !!pageNumber,
-    select: (res) => res?.data?.items?.$values,
+    enabled: !!currentCategoryId && !isNaN(Number(currentCategoryId)),
+    select: (res) => {
+      const type = res.data?.type ?? "Unknown";
+      const items = res.data?.data?.items?.$values ?? [];
+      const totalItems = res.data?.data?.totalItems ?? 0;
+      const pageSize = res.data?.data?.pageSize ?? 10;
+      const currentCategory = res?.data?.currentCategory;
+      return { type, items, totalItems, pageSize,currentCategory };
+    },
   });
+
+  useEffect(() => {
+    if (categoryDetail?.type) {
+      onTypeChange?.(categoryDetail.type);
+    }
   
-  console.log("🚀 ~ CategoryTable ~ categoryDetail:", categoryDetail);
+    const current = categoryDetail?.currentCategory;
+    if (current?.categoryId && current?.categoryName) {
+      onParentInfoChange?.(current.categoryId, current.categoryName);
+    }
+  }, [categoryDetail, onTypeChange, onParentInfoChange]);
+  
+  if (isDetail && categoryDetail?.type === "Attributes") {
+    return (
+      <AttributeTable
+        rows={categoryDetail.items}
+        pageNumber={pageNumber}
+        pageSize={pageSize}
+        setPageNumber={setPageNumber}
+        setPageSize={setPageSize}
+        maxPages={Math.ceil(categoryDetail.totalItems / pageSize)}
+      />
+    );
+  }
 
-  // let startPage = Math.max(1, pageNumber - 1);
-  // let endPage = Math.min(maxPages ?? 1, pageNumber + 1);
-
-  // if (pageNumber === 1) {
-  //   startPage = 1;
-  //   endPage = Math.min(3, maxPages ?? 1);
-  // }
-
-  // const pageRange = [];
-  // for (let i = startPage; i <= endPage; i++) {
-  //   pageRange.push(i);
-  // }
-
-  if (isLoading)
+  if (isLoading) {
     return (
       <p style={{ textAlign: "center", fontWeight: "bold" }}>Đang tải...</p>
     );
-  if (error)
-    return (
-      <p style={{ color: "red", textAlign: "center" }}>Lỗi: {error.message}</p>
-    );
+  }
+  const rows = isDetail ? categoryDetail?.items ?? [] : categories ?? [];
 
-    const rows = isDetail && categoryDetail ? categoryDetail : categories || [];
+  const handleDeleteSelected = () => {
+    console.log("Danh mục cần xoá:", selected);
+    // TODO: Gọi API xoá và cập nhật lại danh sách
+  };
 
-
-  console.log("🚀 ~ CategoryTable ~ rows", rows);
-
+  const categoryMenuActions = categoryContextMenuItems.map((item) => ({
+    ...item,
+    onClick: (category: ICategory) => {
+      switch (item.id) {
+        case "VIEW":
+          console.log("Xem chi tiết:", category);
+          const nextPath = `/category/${[...pathIds, category.categoryId].join(
+            "/"
+          )}`;
+          navigate(nextPath);
+          break;
+        case "EDIT":
+          console.log("Sửa mục:", category);
+          break;
+        case "LIST_PRODUCT":
+          console.log("Sửa mục:", category);
+          break;
+        case "DELETE":
+          console.log("Xoá mục:", category);
+          break;
+        default:
+          console.log("Chọn menu:", item.id, category);
+      }
+    },
+  }));
 
   return (
     <Box
@@ -114,6 +180,7 @@ const CategoryTable = () => {
           height: "33px",
           display: "flex",
           alignItems: "center",
+          justifyContent: "space-between",
         }}
       >
         <input
@@ -129,35 +196,112 @@ const CategoryTable = () => {
             border: "2px solid #ccc",
           }}
         />
+
+        {selected.length > 0 ? (
+          <Button
+            variant="contained"
+            size="small"
+            startIcon={
+              <DeleteIcon
+                sx={{ color: "white", fontSize: 16, marginRight: "-6px" }}
+              />
+            }
+            sx={{
+              marginLeft: "12px",
+              textTransform: "none",
+              fontSize: "13px",
+              height: "24px",
+              padding: "0px 8px",
+              backgroundColor: "red",
+              color: "white",
+              "&:hover": {
+                backgroundColor: "#cc0000",
+              },
+            }}
+            onClick={handleDeleteSelected}
+          >
+            Xoá ({selected.length})
+          </Button>
+        ) : (
+          rows.length === 0 && (
+            <Button
+              variant="contained"
+              size="small"
+              sx={{
+                marginLeft: "12px",
+                textTransform: "none",
+                fontSize: "13px",
+                height: "24px",
+                minWidth: "unset",
+                padding: "0px 10px",
+                backgroundColor: "#ffa500",
+              }}
+              onClick={() => console.log("Thêm thuộc tính")}
+            >
+              + Thêm thuộc tính
+            </Button>
+          )
+        )}
       </Box>
+
       <TableContainer component={Paper} sx={{ overflowX: "auto", flexGrow: 1 }}>
         <Table stickyHeader>
           <TableHead>
-            <TableRow>
+            <TableRow sx={{ height: 36 }}>
               <TableCell
+                sx={{
+                  height: "30px",
+                  lineHeight: "28px",
+                  padding: "4px 8px",
+                  width: "20px",
+                  borderRight: "1px solid rgb(240, 235, 235)",
+                  borderBlock: "1px solid rgb(240, 235, 235)",
+                }}
+              >
+                <Checkbox
+                  style={{ width: "20px", height: "20px" }}
+                  checked={selected.length === rows.length && rows.length > 0}
+                  indeterminate={
+                    selected.length > 0 && selected.length < rows.length
+                  }
+                  sx={{
+                    color: "#999",
+                    "&.Mui-checked": {
+                      color: "red",
+                    },
+                  }}
+                  onChange={() => {
+                    const isAllSelected = selected.length === rows.length;
+                    const isIndeterminate =
+                      selected.length > 0 && selected.length < rows.length;
+
+                    if (isAllSelected || isIndeterminate) {
+                      setSelected([]);
+                    } else {
+                      setSelected(rows.map((r: ICategory) => r.categoryId));
+                    }
+                  }}
+                />
+              </TableCell>
+
+              {/* <TableCell
                 sx={{
                   width: "50px",
                   textAlign: "center",
                   fontWeight: "bold",
-                  backgroundColor: "#007bff",
-                  color: "white",
-                  borderRight: "1px solid rgb(236, 234, 234)",
+                  color: "black",
+                  borderRight: "1px solid rgb(156, 154, 154)",
+                  borderBlock: "1px solid rgb(156, 154, 154)",
+                  height: "30px",
+                  lineHeight: "28px",
+                  padding: "4px 8px",
                 }}
               >
                 STT
-              </TableCell>
+              </TableCell> */}
               <TableCell sx={Styles.tableCell}>Mã danh mục</TableCell>
               <TableCell sx={Styles.tableCell}>Tên Danh Mục</TableCell>
-              <TableCell
-                sx={{
-                  fontWeight: "bold",
-                  backgroundColor: "#007bff",
-                  color: "white",
-                  borderRight: "1px solid rgb(236, 234, 234)",
-                }}
-              >
-                Mô tả
-              </TableCell>
+              <TableCell sx={Styles.tableCell}>Mô tả</TableCell>
               <TableCell sx={Styles.tableCell}>Người tạo</TableCell>
               <TableCell sx={Styles.tableCell}>Cập nhật</TableCell>
             </TableRow>
@@ -172,17 +316,51 @@ const CategoryTable = () => {
                   onClick={() => {
                     setPageNumber(1);
                     setPageSize(10);
-                    navigate(`/category/${category.categoryId}`);
-                  }}                  
+                    const nextPath = `/category/${[
+                      ...pathIds,
+                      category.categoryId,
+                    ].join("/")}`;
+                    navigate(nextPath);
+                  }}
+                  onContextMenu={(e) => {
+                    e.preventDefault(); // Luôn chặn menu mặc định
+
+                    // Cập nhật lại dữ liệu hàng được click
+                    setContextItem(category);
+
+                    // Luôn cập nhật vị trí menu (kể cả khi đang mở)
+                    setAnchorEl({ mouseX: e.clientX, mouseY: e.clientY });
+                  }}
                 >
                   <TableCell
+                    sx={{
+                      borderRight: "1px solid rgb(236, 234, 234)",
+                      lineHeight: "28px",
+                      padding: "4px 8px",
+                    }}
+                  >
+                    <Checkbox
+                      checked={selected.includes(category.categoryId)}
+                      onChange={() => handleSelect(category.categoryId)}
+                      onClick={(e) => e.stopPropagation()}
+                      sx={{
+                        color: "#999",
+                        "&.Mui-checked": {
+                          color: "red",
+                        },
+                      }}
+                      style={{ width: "14px", height: "14px" }}
+                    />
+                  </TableCell>
+
+                  {/* <TableCell
                     sx={{
                       textAlign: "center",
                       borderRight: "1px solid rgb(236, 234, 234)",
                     }}
                   >
                     {((pageNumber ?? 1) - 1) * (pageSize ?? 10) + index + 1}
-                  </TableCell>
+                  </TableCell> */}
                   <TableCell sx={Styles.tableCellBody}>
                     {category.categoryId}
                   </TableCell>
@@ -202,11 +380,8 @@ const CategoryTable = () => {
               ))
             ) : (
               <TableRow>
-                <TableCell
-                  colSpan={6}
-                  sx={{ textAlign: "center", padding: "20px" }}
-                >
-                  Không có dữ liệu
+                <TableCell colSpan={6} sx={{ padding: "10px" }}>
+                  Danh sách trống!!
                 </TableCell>
               </TableRow>
             )}
@@ -214,55 +389,56 @@ const CategoryTable = () => {
         </Table>
       </TableContainer>
       <Box
-          mt={0}
-          display="flex"
-          justifyContent="center"
-          alignItems="center"
-          paddingBottom={0.5}
-          gap={2}
-        >
-          <CustomPagination
-            pageNumber={pageNumber}
-            setPageNumber={(newPage) => {
-              setPageNumber(newPage);
-              if (!isNaN(Number(id))) {
-                // chỉ navigate khi user đang xem theo category ID (không phải phân trang)
-                navigate(`/category/${id}?page=${newPage}`);
-              }
-              else {
-                navigate(`/category?page=${newPage}`);
-              }
+        mt={0}
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        paddingBottom={0.5}
+        gap={2}
+      >
+        <CustomPagination
+          pageNumber={pageNumber}
+          setPageNumber={(newPage) => {
+            setPageNumber(newPage);
+            const newPath = `/category/${pathIds.join("/")}?page=${newPage}`;
+            navigate(newPath);
+          }}
+          totalPages={maxPages}
+        />
+
+        <Box display="flex" alignItems="center" gap={1} maxHeight={25}>
+          <TextField
+            select
+            value={pageSize}
+            onChange={(e) => {
+              setPageSize(parseInt(e.target.value));
+              setPageNumber(1);
             }}
-            totalPages={maxPages}
-          />
+            size="small"
+            variant="standard"
+            sx={{
+              width: 80,
+              maxheight: "25px",
+            }}
+          >
+            {[1, 5, 10, 15, 20].map((option) => (
+              <MenuItem key={option} value={option}>
+                {option}
+              </MenuItem>
+            ))}
+          </TextField>
 
-          <Box display="flex" alignItems="center" gap={1} maxHeight={25}>
-            <TextField
-              select
-              value={pageSize}
-              onChange={(e) => {
-                setPageSize(parseInt(e.target.value));
-                setPageNumber(1);
-              }}
-              size="small"
-              variant="standard"
-              sx={{
-                width: 80,
-                maxheight: "25px",
-              }}
-            >
-              {[1, 5, 10, 15, 20].map((option) => (
-                <MenuItem key={option} value={option}>
-                  {option}
-                </MenuItem>
-              ))}
-            </TextField>
-
-            <Box fontSize="12px" color="#555">
-              Bản ghi/trang
-            </Box>
+          <Box fontSize="12px" color="#555">
+            Bản ghi/trang
           </Box>
         </Box>
+      </Box>
+      <GenericContextMenu
+        anchorEl={anchorEl}
+        onClose={() => setAnchorEl(null)}
+        items={categoryMenuActions}
+        contextItem={contextItem}
+      />
     </Box>
   );
 };
@@ -272,9 +448,12 @@ export default CategoryTable;
 const Styles = {
   tableCell: {
     fontWeight: "bold",
-    backgroundColor: "#007bff",
-    color: "white",
-    borderRight: "1px solid rgb(236, 234, 234)",
+    color: "black",
+    borderRight: "1px solid rgb(240, 235, 235)",
+    borderBlock: "1px solid rgb(240, 235, 235)",
+    height: "30px",
+    lineHeight: "28px",
+    padding: "4px 8px",
   },
   tableCellBody: {
     borderRight: "1px solid rgb(236, 234, 234)",

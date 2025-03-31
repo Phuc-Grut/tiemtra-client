@@ -1,14 +1,14 @@
 import React from "react";
-import { Box, Button, SxProps, Theme, Typography } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 
 interface PageHeaderProps {
   title: string;
   onAddClick?: () => void;
-  sx?: SxProps<Theme>; 
+  showAddButton?: boolean;
 }
 
-const PageHeader = ({title, onAddClick, sx} : PageHeaderProps ) => {
+const PageHeader = ({ title, onAddClick, showAddButton }: PageHeaderProps) => {
   return (
     <Box
       sx={{
@@ -22,24 +22,29 @@ const PageHeader = ({title, onAddClick, sx} : PageHeaderProps ) => {
         display: "flex",
         alignItems: "center",
         justifyContent: "space-between",
-        minHeight:'35px',
-        ...sx
+        minHeight: "35px",
       }}
     >
       <Typography variant="body1" fontWeight="500">
         {title}
       </Typography>
 
-      <Button
-        variant="contained"
-        color="primary"
-        size="small"
-        startIcon={<AddIcon />}
-        onClick={onAddClick}
-        sx={{ textTransform: "none", justifyContent: "center", maxHeight: '27px'}}
-      >
-        Thêm
-      </Button>
+      {showAddButton !== false && (
+        <Button
+          variant="contained"
+          color="primary"
+          size="small"
+          startIcon={<AddIcon />}
+          onClick={onAddClick}
+          sx={{
+            textTransform: "none",
+            justifyContent: "center",
+            maxHeight: "27px",
+          }}
+        >
+          Thêm
+        </Button>
+      )}
     </Box>
   );
 };
