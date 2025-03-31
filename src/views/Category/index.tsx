@@ -1,5 +1,5 @@
 import { Box } from "@mui/material";
-import PageHeader from "src/components/PageHeader";
+import PageHeader from "src/components/Dashboard/Layouts/PageHeader";
 import CategoryTable from "./components/CategoryTable";
 import { useState } from "react";
 

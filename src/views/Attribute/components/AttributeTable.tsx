@@ -11,7 +11,7 @@ import {
   TableRow,
   TextField,
 } from "@mui/material";
-import CustomPagination from "src/components/CustomPagination";
+import CustomPagination from "src/components/Dashboard/CustomPagination";
 import { IAttribute } from "src/Interfaces/IAttribute";
 import formatVietnamTime from "src/utils/formatVietnamTime";
 

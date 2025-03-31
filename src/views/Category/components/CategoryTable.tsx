@@ -3,10 +3,12 @@ import { useQuery } from "@tanstack/react-query";
 import categoryApi from "src/services/api/Category";
 import { ICategory } from "src/Interfaces/ICategory";
 import formatVietnamTime from "src/utils/formatVietnamTime";
-import CustomPagination from "src/components/CustomPagination";
+import CustomPagination from "src/components/Dashboard/CustomPagination";
+import DeleteIcon from "@mui/icons-material/Delete";
 import {
   Box,
   Button,
+  Checkbox,
   MenuItem,
   Paper,
   Table,
@@ -19,6 +21,8 @@ import {
 } from "@mui/material";
 import { useLocation, useNavigate } from "react-router-dom";
 import AttributeTable from "../../Attribute/components/AttributeTable";
+import GenericContextMenu from "src/components/Dashboard/GenericContextMenu";
+import { categoryContextMenuItems } from "../contextMenu";
 
 interface CategoryTableProps {
   onTypeChange?: (type: string) => void;
@@ -39,6 +43,31 @@ const CategoryTable = ({ onTypeChange }: CategoryTableProps) => {
 
   const isDetail = pathIds.length > 0;
   const currentCategoryId = pathIds[pathIds.length - 1];
+
+  const [selected, setSelected] = useState<number[]>([]);
+
+  const [anchorEl, setAnchorEl] = useState<HTMLElement | { mouseX: number; mouseY: number } | null>(null);
+  const [contextItem, setContextItem] = useState<ICategory | null>(null);
+
+  // const handleContextMenuOpen = (
+  //   event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+  //   item: ICategory
+  // ) => {
+  //   event.stopPropagation(); // tránh điều hướng
+  //   setAnchorEl(event.currentTarget);
+  //   setContextItem(item);
+  // };
+
+  // const handleContextMenuClose = () => {
+  //   setAnchorEl(null);
+  //   setContextItem(null);
+  // };
+
+  const handleSelect = (id: number) => {
+    setSelected((prev) =>
+      prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
+    );
+  };
 
   const {
     data: categories,
@@ -71,7 +100,6 @@ const CategoryTable = ({ onTypeChange }: CategoryTableProps) => {
       const type = res.data?.type ?? "Unknown";
       onTypeChange?.(type);
       const items = res.data?.data?.items?.$values ?? [];
-      console.log("🚀 ~ CategoryTable ~ type:", type);
       const totalItems = res.data?.data?.totalItems ?? 0;
       const pageSize = res.data?.data?.pageSize ?? 10;
 
@@ -98,7 +126,38 @@ const CategoryTable = ({ onTypeChange }: CategoryTableProps) => {
     );
   }
   const rows = isDetail ? categoryDetail?.items ?? [] : categories ?? [];
-  console.log("🚀 ~ CategoryTable ~ rows:", rows.length);
+
+  const handleDeleteSelected = () => {
+    console.log("Danh mục cần xoá:", selected);
+    // TODO: Gọi API xoá và cập nhật lại danh sách
+  };
+
+  const categoryMenuActions = categoryContextMenuItems.map((item) => ({
+    ...item,
+    onClick: (category: ICategory) => {
+      switch (item.id) {
+        case "VIEW":
+          console.log("Xem chi tiết:", category);
+          const nextPath = `/category/${[
+            ...pathIds,
+            category.categoryId,
+          ].join("/")}`;
+          navigate(nextPath);
+          break;
+        case "EDIT":
+          console.log("Sửa mục:", category);
+          break;
+        case "LIST_PRODUCT":
+          console.log("Sửa mục:", category);
+          break;
+        case "DELETE":
+          console.log("Xoá mục:", category);
+          break;
+        default:
+          console.log("Chọn menu:", item.id, category);
+      }
+    },
+  }));
 
   return (
     <Box
@@ -138,24 +197,50 @@ const CategoryTable = ({ onTypeChange }: CategoryTableProps) => {
           }}
         />
 
-        {/* Nút thêm thuộc tính */}
-        {rows.length === 0 && (
+        {selected.length > 0 ? (
           <Button
             variant="contained"
             size="small"
+            startIcon={
+              <DeleteIcon
+                sx={{ color: "white", fontSize: 16, marginRight: "-6px" }}
+              />
+            }
             sx={{
               marginLeft: "12px",
               textTransform: "none",
               fontSize: "13px",
               height: "24px",
-              minWidth: "unset",
-              padding: "0px 10px",
-              backgroundColor: "#ffa500",
+              padding: "0px 8px",
+              backgroundColor: "red",
+              color: "white",
+              "&:hover": {
+                backgroundColor: "#cc0000",
+              },
             }}
-            onClick={() => console.log("Thêm thuộc tính")}
+            onClick={handleDeleteSelected}
           >
-            + Thêm thuộc tính
+            Xoá ({selected.length})
           </Button>
+        ) : (
+          rows.length === 0 && (
+            <Button
+              variant="contained"
+              size="small"
+              sx={{
+                marginLeft: "12px",
+                textTransform: "none",
+                fontSize: "13px",
+                height: "24px",
+                minWidth: "unset",
+                padding: "0px 10px",
+                backgroundColor: "#ffa500",
+              }}
+              onClick={() => console.log("Thêm thuộc tính")}
+            >
+              + Thêm thuộc tính
+            </Button>
+          )
         )}
       </Box>
 
@@ -164,6 +249,42 @@ const CategoryTable = ({ onTypeChange }: CategoryTableProps) => {
           <TableHead>
             <TableRow sx={{ height: 36 }}>
               <TableCell
+                sx={{
+                  height: "30px",
+                  lineHeight: "28px",
+                  padding: "4px 8px",
+                  width: "20px",
+                  borderRight: "1px solid rgb(240, 235, 235)",
+                  borderBlock: "1px solid rgb(240, 235, 235)",
+                }}
+              >
+                <Checkbox
+                  style={{ width: "20px", height: "20px" }}
+                  checked={selected.length === rows.length && rows.length > 0}
+                  indeterminate={
+                    selected.length > 0 && selected.length < rows.length
+                  }
+                  sx={{
+                    color: "#999",
+                    "&.Mui-checked": {
+                      color: "red",
+                    },
+                  }}
+                  onChange={() => {
+                    const isAllSelected = selected.length === rows.length;
+                    const isIndeterminate =
+                      selected.length > 0 && selected.length < rows.length;
+
+                    if (isAllSelected || isIndeterminate) {
+                      setSelected([]);
+                    } else {
+                      setSelected(rows.map((r: ICategory) => r.categoryId));
+                    }
+                  }}
+                />
+              </TableCell>
+
+              {/* <TableCell
                 sx={{
                   width: "50px",
                   textAlign: "center",
@@ -177,7 +298,7 @@ const CategoryTable = ({ onTypeChange }: CategoryTableProps) => {
                 }}
               >
                 STT
-              </TableCell>
+              </TableCell> */}
               <TableCell sx={Styles.tableCell}>Mã danh mục</TableCell>
               <TableCell sx={Styles.tableCell}>Tên Danh Mục</TableCell>
               <TableCell sx={Styles.tableCell}>Mô tả</TableCell>
@@ -195,23 +316,51 @@ const CategoryTable = ({ onTypeChange }: CategoryTableProps) => {
                   onClick={() => {
                     setPageNumber(1);
                     setPageSize(10);
-
-                    // Gộp đường dẫn mới
                     const nextPath = `/category/${[
                       ...pathIds,
                       category.categoryId,
                     ].join("/")}`;
                     navigate(nextPath);
                   }}
+                  onContextMenu={(e) => {
+                    e.preventDefault();
+                    setContextItem(category);
+                    setAnchorEl({
+                      mouseX: e.clientX,
+                      mouseY: e.clientY
+                    });
+                  }}
+                  
                 >
                   <TableCell
+                    sx={{
+                      borderRight: "1px solid rgb(236, 234, 234)",
+                      lineHeight: "28px",
+                      padding: "4px 8px",
+                    }}
+                  >
+                    <Checkbox
+                      checked={selected.includes(category.categoryId)}
+                      onChange={() => handleSelect(category.categoryId)}
+                      onClick={(e) => e.stopPropagation()}
+                      sx={{
+                        color: "#999",
+                        "&.Mui-checked": {
+                          color: "red",
+                        },
+                      }}
+                      style={{ width: "14px", height: "14px" }}
+                    />
+                  </TableCell>
+
+                  {/* <TableCell
                     sx={{
                       textAlign: "center",
                       borderRight: "1px solid rgb(236, 234, 234)",
                     }}
                   >
                     {((pageNumber ?? 1) - 1) * (pageSize ?? 10) + index + 1}
-                  </TableCell>
+                  </TableCell> */}
                   <TableCell sx={Styles.tableCellBody}>
                     {category.categoryId}
                   </TableCell>
@@ -284,6 +433,12 @@ const CategoryTable = ({ onTypeChange }: CategoryTableProps) => {
           </Box>
         </Box>
       </Box>
+      <GenericContextMenu
+        anchorEl={anchorEl}
+        onClose={() => setAnchorEl(null)}
+        items={categoryMenuActions}
+        contextItem={contextItem}
+      />
     </Box>
   );
 };
@@ -294,8 +449,8 @@ const Styles = {
   tableCell: {
     fontWeight: "bold",
     color: "black",
-    borderRight: "1px solid rgb(156, 154, 154)",
-    borderBlock: "1px solid rgb(156, 154, 154)",
+    borderRight: "1px solid rgb(240, 235, 235)",
+    borderBlock: "1px solid rgb(240, 235, 235)",
     height: "30px",
     lineHeight: "28px",
     padding: "4px 8px",
