@@ -49,20 +49,6 @@ const CategoryTable = ({ onTypeChange }: CategoryTableProps) => {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | { mouseX: number; mouseY: number } | null>(null);
   const [contextItem, setContextItem] = useState<ICategory | null>(null);
 
-  // const handleContextMenuOpen = (
-  //   event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-  //   item: ICategory
-  // ) => {
-  //   event.stopPropagation(); // tránh điều hướng
-  //   setAnchorEl(event.currentTarget);
-  //   setContextItem(item);
-  // };
-
-  // const handleContextMenuClose = () => {
-  //   setAnchorEl(null);
-  //   setContextItem(null);
-  // };
-
   const handleSelect = (id: number) => {
     setSelected((prev) =>
       prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
@@ -138,10 +124,9 @@ const CategoryTable = ({ onTypeChange }: CategoryTableProps) => {
       switch (item.id) {
         case "VIEW":
           console.log("Xem chi tiết:", category);
-          const nextPath = `/category/${[
-            ...pathIds,
-            category.categoryId,
-          ].join("/")}`;
+          const nextPath = `/category/${[...pathIds, category.categoryId].join(
+            "/"
+          )}`;
           navigate(nextPath);
           break;
         case "EDIT":
@@ -323,12 +308,13 @@ const CategoryTable = ({ onTypeChange }: CategoryTableProps) => {
                     navigate(nextPath);
                   }}
                   onContextMenu={(e) => {
-                    e.preventDefault();
+                    e.preventDefault(); // Luôn chặn menu mặc định
+                  
+                    // Cập nhật lại dữ liệu hàng được click
                     setContextItem(category);
-                    setAnchorEl({
-                      mouseX: e.clientX,
-                      mouseY: e.clientY
-                    });
+                  
+                    // Luôn cập nhật vị trí menu (kể cả khi đang mở)
+                    setAnchorEl({ mouseX: e.clientX, mouseY: e.clientY });
                   }}
                   
                 >
