@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import categoryApi from "src/services/api/Category";
 import { ICategory } from "src/Interfaces/ICategory";
@@ -6,6 +6,7 @@ import formatVietnamTime from "src/utils/formatVietnamTime";
 import CustomPagination from "src/components/CustomPagination";
 import {
   Box,
+  Button,
   MenuItem,
   Paper,
   Table,
@@ -20,22 +21,19 @@ import { useNavigate, useParams } from "react-router-dom";
 
 const CategoryTable = () => {
   const [pageNumber, setPageNumber] = useState(1);
+  console.log("🚀 ~ CategoryTable ~ pageNumber:", pageNumber);
   const [maxPages, setMaxPages] = useState<number>(1);
   const [pageSize, setPageSize] = useState(10);
 
   const { id } = useParams();
   const isDetail = !!id;
-  useEffect(() => {
-    if (isDetail && id) {
-      setPageNumber(Number(id));
-    }
-  }, [id, isDetail]);
+
   const navigate = useNavigate();
 
   const {
     data: categories,
     isLoading,
-    error,
+    // error,
   } = useQuery({
     queryKey: ["categories", pageNumber, pageSize],
     queryFn: async () => {
@@ -43,7 +41,6 @@ const CategoryTable = () => {
 
       const realTotalPages = response.data.totalPages ?? 1;
       setMaxPages(realTotalPages);
-      console.log("🚀 ~ queryFn: ~ realTotalPages:", realTotalPages);
 
       return response.data.data.$values;
     },
@@ -62,7 +59,7 @@ const CategoryTable = () => {
     enabled: isDetail && !!pageNumber,
     select: (res) => res?.data?.items?.$values,
   });
-  
+
   console.log("🚀 ~ CategoryTable ~ categoryDetail:", categoryDetail);
 
   // let startPage = Math.max(1, pageNumber - 1);
@@ -78,20 +75,14 @@ const CategoryTable = () => {
   //   pageRange.push(i);
   // }
 
-  if (isLoading)
+  if (isLoading) {
     return (
       <p style={{ textAlign: "center", fontWeight: "bold" }}>Đang tải...</p>
     );
-  if (error)
-    return (
-      <p style={{ color: "red", textAlign: "center" }}>Lỗi: {error.message}</p>
-    );
+  }
+  const rows = isDetail && categoryDetail ? categoryDetail : categories || [];
 
-    const rows = isDetail && categoryDetail ? categoryDetail : categories || [];
-
-
-  console.log("🚀 ~ CategoryTable ~ rows", rows);
-
+  // console.log("🚀 ~ CategoryTable ~ rows", rows);
 
   return (
     <Box
@@ -114,6 +105,7 @@ const CategoryTable = () => {
           height: "33px",
           display: "flex",
           alignItems: "center",
+          justifyContent: "space-between",
         }}
       >
         <input
@@ -129,7 +121,26 @@ const CategoryTable = () => {
             border: "2px solid #ccc",
           }}
         />
+
+        {/* Nút thêm thuộc tính */}
+        <Button
+          variant="contained"
+          size="small"
+          sx={{
+            marginLeft: "12px",
+            textTransform: "none",
+            fontSize: "13px",
+            height: "24px",
+            minWidth: "unset",
+            padding: "0px 10px",
+            backgroundColor: "#ffa500",
+          }}
+          onClick={() => console.log("Thêm thuộc tính")}
+        >
+          + Thêm thuộc tính
+        </Button>
       </Box>
+
       <TableContainer component={Paper} sx={{ overflowX: "auto", flexGrow: 1 }}>
         <Table stickyHeader>
           <TableHead>
@@ -148,16 +159,7 @@ const CategoryTable = () => {
               </TableCell>
               <TableCell sx={Styles.tableCell}>Mã danh mục</TableCell>
               <TableCell sx={Styles.tableCell}>Tên Danh Mục</TableCell>
-              <TableCell
-                sx={{
-                  fontWeight: "bold",
-                  backgroundColor: "#007bff",
-                  color: "white",
-                  borderRight: "1px solid rgb(236, 234, 234)",
-                }}
-              >
-                Mô tả
-              </TableCell>
+              <TableCell sx={Styles.tableCell}>Mô tả</TableCell>
               <TableCell sx={Styles.tableCell}>Người tạo</TableCell>
               <TableCell sx={Styles.tableCell}>Cập nhật</TableCell>
             </TableRow>
@@ -173,7 +175,7 @@ const CategoryTable = () => {
                     setPageNumber(1);
                     setPageSize(10);
                     navigate(`/category/${category.categoryId}`);
-                  }}                  
+                  }}
                 >
                   <TableCell
                     sx={{
@@ -214,55 +216,53 @@ const CategoryTable = () => {
         </Table>
       </TableContainer>
       <Box
-          mt={0}
-          display="flex"
-          justifyContent="center"
-          alignItems="center"
-          paddingBottom={0.5}
-          gap={2}
-        >
-          <CustomPagination
-            pageNumber={pageNumber}
-            setPageNumber={(newPage) => {
-              setPageNumber(newPage);
-              if (!isNaN(Number(id))) {
-                // chỉ navigate khi user đang xem theo category ID (không phải phân trang)
-                navigate(`/category/${id}?page=${newPage}`);
-              }
-              else {
-                navigate(`/category?page=${newPage}`);
-              }
+        mt={0}
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        paddingBottom={0.5}
+        gap={2}
+      >
+        <CustomPagination
+          pageNumber={pageNumber}
+          setPageNumber={(newPage) => {
+            setPageNumber(newPage);
+            if (!isNaN(Number(id))) {
+              navigate(`/category/${id}?page=${newPage}`);
+            } else {
+              navigate(`/category?page=${newPage}`);
+            }
+          }}
+          totalPages={maxPages}
+        />
+
+        <Box display="flex" alignItems="center" gap={1} maxHeight={25}>
+          <TextField
+            select
+            value={pageSize}
+            onChange={(e) => {
+              setPageSize(parseInt(e.target.value));
+              setPageNumber(1);
             }}
-            totalPages={maxPages}
-          />
+            size="small"
+            variant="standard"
+            sx={{
+              width: 80,
+              maxheight: "25px",
+            }}
+          >
+            {[1, 5, 10, 15, 20].map((option) => (
+              <MenuItem key={option} value={option}>
+                {option}
+              </MenuItem>
+            ))}
+          </TextField>
 
-          <Box display="flex" alignItems="center" gap={1} maxHeight={25}>
-            <TextField
-              select
-              value={pageSize}
-              onChange={(e) => {
-                setPageSize(parseInt(e.target.value));
-                setPageNumber(1);
-              }}
-              size="small"
-              variant="standard"
-              sx={{
-                width: 80,
-                maxheight: "25px",
-              }}
-            >
-              {[1, 5, 10, 15, 20].map((option) => (
-                <MenuItem key={option} value={option}>
-                  {option}
-                </MenuItem>
-              ))}
-            </TextField>
-
-            <Box fontSize="12px" color="#555">
-              Bản ghi/trang
-            </Box>
+          <Box fontSize="12px" color="#555">
+            Bản ghi/trang
           </Box>
         </Box>
+      </Box>
     </Box>
   );
 };
@@ -271,6 +271,7 @@ export default CategoryTable;
 
 const Styles = {
   tableCell: {
+    textAlign: "center",
     fontWeight: "bold",
     backgroundColor: "#007bff",
     color: "white",
