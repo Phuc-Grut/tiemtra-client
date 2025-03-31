@@ -1,8 +1,13 @@
 import { Box } from "@mui/material";
 import PageHeader from "src/components/PageHeader";
 import CategoryTable from "./components/CategoryTable";
+import { useState } from "react";
 
 const Category = () => {
+  const [categoryType, setCategoryType] = useState<string | undefined>(
+    undefined
+  );
+
   return (
     <Box
       sx={{
@@ -14,10 +19,20 @@ const Category = () => {
         paddingTop: 5,
       }}
     >
-      <PageHeader title="Trang Danh Mục" />
+      <PageHeader
+        title="Trang Danh Mục"
+        showAddButton={categoryType !== "Attributes"}
+      />
 
-      <Box sx={{ flexGrow: 1, marginTop: 1, display: "flex", flexDirection: "column" }}>
-        <CategoryTable />
+      <Box
+        sx={{
+          flexGrow: 1,
+          marginTop: 1,
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
+        <CategoryTable onTypeChange={setCategoryType} />
       </Box>
     </Box>
   );

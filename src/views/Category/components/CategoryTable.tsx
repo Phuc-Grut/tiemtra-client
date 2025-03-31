@@ -17,18 +17,28 @@ import {
   TableRow,
   TextField,
 } from "@mui/material";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import AttributeTable from "../../Attribute/components/AttributeTable";
 
-const CategoryTable = () => {
+interface CategoryTableProps {
+  onTypeChange?: (type: string) => void;
+}
+
+const CategoryTable = ({ onTypeChange }: CategoryTableProps) => {
+  const navigate = useNavigate();
+  const location = useLocation();
+
   const [pageNumber, setPageNumber] = useState(1);
-  console.log("🚀 ~ CategoryTable ~ pageNumber:", pageNumber);
   const [maxPages, setMaxPages] = useState<number>(1);
   const [pageSize, setPageSize] = useState(10);
 
-  const { id } = useParams();
-  const isDetail = !!id;
+  const pathWithoutQuery = location.pathname.split("?")[0];
+  const relativePath = pathWithoutQuery.replace(/^\/category\/?/, "");
 
-  const navigate = useNavigate();
+  const pathIds = relativePath.split("/").filter((id) => id.trim() !== "");
+
+  const isDetail = pathIds.length > 0;
+  const currentCategoryId = pathIds[pathIds.length - 1];
 
   const {
     data: categories,
@@ -44,45 +54,51 @@ const CategoryTable = () => {
 
       return response.data.data.$values;
     },
-    enabled: !isDetail,
+    enabled: !isDetail && pageNumber > 0,
     placeholderData: (previousData: any) => previousData,
   });
 
   const { data: categoryDetail } = useQuery({
-    queryKey: ["category", id, pageNumber, pageSize],
+    queryKey: ["category", currentCategoryId, pageNumber, pageSize],
     queryFn: () =>
       categoryApi.getByIdApi({
-        categoryId: Number(id),
+        categoryId: Number(currentCategoryId),
         pageNumber: 1,
         pageSize: 10,
       }),
-    enabled: isDetail && !!pageNumber,
-    select: (res) => res?.data?.items?.$values,
+    enabled: !!currentCategoryId && !isNaN(Number(currentCategoryId)),
+    select: (res) => {
+      const type = res.data?.type ?? "Unknown";
+      onTypeChange?.(type);
+      const items = res.data?.data?.items?.$values ?? [];
+      console.log("🚀 ~ CategoryTable ~ type:", type);
+      const totalItems = res.data?.data?.totalItems ?? 0;
+      const pageSize = res.data?.data?.pageSize ?? 10;
+
+      return { type, items, totalItems, pageSize };
+    },
   });
 
-  console.log("🚀 ~ CategoryTable ~ categoryDetail:", categoryDetail);
-
-  // let startPage = Math.max(1, pageNumber - 1);
-  // let endPage = Math.min(maxPages ?? 1, pageNumber + 1);
-
-  // if (pageNumber === 1) {
-  //   startPage = 1;
-  //   endPage = Math.min(3, maxPages ?? 1);
-  // }
-
-  // const pageRange = [];
-  // for (let i = startPage; i <= endPage; i++) {
-  //   pageRange.push(i);
-  // }
+  if (isDetail && categoryDetail?.type === "Attributes") {
+    return (
+      <AttributeTable
+        rows={categoryDetail.items}
+        pageNumber={pageNumber}
+        pageSize={pageSize}
+        setPageNumber={setPageNumber}
+        setPageSize={setPageSize}
+        maxPages={Math.ceil(categoryDetail.totalItems / pageSize)}
+      />
+    );
+  }
 
   if (isLoading) {
     return (
       <p style={{ textAlign: "center", fontWeight: "bold" }}>Đang tải...</p>
     );
   }
-  const rows = isDetail && categoryDetail ? categoryDetail : categories || [];
-
-  // console.log("🚀 ~ CategoryTable ~ rows", rows);
+  const rows = isDetail ? categoryDetail?.items ?? [] : categories ?? [];
+  console.log("🚀 ~ CategoryTable ~ rows:", rows.length);
 
   return (
     <Box
@@ -123,36 +139,41 @@ const CategoryTable = () => {
         />
 
         {/* Nút thêm thuộc tính */}
-        <Button
-          variant="contained"
-          size="small"
-          sx={{
-            marginLeft: "12px",
-            textTransform: "none",
-            fontSize: "13px",
-            height: "24px",
-            minWidth: "unset",
-            padding: "0px 10px",
-            backgroundColor: "#ffa500",
-          }}
-          onClick={() => console.log("Thêm thuộc tính")}
-        >
-          + Thêm thuộc tính
-        </Button>
+        {rows.length === 0 && (
+          <Button
+            variant="contained"
+            size="small"
+            sx={{
+              marginLeft: "12px",
+              textTransform: "none",
+              fontSize: "13px",
+              height: "24px",
+              minWidth: "unset",
+              padding: "0px 10px",
+              backgroundColor: "#ffa500",
+            }}
+            onClick={() => console.log("Thêm thuộc tính")}
+          >
+            + Thêm thuộc tính
+          </Button>
+        )}
       </Box>
 
       <TableContainer component={Paper} sx={{ overflowX: "auto", flexGrow: 1 }}>
         <Table stickyHeader>
           <TableHead>
-            <TableRow>
+            <TableRow sx={{ height: 36 }}>
               <TableCell
                 sx={{
                   width: "50px",
                   textAlign: "center",
                   fontWeight: "bold",
-                  backgroundColor: "#007bff",
-                  color: "white",
-                  borderRight: "1px solid rgb(236, 234, 234)",
+                  color: "black",
+                  borderRight: "1px solid rgb(156, 154, 154)",
+                  borderBlock: "1px solid rgb(156, 154, 154)",
+                  height: "30px",
+                  lineHeight: "28px",
+                  padding: "4px 8px",
                 }}
               >
                 STT
@@ -174,7 +195,13 @@ const CategoryTable = () => {
                   onClick={() => {
                     setPageNumber(1);
                     setPageSize(10);
-                    navigate(`/category/${category.categoryId}`);
+
+                    // Gộp đường dẫn mới
+                    const nextPath = `/category/${[
+                      ...pathIds,
+                      category.categoryId,
+                    ].join("/")}`;
+                    navigate(nextPath);
                   }}
                 >
                   <TableCell
@@ -204,11 +231,8 @@ const CategoryTable = () => {
               ))
             ) : (
               <TableRow>
-                <TableCell
-                  colSpan={6}
-                  sx={{ textAlign: "center", padding: "20px" }}
-                >
-                  Không có dữ liệu
+                <TableCell colSpan={6} sx={{ padding: "10px" }}>
+                  Danh sách trống!!
                 </TableCell>
               </TableRow>
             )}
@@ -227,11 +251,8 @@ const CategoryTable = () => {
           pageNumber={pageNumber}
           setPageNumber={(newPage) => {
             setPageNumber(newPage);
-            if (!isNaN(Number(id))) {
-              navigate(`/category/${id}?page=${newPage}`);
-            } else {
-              navigate(`/category?page=${newPage}`);
-            }
+            const newPath = `/category/${pathIds.join("/")}?page=${newPage}`;
+            navigate(newPath);
           }}
           totalPages={maxPages}
         />
@@ -271,11 +292,13 @@ export default CategoryTable;
 
 const Styles = {
   tableCell: {
-    textAlign: "center",
     fontWeight: "bold",
-    backgroundColor: "#007bff",
-    color: "white",
-    borderRight: "1px solid rgb(236, 234, 234)",
+    color: "black",
+    borderRight: "1px solid rgb(156, 154, 154)",
+    borderBlock: "1px solid rgb(156, 154, 154)",
+    height: "30px",
+    lineHeight: "28px",
+    padding: "4px 8px",
   },
   tableCellBody: {
     borderRight: "1px solid rgb(236, 234, 234)",
