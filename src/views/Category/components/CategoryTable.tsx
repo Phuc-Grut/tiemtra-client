@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import categoryApi from "src/services/api/Category";
 import { ICategory } from "src/Interfaces/ICategory";
@@ -26,9 +26,13 @@ import { categoryContextMenuItems } from "../contextMenu";
 
 interface CategoryTableProps {
   onTypeChange?: (type: string) => void;
+  onParentInfoChange?: (id: number | string, name: string) => void;
 }
 
-const CategoryTable = ({ onTypeChange }: CategoryTableProps) => {
+const CategoryTable = ({
+  onTypeChange,
+  onParentInfoChange,
+}: CategoryTableProps) => {
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -40,13 +44,14 @@ const CategoryTable = ({ onTypeChange }: CategoryTableProps) => {
   const relativePath = pathWithoutQuery.replace(/^\/category\/?/, "");
 
   const pathIds = relativePath.split("/").filter((id) => id.trim() !== "");
-
   const isDetail = pathIds.length > 0;
   const currentCategoryId = pathIds[pathIds.length - 1];
 
   const [selected, setSelected] = useState<number[]>([]);
 
-  const [anchorEl, setAnchorEl] = useState<HTMLElement | { mouseX: number; mouseY: number } | null>(null);
+  const [anchorEl, setAnchorEl] = useState<
+    HTMLElement | { mouseX: number; mouseY: number } | null
+  >(null);
   const handleSelect = (id: number) => {
     setSelected((prev) =>
       prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
@@ -84,15 +89,25 @@ const CategoryTable = ({ onTypeChange }: CategoryTableProps) => {
     enabled: !!currentCategoryId && !isNaN(Number(currentCategoryId)),
     select: (res) => {
       const type = res.data?.type ?? "Unknown";
-      onTypeChange?.(type);
       const items = res.data?.data?.items?.$values ?? [];
       const totalItems = res.data?.data?.totalItems ?? 0;
       const pageSize = res.data?.data?.pageSize ?? 10;
-
-      return { type, items, totalItems, pageSize };
+      const currentCategory = res?.data?.currentCategory;
+      return { type, items, totalItems, pageSize,currentCategory };
     },
   });
 
+  useEffect(() => {
+    if (categoryDetail?.type) {
+      onTypeChange?.(categoryDetail.type);
+    }
+  
+    const current = categoryDetail?.currentCategory;
+    if (current?.categoryId && current?.categoryName) {
+      onParentInfoChange?.(current.categoryId, current.categoryName);
+    }
+  }, [categoryDetail, onTypeChange, onParentInfoChange]);
+  
   if (isDetail && categoryDetail?.type === "Attributes") {
     return (
       <AttributeTable
@@ -309,14 +324,13 @@ const CategoryTable = ({ onTypeChange }: CategoryTableProps) => {
                   }}
                   onContextMenu={(e) => {
                     e.preventDefault(); // Luôn chặn menu mặc định
-                  
+
                     // Cập nhật lại dữ liệu hàng được click
                     setContextItem(category);
-                  
+
                     // Luôn cập nhật vị trí menu (kể cả khi đang mở)
                     setAnchorEl({ mouseX: e.clientX, mouseY: e.clientY });
                   }}
-                  
                 >
                   <TableCell
                     sx={{

@@ -2,11 +2,20 @@ import { Box } from "@mui/material";
 import PageHeader from "src/components/Dashboard/Layouts/PageHeader";
 import CategoryTable from "./components/CategoryTable";
 import { useState } from "react";
+import AddCategoryModal from "./components/AddCategory";
 
 const Category = () => {
   const [categoryType, setCategoryType] = useState<string | undefined>(
     undefined
   );
+  const [isAddOpen, setIsAddOpen] = useState(false);
+
+  const [parentCategoryId, setParentCategoryId] = useState<
+    number | undefined
+  >();
+  const [parentCategoryName, setParentCategoryName] = useState<
+    string | undefined
+  >();
 
   return (
     <Box
@@ -22,6 +31,7 @@ const Category = () => {
       <PageHeader
         title="Trang Danh Mục"
         showAddButton={categoryType !== "Attributes"}
+        onAddClick={() => setIsAddOpen(true)}
       />
 
       <Box
@@ -32,8 +42,20 @@ const Category = () => {
           flexDirection: "column",
         }}
       >
-        <CategoryTable onTypeChange={setCategoryType} />
+        <CategoryTable
+          onTypeChange={setCategoryType}
+          onParentInfoChange={(id, name) => {
+            setParentCategoryId(Number(id));
+            setParentCategoryName(name);
+          }}
+        />
       </Box>
+      <AddCategoryModal
+        open={isAddOpen}
+        onClose={() => setIsAddOpen(false)}
+        parentCategoryId={parentCategoryId}
+        parentCategoryName={parentCategoryName}
+      />
     </Box>
   );
 };

@@ -32,7 +32,7 @@ const PageHeader = ({ title, onAddClick, showAddButton }: PageHeaderProps) => {
       {showAddButton !== false && (
         <Button
           variant="contained"
-          color="error"
+          color="primary"
           size="small"
           startIcon={<AddIcon />}
           onClick={onAddClick}
