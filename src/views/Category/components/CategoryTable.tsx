@@ -47,13 +47,13 @@ const CategoryTable = ({ onTypeChange }: CategoryTableProps) => {
   const [selected, setSelected] = useState<number[]>([]);
 
   const [anchorEl, setAnchorEl] = useState<HTMLElement | { mouseX: number; mouseY: number } | null>(null);
-  const [contextItem, setContextItem] = useState<ICategory | null>(null);
-
   const handleSelect = (id: number) => {
     setSelected((prev) =>
       prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
     );
   };
+
+  const [contextItem, setContextItem] = useState<ICategory | null>(null);
 
   const {
     data: categories,
