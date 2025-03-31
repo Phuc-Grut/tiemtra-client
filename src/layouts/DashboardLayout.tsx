@@ -1,8 +1,8 @@
 import***REMOVED***{***REMOVED***Box***REMOVED***}***REMOVED***from***REMOVED***"@mui/material";
-import***REMOVED***Sidebar***REMOVED***from***REMOVED***"../components/Sidebar";
+import***REMOVED***Sidebar***REMOVED***from***REMOVED***"../components/Dashboard/Layouts/Sidebar";
 import***REMOVED***{***REMOVED***Outlet***REMOVED***}***REMOVED***from***REMOVED***"react-router-dom";
-import***REMOVED***TopBar***REMOVED***from***REMOVED***"src/components/Topbar";
-import***REMOVED***Footer***REMOVED***from***REMOVED***"src/components/Footer";
+import***REMOVED***TopBar***REMOVED***from***REMOVED***"src/components/Dashboard/Layouts/Topbar";
+import***REMOVED***Footer***REMOVED***from***REMOVED***"src/components/Dashboard/Layouts/Footer";
 
 const***REMOVED***MainLayout***REMOVED***=***REMOVED***()***REMOVED***=>***REMOVED***{
 ***REMOVED******REMOVED***return***REMOVED***(
