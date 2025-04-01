@@ -1,4 +1,4 @@
-import***REMOVED***React,***REMOVED***{***REMOVED***useState***REMOVED***}***REMOVED***from***REMOVED***"react";
+import***REMOVED***React,***REMOVED***{***REMOVED***useEffect,***REMOVED***useState***REMOVED***}***REMOVED***from***REMOVED***"react";
 import***REMOVED***{
 ***REMOVED******REMOVED***Dialog,
 ***REMOVED******REMOVED***DialogTitle,
@@ -9,29 +9,38 @@ import***REMOVED***{
 }***REMOVED***from***REMOVED***"@mui/material";
 import***REMOVED***LockIcon***REMOVED***from***REMOVED***"@mui/icons-material/Lock";
 import***REMOVED***{***REMOVED***useMutation,***REMOVED***useQueryClient***REMOVED***}***REMOVED***from***REMOVED***"@tanstack/react-query";
-import***REMOVED***{***REMOVED***IAddCategoryRequest***REMOVED***}***REMOVED***from***REMOVED***"src/Interfaces/ICategory";
+import***REMOVED***{***REMOVED***IAddCategoryRequest,***REMOVED***ICategory***REMOVED***}***REMOVED***from***REMOVED***"src/Interfaces/ICategory";
 import***REMOVED***categoryApi***REMOVED***from***REMOVED***"src/services/api/Category";
 import***REMOVED***useToast***REMOVED***from***REMOVED***"src/components/Toast";
 
 interface***REMOVED***Props***REMOVED***{
 ***REMOVED******REMOVED***open:***REMOVED***boolean;
 ***REMOVED******REMOVED***onClose:***REMOVED***()***REMOVED***=>***REMOVED***void;
-***REMOVED******REMOVED***parentCategoryName?:***REMOVED***string;
+***REMOVED******REMOVED***parentCategoryName?:***REMOVED***string***REMOVED***|***REMOVED***null;
 ***REMOVED******REMOVED***parentCategoryId?:***REMOVED***number;
+***REMOVED******REMOVED***category:***REMOVED***ICategory***REMOVED***|***REMOVED***null;
 }
 
-const***REMOVED***AddCategoryModal***REMOVED***=***REMOVED***({
+const***REMOVED***UpdateCategoryModal***REMOVED***=***REMOVED***({
 ***REMOVED******REMOVED***open,
 ***REMOVED******REMOVED***onClose,
+***REMOVED******REMOVED***category,
 ***REMOVED******REMOVED***parentCategoryName,
-***REMOVED******REMOVED***parentCategoryId,
 }:***REMOVED***Props)***REMOVED***=>***REMOVED***{
+***REMOVED******REMOVED******REMOVED******REMOVED***
 ***REMOVED******REMOVED***const***REMOVED***[name,***REMOVED***setName]***REMOVED***=***REMOVED***useState("");
 ***REMOVED******REMOVED***const***REMOVED***[description,***REMOVED***setDescription]***REMOVED***=***REMOVED***useState("");
 ***REMOVED******REMOVED***const***REMOVED***[error,***REMOVED***setError]***REMOVED***=***REMOVED***useState(false);
 ***REMOVED******REMOVED***const***REMOVED***{***REMOVED***showSuccess,***REMOVED***showError***REMOVED***}***REMOVED***=***REMOVED***useToast();
 
 ***REMOVED******REMOVED***const***REMOVED***queryClient***REMOVED***=***REMOVED***useQueryClient();
+
+***REMOVED******REMOVED***useEffect(()***REMOVED***=>***REMOVED***{
+***REMOVED******REMOVED******REMOVED******REMOVED***if***REMOVED***(open***REMOVED***&&***REMOVED***category)***REMOVED***{
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***setName(category.categoryName***REMOVED***??***REMOVED***"");
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***setDescription(category.description***REMOVED***??***REMOVED***"");
+***REMOVED******REMOVED******REMOVED******REMOVED***}
+***REMOVED******REMOVED***},***REMOVED***[open,***REMOVED***category]);
 
 ***REMOVED******REMOVED***const***REMOVED***invalidateAllCategoryData***REMOVED***=***REMOVED***()***REMOVED***=>***REMOVED***{
 ***REMOVED******REMOVED******REMOVED******REMOVED***queryClient.invalidateQueries({
@@ -41,15 +50,17 @@ const***REMOVED***AddCategoryModal***REMOVED***=***REMOVED***({
 ***REMOVED******REMOVED***};
 
 ***REMOVED******REMOVED***const***REMOVED***mutation***REMOVED***=***REMOVED***useMutation({
-***REMOVED******REMOVED******REMOVED******REMOVED***mutationFn:***REMOVED***(data:***REMOVED***IAddCategoryRequest)***REMOVED***=>***REMOVED***categoryApi.addCategoryApi(data),
+***REMOVED******REMOVED******REMOVED******REMOVED***mutationFn:***REMOVED***(data:***REMOVED***IAddCategoryRequest)***REMOVED***=>
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***categoryApi.updateCategoryApi(category?.categoryId!,***REMOVED***data),
 ***REMOVED******REMOVED******REMOVED******REMOVED***onSuccess:***REMOVED***()***REMOVED***=>***REMOVED***{
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***invalidateAllCategoryData();
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***onClose();
-***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***showSuccess("Thêm***REMOVED***thành***REMOVED***công!");
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***showSuccess("Sửa***REMOVED***thành***REMOVED***công!");
 ***REMOVED******REMOVED******REMOVED******REMOVED***},
 ***REMOVED******REMOVED***});
 
 ***REMOVED******REMOVED***const***REMOVED***handleSubmit***REMOVED***=***REMOVED***async***REMOVED***()***REMOVED***=>***REMOVED***{
+***REMOVED******REMOVED******REMOVED******REMOVED***if***REMOVED***(!category?.categoryId)***REMOVED***return;
 ***REMOVED******REMOVED******REMOVED******REMOVED***if***REMOVED***(!name.trim())***REMOVED***{
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***setError(true);
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***return;
@@ -60,15 +71,14 @@ const***REMOVED***AddCategoryModal***REMOVED***=***REMOVED***({
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***await***REMOVED***mutation.mutateAsync({
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***categoryName:***REMOVED***name,
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***description:***REMOVED***description,
-***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***parentId:***REMOVED***parentCategoryId***REMOVED***||***REMOVED***null,
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***});
 
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***setName("");
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***setDescription("");
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***onClose();
 ***REMOVED******REMOVED******REMOVED******REMOVED***}***REMOVED***catch***REMOVED***(err)***REMOVED***{
-***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***console.error("Lỗi***REMOVED***khi***REMOVED***thêm***REMOVED***danh***REMOVED***mục:",***REMOVED***err);
-***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***showError("Thêm***REMOVED***thất***REMOVED***bại!!");
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***console.error("Lỗi***REMOVED***khi***REMOVED***sửa***REMOVED***danh***REMOVED***mục:",***REMOVED***err);
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***showError("Sửa***REMOVED***thất***REMOVED***bại!!");
 ***REMOVED******REMOVED******REMOVED******REMOVED***}
 ***REMOVED******REMOVED***};
 
@@ -85,7 +95,7 @@ const***REMOVED***AddCategoryModal***REMOVED***=***REMOVED***({
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***},
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***}}
 ***REMOVED******REMOVED******REMOVED******REMOVED***>
-***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***<DialogTitle>Thêm***REMOVED***danh***REMOVED***mục</DialogTitle>
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***<DialogTitle>Sửa***REMOVED***danh***REMOVED***mục</DialogTitle>
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***<DialogContent>
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***{parentCategoryName***REMOVED***&&***REMOVED***(
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***<TextField
@@ -127,8 +137,8 @@ const***REMOVED***AddCategoryModal***REMOVED***=***REMOVED***({
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***/>
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***</DialogContent>
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***<DialogActions>
-***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***<Button***REMOVED***variant="contained"***REMOVED***color="primary"***REMOVED***onClick={handleSubmit}>
-***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***Thêm
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***<Button***REMOVED***variant="contained"***REMOVED***onClick={handleSubmit}***REMOVED***sx={{***REMOVED***backgroundColor:***REMOVED***"#FFA726",***REMOVED***color:***REMOVED***"white"***REMOVED***}}>
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***Sửa
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***</Button>
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***<Button***REMOVED***variant="outlined"***REMOVED***onClick={onClose}>
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***Hủy
@@ -138,4 +148,4 @@ const***REMOVED***AddCategoryModal***REMOVED***=***REMOVED***({
 ***REMOVED******REMOVED***);
 };
 
-export***REMOVED***default***REMOVED***AddCategoryModal;
+export***REMOVED***default***REMOVED***UpdateCategoryModal;

@@ -1,5 +1,5 @@
 import***REMOVED***{***REMOVED***Box***REMOVED***}***REMOVED***from***REMOVED***"@mui/material";
-import***REMOVED***PageHeader***REMOVED***from***REMOVED***"src/components/Dashboard/Layouts/PageHeader";
+import***REMOVED***PageHeader***REMOVED***from***REMOVED***"src/components/Layouts/PageHeader";
 import***REMOVED***CategoryTable***REMOVED***from***REMOVED***"./components/CategoryTable";
 import***REMOVED***{***REMOVED***useState***REMOVED***}***REMOVED***from***REMOVED***"react";
 import***REMOVED***AddCategoryModal***REMOVED***from***REMOVED***"./components/AddCategory";

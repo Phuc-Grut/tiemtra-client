@@ -1,5 +1,6 @@
+import***REMOVED***{***REMOVED***AxiosResponse***REMOVED***}***REMOVED***from***REMOVED***"axios";
 import***REMOVED***{***REMOVED***CATEGORY***REMOVED***}***REMOVED***from***REMOVED***"src/domain/constants"
-import***REMOVED***{***REMOVED***ICategoryRequest***REMOVED***}***REMOVED***from***REMOVED***"src/Interfaces/ICategory"
+import***REMOVED***{***REMOVED***IAddCategoryRequest,***REMOVED***ICategoryRequest***REMOVED***}***REMOVED***from***REMOVED***"src/Interfaces/ICategory"
 import***REMOVED***requester***REMOVED***from***REMOVED***"src/services/extended/axiosInstance"
 
 interface***REMOVED***CategoryIdRequest***REMOVED***{
@@ -10,6 +11,9 @@ interface***REMOVED***CategoryIdRequest***REMOVED***{
 const***REMOVED***categoryApi***REMOVED***=***REMOVED***{
 ***REMOVED******REMOVED******REMOVED******REMOVED***getPagingApi:***REMOVED***(params:***REMOVED***ICategoryRequest)***REMOVED***=>***REMOVED***requester.get(CATEGORY.URL_API.GET_ALL_API,***REMOVED***{params}),
 ***REMOVED******REMOVED******REMOVED******REMOVED***getByIdApi:***REMOVED***(data:***REMOVED***CategoryIdRequest)***REMOVED***=>***REMOVED******REMOVED***requester.post(CATEGORY.URL_API.GET_BY_ID_API,***REMOVED***data),
+***REMOVED******REMOVED******REMOVED******REMOVED***addCategoryApi:***REMOVED***(data:***REMOVED***IAddCategoryRequest):***REMOVED***Promise<AxiosResponse<any>>***REMOVED***=>***REMOVED***requester.post(CATEGORY.URL_API.CREATE_API,***REMOVED***data),
+***REMOVED******REMOVED******REMOVED******REMOVED***updateCategoryApi:***REMOVED***(id:***REMOVED***number,***REMOVED***data:***REMOVED***IAddCategoryRequest)***REMOVED***=>***REMOVED******REMOVED***requester.put(CATEGORY.URL_API.UPDATE_API(id),***REMOVED***data),
+***REMOVED******REMOVED******REMOVED******REMOVED***deleteCategoryByIdApi:***REMOVED***(id:***REMOVED***number):***REMOVED***Promise<AxiosResponse<any>>***REMOVED***=>***REMOVED***requester.delete(CATEGORY.URL_API.DELETE_API_BY_ID(id)),***REMOVED******REMOVED******REMOVED******REMOVED***
 }
 
 export***REMOVED***default***REMOVED***categoryApi

@@ -8,6 +8,12 @@ export***REMOVED***interface***REMOVED***ICategory***REMOVED***{
 ***REMOVED******REMOVED******REMOVED******REMOVED***updatedAt:***REMOVED***string
 }
 
+export***REMOVED***interface***REMOVED***IAddCategoryRequest***REMOVED***{
+***REMOVED******REMOVED***categoryName:***REMOVED***string;
+***REMOVED******REMOVED***description:***REMOVED***string;
+***REMOVED******REMOVED***parentId?:***REMOVED***number***REMOVED***|***REMOVED***null;
+}
+
 export***REMOVED***interface***REMOVED***ICategoryResponse***REMOVED***{
 ***REMOVED******REMOVED******REMOVED******REMOVED***currentPage:***REMOVED***number
 ***REMOVED******REMOVED******REMOVED******REMOVED***pageSize:***REMOVED***number

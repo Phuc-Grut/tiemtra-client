@@ -11,7 +11,7 @@ import***REMOVED***{
 ***REMOVED******REMOVED***TableRow,
 ***REMOVED******REMOVED***TextField,
 }***REMOVED***from***REMOVED***"@mui/material";
-import***REMOVED***CustomPagination***REMOVED***from***REMOVED***"src/components/Dashboard/CustomPagination";
+import***REMOVED***CustomPagination***REMOVED***from***REMOVED***"src/components/CustomPagination";
 import***REMOVED***{***REMOVED***IAttribute***REMOVED***}***REMOVED***from***REMOVED***"src/Interfaces/IAttribute";
 import***REMOVED***formatVietnamTime***REMOVED***from***REMOVED***"src/utils/formatVietnamTime";
 
