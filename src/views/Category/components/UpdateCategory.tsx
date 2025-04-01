@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Dialog,
   DialogTitle,
@@ -9,29 +9,38 @@ import {
 } from "@mui/material";
 import LockIcon from "@mui/icons-material/Lock";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { IAddCategoryRequest } from "src/Interfaces/ICategory";
+import { IAddCategoryRequest, ICategory } from "src/Interfaces/ICategory";
 import categoryApi from "src/services/api/Category";
 import useToast from "src/components/Toast";
 
 interface Props {
   open: boolean;
   onClose: () => void;
-  parentCategoryName?: string;
+  parentCategoryName?: string | null;
   parentCategoryId?: number;
+  category: ICategory | null;
 }
 
-const AddCategoryModal = ({
+const UpdateCategoryModal = ({
   open,
   onClose,
+  category,
   parentCategoryName,
-  parentCategoryId,
 }: Props) => {
+    
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [error, setError] = useState(false);
   const { showSuccess, showError } = useToast();
 
   const queryClient = useQueryClient();
+
+  useEffect(() => {
+    if (open && category) {
+      setName(category.categoryName ?? "");
+      setDescription(category.description ?? "");
+    }
+  }, [open, category]);
 
   const invalidateAllCategoryData = () => {
     queryClient.invalidateQueries({
@@ -41,15 +50,17 @@ const AddCategoryModal = ({
   };
 
   const mutation = useMutation({
-    mutationFn: (data: IAddCategoryRequest) => categoryApi.addCategoryApi(data),
+    mutationFn: (data: IAddCategoryRequest) =>
+      categoryApi.updateCategoryApi(category?.categoryId!, data),
     onSuccess: () => {
       invalidateAllCategoryData();
       onClose();
-      showSuccess("Thêm thành công!");
+      showSuccess("Sửa thành công!");
     },
   });
 
   const handleSubmit = async () => {
+    if (!category?.categoryId) return;
     if (!name.trim()) {
       setError(true);
       return;
@@ -60,15 +71,14 @@ const AddCategoryModal = ({
       await mutation.mutateAsync({
         categoryName: name,
         description: description,
-        parentId: parentCategoryId || null,
       });
 
       setName("");
       setDescription("");
       onClose();
     } catch (err) {
-      console.error("Lỗi khi thêm danh mục:", err);
-      showError("Thêm thất bại!!");
+      console.error("Lỗi khi sửa danh mục:", err);
+      showError("Sửa thất bại!!");
     }
   };
 
@@ -85,7 +95,7 @@ const AddCategoryModal = ({
         },
       }}
     >
-      <DialogTitle>Thêm danh mục</DialogTitle>
+      <DialogTitle>Sửa danh mục</DialogTitle>
       <DialogContent>
         {parentCategoryName && (
           <TextField
@@ -127,8 +137,8 @@ const AddCategoryModal = ({
         />
       </DialogContent>
       <DialogActions>
-        <Button variant="contained" color="primary" onClick={handleSubmit}>
-          Thêm
+        <Button variant="contained" onClick={handleSubmit} sx={{ backgroundColor: "#FFA726", color: "white" }}>
+          Sửa
         </Button>
         <Button variant="outlined" onClick={onClose}>
           Hủy
@@ -138,4 +148,4 @@ const AddCategoryModal = ({
   );
 };
 
-export default AddCategoryModal;
+export default UpdateCategoryModal;
