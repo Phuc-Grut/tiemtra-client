@@ -1,10 +1,12 @@
 import { Box } from "@mui/material";
-import Sidebar from "../components/Dashboard/Layouts/Sidebar";
+import Sidebar from "../components/Layouts/Sidebar";
 import { Outlet } from "react-router-dom";
-import TopBar from "src/components/Dashboard/Layouts/Topbar";
-import Footer from "src/components/Dashboard/Layouts/Footer";
+import TopBar from "src/components/Layouts/Topbar";
+import Footer from "src/components/Layouts/Footer";
+import { useState } from "react";
 
 const MainLayout = () => {
+  const [expanded, setExpanded] = useState(true);
   return (
     <Box
       sx={{
@@ -17,10 +19,10 @@ const MainLayout = () => {
         width: '100vw'
       }}
     >
-      <TopBar />
+      <TopBar setExpanded={setExpanded} />
 
       <Box sx={{ display: "flex", flexGrow: 1 }}>
-        <Sidebar />
+      <Sidebar expanded={expanded} setExpanded={setExpanded} />
 
         <Box sx={{ flexGrow: 1, display: "flex", flexDirection: "column" }}>
           <Box

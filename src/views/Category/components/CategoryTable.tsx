@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import categoryApi from "src/services/api/Category";
 import { ICategory } from "src/Interfaces/ICategory";
 import formatVietnamTime from "src/utils/formatVietnamTime";
-import CustomPagination from "src/components/Dashboard/CustomPagination";
+import CustomPagination from "src/components/CustomPagination";
 import DeleteIcon from "@mui/icons-material/Delete";
 import {
   Box,
@@ -21,8 +21,11 @@ import {
 } from "@mui/material";
 import { useLocation, useNavigate } from "react-router-dom";
 import AttributeTable from "../../Attribute/components/AttributeTable";
-import GenericContextMenu from "src/components/Dashboard/GenericContextMenu";
+import GenericContextMenu from "src/components/GenericContextMenu";
 import { categoryContextMenuItems } from "../contextMenu";
+import UpdateCategoryModal from "./UpdateCategory";
+import ModalConfirm from "src/components/ModalConfirm";
+import useToast from "src/components/Toast";
 
 interface CategoryTableProps {
   onTypeChange?: (type: string) => void;
@@ -34,7 +37,9 @@ const CategoryTable = ({
   onParentInfoChange,
 }: CategoryTableProps) => {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const location = useLocation();
+  const { showSuccess, showError } = useToast();
 
   const [pageNumber, setPageNumber] = useState(1);
   const [maxPages, setMaxPages] = useState<number>(1);
@@ -46,8 +51,18 @@ const CategoryTable = ({
   const pathIds = relativePath.split("/").filter((id) => id.trim() !== "");
   const isDetail = pathIds.length > 0;
   const currentCategoryId = pathIds[pathIds.length - 1];
+  const [prentCategoryName, setParentCategoryName] = useState<string | null>(
+    null
+  );
 
   const [selected, setSelected] = useState<number[]>([]);
+
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState<ICategory | null>(
+    null
+  );
+
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
 
   const [anchorEl, setAnchorEl] = useState<
     HTMLElement | { mouseX: number; mouseY: number } | null
@@ -93,7 +108,7 @@ const CategoryTable = ({
       const totalItems = res.data?.data?.totalItems ?? 0;
       const pageSize = res.data?.data?.pageSize ?? 10;
       const currentCategory = res?.data?.currentCategory;
-      return { type, items, totalItems, pageSize,currentCategory };
+      return { type, items, totalItems, pageSize, currentCategory };
     },
   });
 
@@ -101,13 +116,65 @@ const CategoryTable = ({
     if (categoryDetail?.type) {
       onTypeChange?.(categoryDetail.type);
     }
-  
+
     const current = categoryDetail?.currentCategory;
     if (current?.categoryId && current?.categoryName) {
+      setParentCategoryName(current.categoryName);
       onParentInfoChange?.(current.categoryId, current.categoryName);
     }
   }, [categoryDetail, onTypeChange, onParentInfoChange]);
-  
+
+  const categoryMenuActions = categoryContextMenuItems.map((item) => ({
+    ...item,
+    onClick: (category: ICategory) => {
+      switch (item.id) {
+        case "VIEW":
+          console.log("Xem chi tiết:", category);
+          const nextPath = `/category/${[...pathIds, category.categoryId].join(
+            "/"
+          )}`;
+          navigate(nextPath);
+          break;
+        case "EDIT":
+          console.log("Sửa mục:", category);
+          setSelectedCategory(category);
+          setEditModalOpen(true);
+          break;
+        case "LIST_PRODUCT":
+          console.log("Sửa mục:", category);
+          break;
+        case "DELETE":
+          setSelectedCategory(category);
+          setDeleteModalOpen(true);
+          break;
+        default:
+          console.log("Chọn menu:", item.id, category);
+      }
+    },
+  }));
+
+  const invalidateAllCategoryData = () => {
+    queryClient.invalidateQueries({
+      predicate: (query) =>
+        ["category", "categories"].includes(query.queryKey[0] as string),
+    });
+  };
+
+  const mutation = useMutation({
+    mutationFn: (id: number) => categoryApi.deleteCategoryByIdApi(id),
+    onSuccess: () => {
+      invalidateAllCategoryData();
+      showSuccess("Xoá thành công!");
+    },
+    onError: () => {
+      showError("Xoá thất bại!");
+    },
+  });
+
+  const handleDelete = async (id: number) => {
+    mutation.mutate(id); 
+  }
+
   if (isDetail && categoryDetail?.type === "Attributes") {
     return (
       <AttributeTable
@@ -127,37 +194,12 @@ const CategoryTable = ({
     );
   }
   const rows = isDetail ? categoryDetail?.items ?? [] : categories ?? [];
+  console.log("🚀 ~ rows:", rows);
 
   const handleDeleteSelected = () => {
     console.log("Danh mục cần xoá:", selected);
-    // TODO: Gọi API xoá và cập nhật lại danh sách
   };
-
-  const categoryMenuActions = categoryContextMenuItems.map((item) => ({
-    ...item,
-    onClick: (category: ICategory) => {
-      switch (item.id) {
-        case "VIEW":
-          console.log("Xem chi tiết:", category);
-          const nextPath = `/category/${[...pathIds, category.categoryId].join(
-            "/"
-          )}`;
-          navigate(nextPath);
-          break;
-        case "EDIT":
-          console.log("Sửa mục:", category);
-          break;
-        case "LIST_PRODUCT":
-          console.log("Sửa mục:", category);
-          break;
-        case "DELETE":
-          console.log("Xoá mục:", category);
-          break;
-        default:
-          console.log("Chọn menu:", item.id, category);
-      }
-    },
-  }));
+  
 
   return (
     <Box
@@ -323,12 +365,10 @@ const CategoryTable = ({
                     navigate(nextPath);
                   }}
                   onContextMenu={(e) => {
-                    e.preventDefault(); // Luôn chặn menu mặc định
+                    e.preventDefault();
 
-                    // Cập nhật lại dữ liệu hàng được click
                     setContextItem(category);
 
-                    // Luôn cập nhật vị trí menu (kể cả khi đang mở)
                     setAnchorEl({ mouseX: e.clientX, mouseY: e.clientY });
                   }}
                 >
@@ -438,6 +478,31 @@ const CategoryTable = ({
         onClose={() => setAnchorEl(null)}
         items={categoryMenuActions}
         contextItem={contextItem}
+      />
+      <UpdateCategoryModal
+        open={editModalOpen}
+        parentCategoryName={prentCategoryName}
+        category={selectedCategory}
+        onClose={() => {
+          setEditModalOpen(false);
+          setSelectedCategory(null);
+        }}
+      />
+
+      <ModalConfirm
+        open={deleteModalOpen}
+        message={`Bạn có chắc chắn muốn xoá danh mục "${selectedCategory?.categoryName}"?`}
+        onClose={() => {
+          setDeleteModalOpen(false);
+          setSelectedCategory(null);
+        }}
+        onConfirm={() => {
+          if (selectedCategory) {
+            handleDelete(selectedCategory.categoryId);
+          }
+          setSelectedCategory(null);
+          setDeleteModalOpen(false);
+        }}
       />
     </Box>
   );

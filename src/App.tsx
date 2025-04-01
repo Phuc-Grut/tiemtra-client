@@ -6,6 +6,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ThemeProvider } from "@emotion/react";
 import theme from "./assets/styles/theme";
 import { CssBaseline } from "@mui/material";
+import { SnackbarProvider } from "notistack";
+import ToastPosition from "./components/ToastPosition";
 
 const App = () => {
   const queryClient = new QueryClient();
@@ -13,13 +15,19 @@ const App = () => {
   return (
     <Provider store={store}>
       <QueryClientProvider client={queryClient}>
-      <ThemeProvider theme={theme}>
+        <ThemeProvider theme={theme}>
           <CssBaseline />
-          <BrowserRouter>
-            <AppRoutes />
-          </BrowserRouter>
+          <SnackbarProvider
+            maxSnack={3}
+            autoHideDuration={3000}
+            anchorOrigin={{ vertical: "top" , horizontal: "right" }}
+          >
+            <ToastPosition />
+            <BrowserRouter>
+              <AppRoutes />
+            </BrowserRouter>
+          </SnackbarProvider>
         </ThemeProvider>
-        
       </QueryClientProvider>
     </Provider>
   );
