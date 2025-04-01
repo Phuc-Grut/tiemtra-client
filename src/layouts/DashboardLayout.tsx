@@ -24,7 +24,6 @@ const MainLayout = () => {
 
       <Box sx={{ display: "flex", flexGrow: 1 }}>
       <Sidebar expanded={expanded} setExpanded={setExpanded} />
-      <Sidebar expanded={expanded} setExpanded={setExpanded} />
 
         <Box sx={{ flexGrow: 1, display: "flex", flexDirection: "column" }}>
           <Box
