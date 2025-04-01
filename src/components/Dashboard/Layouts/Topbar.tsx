@@ -27,7 +27,7 @@ const TopBar = ({ setExpanded } : TopBarProps) => {
   return (
     <AppBar
       sx={{
-        ml: isMobile ? 0 : "240px", // Giữ khoảng cách khi không phải mobile
+        ml: isMobile ? 0 : "240px",
         backgroundColor: "#fff",
         color: "#333",
         boxShadow: "0px 2px 5px rgba(0, 0, 0, 0.1)",
