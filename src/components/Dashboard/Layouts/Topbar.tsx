@@ -34,7 +34,6 @@ const TopBar = ({ setExpanded } : TopBarProps) => {
       }}
     >
       <Toolbar>
-        {/* Nút menu chỉ hiển thị ở mobile */}
         {isMobile && (
           <IconButton
             edge="start"
@@ -49,7 +48,6 @@ const TopBar = ({ setExpanded } : TopBarProps) => {
           variant="h6"
           sx={{ flexGrow: 1, color: "#333", fontWeight: "bold" }}
         >
-          {/* Có thể thêm tên app ở đây nếu muốn */}
         </Typography>
 
         <IconButton sx={{ marginRight: 2 }}>
