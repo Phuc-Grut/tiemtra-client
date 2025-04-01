@@ -8,6 +8,12 @@ export interface ICategory {
     updatedAt: string
 }
 
+export interface IAddCategoryRequest {
+  categoryName: string;
+  description: string;
+  parentId?: number | null;
+}
+
 export interface ICategoryResponse {
     currentPage: number
     pageSize: number

@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction } from "react";
 import {
   Drawer,
   List,
@@ -50,6 +50,37 @@ const Sidebar = ({ expanded, setExpanded }: SidebarProps) => {
         },
       }}
     >
+      <div
+        style={{
+          width: "100%",
+          height: 80,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: expanded ? "flex-start" : "center",
+          paddingLeft: expanded ? "24px" : 0,
+          paddingRight: expanded ? "16px" : 0,
+          boxSizing: "border-box",
+          marginTop: "0px",
+        }}
+      >
+        <Link to="/dashboard" style={{ display: "flex", alignItems: "center" }}>
+          <img
+            src={
+              expanded ? "/image/logo/fullLogo.png" : "/image/logo/LogoIcon.png"
+            }
+            alt="Rookie Coders"
+            style={{
+              height: expanded ? 50 : 40,
+              maxWidth: expanded ? 180 : 40,
+              width: "auto",
+              objectFit: "contain",
+              transition: "all 0.3s ease",
+              cursor: "pointer",
+            }}
+          />
+        </Link>
+      </div>
+
       <div
         style={{
           width: "100%",
