@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import categoryApi from "src/services/api/Category";
 import { ICategory } from "src/Interfaces/ICategory";
 import formatVietnamTime from "src/utils/formatVietnamTime";
-import CustomPagination from "src/components/Dashboard/CustomPagination";
+import CustomPagination from "src/components/CustomPagination";
 import DeleteIcon from "@mui/icons-material/Delete";
 import {
   Box,
@@ -21,7 +21,7 @@ import {
 } from "@mui/material";
 import { useLocation, useNavigate } from "react-router-dom";
 import AttributeTable from "../../Attribute/components/AttributeTable";
-import GenericContextMenu from "src/components/Dashboard/GenericContextMenu";
+import GenericContextMenu from "src/components/GenericContextMenu";
 import { categoryContextMenuItems } from "../contextMenu";
 
 interface CategoryTableProps {
@@ -127,6 +127,7 @@ const CategoryTable = ({
     );
   }
   const rows = isDetail ? categoryDetail?.items ?? [] : categories ?? [];
+  console.log("🚀 ~ rows:", rows)
 
   const handleDeleteSelected = () => {
     console.log("Danh mục cần xoá:", selected);

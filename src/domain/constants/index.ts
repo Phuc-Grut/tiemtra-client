@@ -29,7 +29,7 @@ export const CATEGORY = {
     URL_API: {
         GET_ALL_API:  `${BASE_URL}/category/get-paging-category`,
         GET_BY_ID_API:  `${BASE_URL}/category/get-by-id`,
-        CREATE_API:  `${BASE_URL}/category`,
+        CREATE_API:  `${BASE_URL}/category/add-category`,
         UPDATE_API:  `${BASE_URL}/category`,
         DELETE_API:  `${BASE_URL}/category`,
     }

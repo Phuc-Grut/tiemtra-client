@@ -8,6 +8,10 @@ import {
   Button,
 } from "@mui/material";
 import LockIcon from "@mui/icons-material/Lock";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { IAddCategoryRequest } from "src/Interfaces/ICategory";
+import categoryApi from "src/services/api/Category";
+import useToast from "src/components/Toast";
 
 interface Props {
   open: boolean;
@@ -16,29 +20,71 @@ interface Props {
   parentCategoryId?: number;
 }
 
-const AddCategoryModal = ({ open, onClose, parentCategoryName, parentCategoryId }: Props) => {
-  console.log("🚀 ~ AddCategoryModal ~ parentCategoryId:", parentCategoryId)
+const AddCategoryModal = ({
+  open,
+  onClose,
+  parentCategoryName,
+  parentCategoryId,
+}: Props) => {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [error, setError] = useState(false);
+  const { showSuccess, showError } = useToast();
 
-  const handleSubmit = () => {
+  const queryClient = useQueryClient();
+
+  const invalidateAllCategoryData = () => {
+    queryClient.invalidateQueries({
+      predicate: (query) =>
+        ["category", "categories"].includes(query.queryKey[0] as string),
+    });
+  };
+
+  const mutation = useMutation({
+    mutationFn: (data: IAddCategoryRequest) => categoryApi.addCategoryApi(data),
+    onSuccess: () => {
+      invalidateAllCategoryData();
+      onClose();
+      showSuccess("Thêm thành công!");
+    },
+  });
+
+  const handleSubmit = async () => {
     if (!name.trim()) {
       setError(true);
       return;
     }
 
     setError(false);
+    try {
+      await mutation.mutateAsync({
+        categoryName: name,
+        description: description,
+        parentId: parentCategoryId || null,
+      });
 
-    // TODO: gọi API thêm danh mục ở đây
-    console.log("Tên:", name, "Mô tả:", description);
-
-    // Đóng modal
-    onClose();
+      setName("");
+      setDescription("");
+      onClose();
+    } catch (err) {
+      console.error("Lỗi khi thêm danh mục:", err);
+      showError("Thêm thất bại!!");
+    }
   };
 
   return (
-    <Dialog open={open} onClose={onClose}>
+    <Dialog
+      open={open}
+      onClose={onClose}
+      maxWidth="sm"
+      PaperProps={{
+        sx: {
+          top: "50%",
+          transform: "translateY(-100%)",
+          position: "absolute",
+        },
+      }}
+    >
       <DialogTitle>Thêm danh mục</DialogTitle>
       <DialogContent>
         {parentCategoryName && (
@@ -63,9 +109,9 @@ const AddCategoryModal = ({ open, onClose, parentCategoryName, parentCategoryId 
           onChange={(e) => {
             setName(e.target.value);
             if (error && e.target.value.trim()) {
-              setError(false)
+              setError(false);
             }
-          }}          
+          }}
           error={error}
           helperText={error ? "Vui lòng nhập tên danh mục" : ""}
         />
@@ -74,7 +120,8 @@ const AddCategoryModal = ({ open, onClose, parentCategoryName, parentCategoryId 
           fullWidth
           label="Mô tả"
           multiline
-          minRows={5}
+          minRows={4}
+          margin="dense"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
         />
