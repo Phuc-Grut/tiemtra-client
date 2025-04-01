@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import {
   Drawer,
   List,
@@ -20,8 +20,13 @@ import { Link } from "react-router-dom";
 import { useTheme } from "@mui/material/styles";
 import { useMediaQuery } from "@mui/material";
 
-const Sidebar = () => {
-  const [expanded, setExpanded] = useState(true);
+type SidebarProps = {
+  expanded: boolean;
+  setExpanded: Dispatch<SetStateAction<boolean>>;
+};
+
+const Sidebar = ({ expanded, setExpanded }: SidebarProps) => {
+  // const [expanded, setExpanded] = useState(true);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
@@ -45,6 +50,37 @@ const Sidebar = () => {
         },
       }}
     >
+      <div
+        style={{
+          width: "100%",
+          height: 80,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: expanded ? "flex-start" : "center",
+          paddingLeft: expanded ? "24px" : 0,
+          paddingRight: expanded ? "16px" : 0,
+          boxSizing: "border-box",
+          marginTop: "0px",
+        }}
+      >
+        <Link to="/dashboard" style={{ display: "flex", alignItems: "center" }}>
+          <img
+            src={
+              expanded ? "/image/logo/fullLogo.png" : "/image/logo/LogoIcon.png"
+            }
+            alt="Rookie Coders"
+            style={{
+              height: expanded ? 50 : 40,
+              maxWidth: expanded ? 180 : 40,
+              width: "auto",
+              objectFit: "contain",
+              transition: "all 0.3s ease",
+              cursor: "pointer",
+            }}
+          />
+        </Link>
+      </div>
+
       <List sx={{ width: "100%" }}>
         <Tooltip
           title="Dashboard"
@@ -56,7 +92,13 @@ const Sidebar = () => {
             to="/dashboard"
             sx={{ cursor: "pointer", justifyContent: "center" }}
           >
-            <ListItemIcon>
+            <ListItemIcon
+              sx={{
+                minWidth: 0,
+                paddingRight: expanded ? 1 : "auto",
+                justifyContent: "center",
+              }}
+            >
               <Dashboard />
             </ListItemIcon>
             {expanded && <ListItemText primary="Dashboard" />}
@@ -73,7 +115,13 @@ const Sidebar = () => {
             to="/category"
             sx={{ cursor: "pointer", justifyContent: "center" }}
           >
-            <ListItemIcon>
+            <ListItemIcon
+              sx={{
+                minWidth: 0,
+                paddingRight: expanded ? 1 : "auto",
+                justifyContent: "center",
+              }}
+            >
               <CategoryOutlined />
             </ListItemIcon>
             {expanded && <ListItemText primary="Danh Mục" />}
@@ -90,7 +138,13 @@ const Sidebar = () => {
             to="/users"
             sx={{ cursor: "pointer", justifyContent: "center" }}
           >
-            <ListItemIcon>
+            <ListItemIcon
+              sx={{
+                minWidth: 0,
+                paddingRight: expanded ? 1 : "auto",
+                justifyContent: "center",
+              }}
+            >
               <People />
             </ListItemIcon>
             {expanded && <ListItemText primary="Users" />}
@@ -107,7 +161,13 @@ const Sidebar = () => {
             to="/settings"
             sx={{ cursor: "pointer", justifyContent: "center" }}
           >
-            <ListItemIcon>
+            <ListItemIcon
+              sx={{
+                minWidth: 0,
+                paddingRight: expanded ? 1 : "auto",
+                justifyContent: "center",
+              }}
+            >
               <Settings />
             </ListItemIcon>
             {expanded && <ListItemText primary="Settings" />}
