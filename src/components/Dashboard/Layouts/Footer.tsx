@@ -13,7 +13,7 @@ const Footer = () => {
       }}
     >
       <Typography variant="body2" color="textSecondary">
-        © {new Date().getFullYear()} PhucGrunt. All rights reserved.
+        © {new Date().getFullYear()} Rookie-Coders. All rights reserved.
       </Typography>
     </Box>
   );
