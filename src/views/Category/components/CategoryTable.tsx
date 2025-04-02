@@ -62,11 +62,10 @@ const CategoryTable = ({
     null
   );
 
-  const [confirmMessage, setConfirmMessage] = useState("");
-  const [pendingDeleteId, setPendingDeleteId] = useState<number | null>(null);
+  const [confirmMessage, setConfirmMessage] = useState<string[]>([]);
+  const [pendingDeleteIds, setPendingDeleteIds] = useState<number[]>([]);
   const [confirmModalOpen, setConfirmModalOpen] = useState(false);
   const [showConfirmButton, setShowConfirmButton] = useState(false);
-  
 
   const [anchorEl, setAnchorEl] = useState<
     HTMLElement | { mouseX: number; mouseY: number } | null
@@ -148,8 +147,7 @@ const CategoryTable = ({
           console.log("Sửa mục:", category);
           break;
         case "DELETE":
-          setSelectedCategory(category);
-          handleDelete(category.categoryId);
+          handleDeleteSelected([category?.categoryId]);
           break;
         default:
           console.log("Chọn menu:", item.id, category);
@@ -164,38 +162,53 @@ const CategoryTable = ({
     });
   };
 
-  const handleDelete = async (id: number) => {
-      const res = await categoryApi.checkCanDeleteCategory(id);
+  const handleDeleteSelected = async (categoryIds: number[] = selected) => {
+    // console.log("🚀 ~ handleDeleteSelected ~ categoryIds:", categoryIds)
+    if (categoryIds.length === 0) return;
 
-      if (!res.data.success) {
+    try {
+      const res = await categoryApi.checkCanDeleteManyCategories(categoryIds);
+
+      if (!res.data.canDeleteAll) {
         setConfirmModalOpen(true);
-        setConfirmMessage(res.data.message);
-        setShowConfirmButton(false)
+        const cannotDeleteCount = res.data.cannotDeleteCount;
+        setConfirmMessage([
+          `Có ${cannotDeleteCount} danh mục không thể xoá:`,
+          ...res.data.blockers.$values.map((b: any) => b.message),
+        ]);
+
+        setShowConfirmButton(false);
         return;
       }
 
-      setShowConfirmButton(true)
-      setConfirmMessage(res.data.message);
-      setPendingDeleteId(id);
-      setConfirmModalOpen(true);
+      if (res.data.canDeleteAll === true) {
+        setConfirmModalOpen(true);
+        setPendingDeleteIds(categoryIds)
+        setConfirmMessage(['Sau khi xóa, liên kết giữa danh mục với sản phẩm và thuộc tính sẽ bị mất, bạn có xác nhận xóa']);
+        setShowConfirmButton(true);
+      }
+    } catch (error) {
+      console.error("Error checking delete:", error);
+    }
   };
 
-  const confirmDeleteCategory = async () => {
-    if (pendingDeleteId !== null) {
-      try {
-        const res = await categoryApi.deleteCategoryByIdApi(pendingDeleteId);
-        if (res.data.success) {
-          showSuccess("Xoá thành công!");
-          invalidateAllCategoryData();
-        } else {
-          showError(res.data.message);
-        }
-      } catch (err) {
-        showError("Lỗi khi xoá danh mục.");
-      } finally {
-        setConfirmModalOpen(false);
-        setPendingDeleteId(null);
+  const handleConfirmDelete = async () => {
+    try {
+      const res = await categoryApi.deleteManyCategories(pendingDeleteIds);
+      console.log("🚀 ~ handleConfirmDelete ~ pendingDeleteIds:", pendingDeleteIds)
+      if (res.data.success) {
+        showSuccess("Xoá thành công!");
+        invalidateAllCategoryData();
+        setSelected([])
+      } else {
+        showError("Xoá thất bại!");
       }
+    } catch (error) {
+      console.error("Delete failed:", error);
+      showError("Lỗi khi xoá danh mục!");
+    } finally {
+      setConfirmModalOpen(false);
+      setPendingDeleteIds([]);
     }
   };
 
@@ -217,12 +230,8 @@ const CategoryTable = ({
       <p style={{ textAlign: "center", fontWeight: "bold" }}>Đang tải...</p>
     );
   }
-  const rows = isDetail ? categoryDetail?.items ?? [] : categories ?? [];
-  console.log("🚀 ~ rows:", rows);
 
-  const handleDeleteSelected = () => {
-    console.log("Danh mục cần xoá:", selected);
-  };
+  const rows = isDetail ? categoryDetail?.items ?? [] : categories ?? [];
 
   return (
     <Box
@@ -283,7 +292,7 @@ const CategoryTable = ({
                 backgroundColor: "#cc0000",
               },
             }}
-            onClick={handleDeleteSelected}
+            onClick={() => handleDeleteSelected()}
           >
             Xoá ({selected.length})
           </Button>
@@ -391,7 +400,7 @@ const CategoryTable = ({
                     e.preventDefault();
 
                     setContextItem(category);
-
+                    setSelectedCategory(category);
                     setAnchorEl({ mouseX: e.clientX, mouseY: e.clientY });
                   }}
                 >
@@ -517,9 +526,9 @@ const CategoryTable = ({
         message={confirmMessage}
         onClose={() => {
           setConfirmModalOpen(false);
-          setPendingDeleteId(null);
+          setPendingDeleteIds([]);
         }}
-        onConfirm={confirmDeleteCategory}
+        onConfirm={handleConfirmDelete}
         showConfirmButton={showConfirmButton}
       />
     </Box>
