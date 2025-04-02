@@ -1,5 +1,5 @@
 import***REMOVED***React,***REMOVED***{***REMOVED***useState,***REMOVED***useEffect***REMOVED***}***REMOVED***from***REMOVED***"react";
-import***REMOVED***{***REMOVED***useMutation,***REMOVED***useQuery,***REMOVED***useQueryClient***REMOVED***}***REMOVED***from***REMOVED***"@tanstack/react-query";
+import***REMOVED***{***REMOVED***useQuery,***REMOVED***useQueryClient***REMOVED***}***REMOVED***from***REMOVED***"@tanstack/react-query";
 import***REMOVED***categoryApi***REMOVED***from***REMOVED***"src/services/api/Category";
 import***REMOVED***{***REMOVED***ICategory***REMOVED***}***REMOVED***from***REMOVED***"src/Interfaces/ICategory";
 import***REMOVED***formatVietnamTime***REMOVED***from***REMOVED***"src/utils/formatVietnamTime";
@@ -62,7 +62,10 @@ const***REMOVED***CategoryTable***REMOVED***=***REMOVED***({
 ***REMOVED******REMOVED******REMOVED******REMOVED***null
 ***REMOVED******REMOVED***);
 
-***REMOVED******REMOVED***const***REMOVED***[deleteModalOpen,***REMOVED***setDeleteModalOpen]***REMOVED***=***REMOVED***useState(false);
+***REMOVED******REMOVED***const***REMOVED***[confirmMessage,***REMOVED***setConfirmMessage]***REMOVED***=***REMOVED***useState<string[]>([]);
+***REMOVED******REMOVED***const***REMOVED***[pendingDeleteIds,***REMOVED***setPendingDeleteIds]***REMOVED***=***REMOVED***useState<number[]>([]);
+***REMOVED******REMOVED***const***REMOVED***[confirmModalOpen,***REMOVED***setConfirmModalOpen]***REMOVED***=***REMOVED***useState(false);
+***REMOVED******REMOVED***const***REMOVED***[showConfirmButton,***REMOVED***setShowConfirmButton]***REMOVED***=***REMOVED***useState(false);
 
 ***REMOVED******REMOVED***const***REMOVED***[anchorEl,***REMOVED***setAnchorEl]***REMOVED***=***REMOVED***useState<
 ***REMOVED******REMOVED******REMOVED******REMOVED***HTMLElement***REMOVED***|***REMOVED***{***REMOVED***mouseX:***REMOVED***number;***REMOVED***mouseY:***REMOVED***number***REMOVED***}***REMOVED***|***REMOVED***null
@@ -144,8 +147,7 @@ const***REMOVED***CategoryTable***REMOVED***=***REMOVED***({
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***console.log("Sửa***REMOVED***mục:",***REMOVED***category);
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***break;
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***case***REMOVED***"DELETE":
-***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***setSelectedCategory(category);
-***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***setDeleteModalOpen(true);
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***handleDeleteSelected([category?.categoryId]);
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***break;
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***default:
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***console.log("Chọn***REMOVED***menu:",***REMOVED***item.id,***REMOVED***category);
@@ -160,20 +162,55 @@ const***REMOVED***CategoryTable***REMOVED***=***REMOVED***({
 ***REMOVED******REMOVED******REMOVED******REMOVED***});
 ***REMOVED******REMOVED***};
 
-***REMOVED******REMOVED***const***REMOVED***mutation***REMOVED***=***REMOVED***useMutation({
-***REMOVED******REMOVED******REMOVED******REMOVED***mutationFn:***REMOVED***(id:***REMOVED***number)***REMOVED***=>***REMOVED***categoryApi.deleteCategoryByIdApi(id),
-***REMOVED******REMOVED******REMOVED******REMOVED***onSuccess:***REMOVED***()***REMOVED***=>***REMOVED***{
-***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***invalidateAllCategoryData();
-***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***showSuccess("Xoá***REMOVED***thành***REMOVED***công!");
-***REMOVED******REMOVED******REMOVED******REMOVED***},
-***REMOVED******REMOVED******REMOVED******REMOVED***onError:***REMOVED***()***REMOVED***=>***REMOVED***{
-***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***showError("Xoá***REMOVED***thất***REMOVED***bại!");
-***REMOVED******REMOVED******REMOVED******REMOVED***},
-***REMOVED******REMOVED***});
+***REMOVED******REMOVED***const***REMOVED***handleDeleteSelected***REMOVED***=***REMOVED***async***REMOVED***(categoryIds:***REMOVED***number[]***REMOVED***=***REMOVED***selected)***REMOVED***=>***REMOVED***{
+***REMOVED******REMOVED******REMOVED******REMOVED***//***REMOVED***console.log("🚀***REMOVED***~***REMOVED***handleDeleteSelected***REMOVED***~***REMOVED***categoryIds:",***REMOVED***categoryIds)
+***REMOVED******REMOVED******REMOVED******REMOVED***if***REMOVED***(categoryIds.length***REMOVED***===***REMOVED***0)***REMOVED***return;
 
-***REMOVED******REMOVED***const***REMOVED***handleDelete***REMOVED***=***REMOVED***async***REMOVED***(id:***REMOVED***number)***REMOVED***=>***REMOVED***{
-***REMOVED******REMOVED******REMOVED******REMOVED***mutation.mutate(id);***REMOVED***
-***REMOVED******REMOVED***}
+***REMOVED******REMOVED******REMOVED******REMOVED***try***REMOVED***{
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***const***REMOVED***res***REMOVED***=***REMOVED***await***REMOVED***categoryApi.checkCanDeleteManyCategories(categoryIds);
+
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***if***REMOVED***(!res.data.canDeleteAll)***REMOVED***{
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***setConfirmModalOpen(true);
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***const***REMOVED***cannotDeleteCount***REMOVED***=***REMOVED***res.data.cannotDeleteCount;
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***setConfirmMessage([
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***`Có***REMOVED***${cannotDeleteCount}***REMOVED***danh***REMOVED***mục***REMOVED***không***REMOVED***thể***REMOVED***xoá:`,
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***...res.data.blockers.$values.map((b:***REMOVED***any)***REMOVED***=>***REMOVED***b.message),
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***]);
+
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***setShowConfirmButton(false);
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***return;
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***}
+
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***if***REMOVED***(res.data.canDeleteAll***REMOVED***===***REMOVED***true)***REMOVED***{
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***setConfirmModalOpen(true);
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***setPendingDeleteIds(categoryIds)
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***setConfirmMessage(['Sau***REMOVED***khi***REMOVED***xóa,***REMOVED***liên***REMOVED***kết***REMOVED***giữa***REMOVED***danh***REMOVED***mục***REMOVED***với***REMOVED***sản***REMOVED***phẩm***REMOVED***và***REMOVED***thuộc***REMOVED***tính***REMOVED***sẽ***REMOVED***bị***REMOVED***mất,***REMOVED***bạn***REMOVED***có***REMOVED***xác***REMOVED***nhận***REMOVED***xóa']);
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***setShowConfirmButton(true);
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***}
+***REMOVED******REMOVED******REMOVED******REMOVED***}***REMOVED***catch***REMOVED***(error)***REMOVED***{
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***console.error("Error***REMOVED***checking***REMOVED***delete:",***REMOVED***error);
+***REMOVED******REMOVED******REMOVED******REMOVED***}
+***REMOVED******REMOVED***};
+
+***REMOVED******REMOVED***const***REMOVED***handleConfirmDelete***REMOVED***=***REMOVED***async***REMOVED***()***REMOVED***=>***REMOVED***{
+***REMOVED******REMOVED******REMOVED******REMOVED***try***REMOVED***{
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***const***REMOVED***res***REMOVED***=***REMOVED***await***REMOVED***categoryApi.deleteManyCategories(pendingDeleteIds);
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***console.log("🚀***REMOVED***~***REMOVED***handleConfirmDelete***REMOVED***~***REMOVED***pendingDeleteIds:",***REMOVED***pendingDeleteIds)
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***if***REMOVED***(res.data.success)***REMOVED***{
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***showSuccess("Xoá***REMOVED***thành***REMOVED***công!");
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***invalidateAllCategoryData();
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***setSelected([])
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***}***REMOVED***else***REMOVED***{
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***showError("Xoá***REMOVED***thất***REMOVED***bại!");
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***}
+***REMOVED******REMOVED******REMOVED******REMOVED***}***REMOVED***catch***REMOVED***(error)***REMOVED***{
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***console.error("Delete***REMOVED***failed:",***REMOVED***error);
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***showError("Lỗi***REMOVED***khi***REMOVED***xoá***REMOVED***danh***REMOVED***mục!");
+***REMOVED******REMOVED******REMOVED******REMOVED***}***REMOVED***finally***REMOVED***{
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***setConfirmModalOpen(false);
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***setPendingDeleteIds([]);
+***REMOVED******REMOVED******REMOVED******REMOVED***}
+***REMOVED******REMOVED***};
 
 ***REMOVED******REMOVED***if***REMOVED***(isDetail***REMOVED***&&***REMOVED***categoryDetail?.type***REMOVED***===***REMOVED***"Attributes")***REMOVED***{
 ***REMOVED******REMOVED******REMOVED******REMOVED***return***REMOVED***(
@@ -193,13 +230,8 @@ const***REMOVED***CategoryTable***REMOVED***=***REMOVED***({
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***<p***REMOVED***style={{***REMOVED***textAlign:***REMOVED***"center",***REMOVED***fontWeight:***REMOVED***"bold"***REMOVED***}}>Đang***REMOVED***tải...</p>
 ***REMOVED******REMOVED******REMOVED******REMOVED***);
 ***REMOVED******REMOVED***}
-***REMOVED******REMOVED***const***REMOVED***rows***REMOVED***=***REMOVED***isDetail***REMOVED***?***REMOVED***categoryDetail?.items***REMOVED***??***REMOVED***[]***REMOVED***:***REMOVED***categories***REMOVED***??***REMOVED***[];
-***REMOVED******REMOVED***console.log("🚀***REMOVED***~***REMOVED***rows:",***REMOVED***rows);
 
-***REMOVED******REMOVED***const***REMOVED***handleDeleteSelected***REMOVED***=***REMOVED***()***REMOVED***=>***REMOVED***{
-***REMOVED******REMOVED******REMOVED******REMOVED***console.log("Danh***REMOVED***mục***REMOVED***cần***REMOVED***xoá:",***REMOVED***selected);
-***REMOVED******REMOVED***};
-***REMOVED******REMOVED***
+***REMOVED******REMOVED***const***REMOVED***rows***REMOVED***=***REMOVED***isDetail***REMOVED***?***REMOVED***categoryDetail?.items***REMOVED***??***REMOVED***[]***REMOVED***:***REMOVED***categories***REMOVED***??***REMOVED***[];
 
 ***REMOVED******REMOVED***return***REMOVED***(
 ***REMOVED******REMOVED******REMOVED******REMOVED***<Box
@@ -260,7 +292,7 @@ const***REMOVED***CategoryTable***REMOVED***=***REMOVED***({
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***backgroundColor:***REMOVED***"#cc0000",
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***},
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***}}
-***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***onClick={handleDeleteSelected}
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***onClick={()***REMOVED***=>***REMOVED***handleDeleteSelected()}
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***>
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***Xoá***REMOVED***({selected.length})
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***</Button>
@@ -368,7 +400,7 @@ const***REMOVED***CategoryTable***REMOVED***=***REMOVED***({
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***e.preventDefault();
 
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***setContextItem(category);
-
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***setSelectedCategory(category);
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***setAnchorEl({***REMOVED***mouseX:***REMOVED***e.clientX,***REMOVED***mouseY:***REMOVED***e.clientY***REMOVED***});
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***}}
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***>
@@ -490,19 +522,14 @@ const***REMOVED***CategoryTable***REMOVED***=***REMOVED***({
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***/>
 
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***<ModalConfirm
-***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***open={deleteModalOpen}
-***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***message={`Bạn***REMOVED***có***REMOVED***chắc***REMOVED***chắn***REMOVED***muốn***REMOVED***xoá***REMOVED***danh***REMOVED***mục***REMOVED***"${selectedCategory?.categoryName}"?`}
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***open={confirmModalOpen}
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***message={confirmMessage}
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***onClose={()***REMOVED***=>***REMOVED***{
-***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***setDeleteModalOpen(false);
-***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***setSelectedCategory(null);
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***setConfirmModalOpen(false);
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***setPendingDeleteIds([]);
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***}}
-***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***onConfirm={()***REMOVED***=>***REMOVED***{
-***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***if***REMOVED***(selectedCategory)***REMOVED***{
-***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***handleDelete(selectedCategory.categoryId);
-***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***}
-***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***setSelectedCategory(null);
-***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***setDeleteModalOpen(false);
-***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***}}
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***onConfirm={handleConfirmDelete}
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***showConfirmButton={showConfirmButton}
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***/>
 ***REMOVED******REMOVED******REMOVED******REMOVED***</Box>
 ***REMOVED******REMOVED***);

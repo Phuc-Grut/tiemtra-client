@@ -5,17 +5,11 @@ import***REMOVED***{***REMOVED***useState***REMOVED***}***REMOVED***from***REMOV
 import***REMOVED***AddCategoryModal***REMOVED***from***REMOVED***"./components/AddCategory";
 
 const***REMOVED***Category***REMOVED***=***REMOVED***()***REMOVED***=>***REMOVED***{
-***REMOVED******REMOVED***const***REMOVED***[categoryType,***REMOVED***setCategoryType]***REMOVED***=***REMOVED***useState<string***REMOVED***|***REMOVED***undefined>(
-***REMOVED******REMOVED******REMOVED******REMOVED***undefined
-***REMOVED******REMOVED***);
+***REMOVED******REMOVED***const***REMOVED***[categoryType,***REMOVED***setCategoryType]***REMOVED***=***REMOVED***useState<string***REMOVED***|***REMOVED***undefined>(undefined);
 ***REMOVED******REMOVED***const***REMOVED***[isAddOpen,***REMOVED***setIsAddOpen]***REMOVED***=***REMOVED***useState(false);
 
-***REMOVED******REMOVED***const***REMOVED***[parentCategoryId,***REMOVED***setParentCategoryId]***REMOVED***=***REMOVED***useState<
-***REMOVED******REMOVED******REMOVED******REMOVED***number***REMOVED***|***REMOVED***undefined
-***REMOVED******REMOVED***>();
-***REMOVED******REMOVED***const***REMOVED***[parentCategoryName,***REMOVED***setParentCategoryName]***REMOVED***=***REMOVED***useState<
-***REMOVED******REMOVED******REMOVED******REMOVED***string***REMOVED***|***REMOVED***undefined
-***REMOVED******REMOVED***>();
+***REMOVED******REMOVED***const***REMOVED***[parentCategoryId,***REMOVED***setParentCategoryId]***REMOVED***=***REMOVED***useState<number***REMOVED***|***REMOVED***undefined>();
+***REMOVED******REMOVED***const***REMOVED***[parentCategoryName,***REMOVED***setParentCategoryName]***REMOVED***=***REMOVED***useState<string***REMOVED***|***REMOVED***undefined>();
 
 ***REMOVED******REMOVED***return***REMOVED***(
 ***REMOVED******REMOVED******REMOVED******REMOVED***<Box
