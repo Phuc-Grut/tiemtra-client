@@ -17,6 +17,7 @@ interface ModalConfirmProps {
   onConfirm: () => void;
   confirmText?: string;
   cancelText?: string;
+  showConfirmButton?: boolean;
 }
 
 const ModalConfirm: React.FC<ModalConfirmProps> = ({
@@ -27,6 +28,7 @@ const ModalConfirm: React.FC<ModalConfirmProps> = ({
   onConfirm,
   confirmText = "Xác nhận",
   cancelText = "Hủy",
+  showConfirmButton,
 }) => {
   return (
     <Dialog open={open} onClose={onClose} maxWidth="xs" fullWidth>
@@ -38,11 +40,17 @@ const ModalConfirm: React.FC<ModalConfirmProps> = ({
         <Typography variant="body2">{message}</Typography>
       </DialogContent>
       <DialogActions sx={{ px: 3, pb: 2 }}>
+        <Button
+          variant="contained"
+          color={showConfirmButton ? "error" : "inherit"}
+          disabled={!showConfirmButton}
+          onClick={onConfirm}
+          sx={!showConfirmButton ? { opacity: 0.6, cursor: "not-allowed" } : {}}
+        >
+          {confirmText}
+        </Button>
         <Button variant="outlined" onClick={onClose}>
           {cancelText}
-        </Button>
-        <Button variant="contained" color="error" onClick={onConfirm}>
-          {confirmText}
         </Button>
       </DialogActions>
     </Dialog>

@@ -25,6 +25,7 @@ export const CATEGORY = {
         CREATE: 'CATEGORY/CREATE',
         UPDATE: 'CATEGORY/UPDATE',
         DELETE_BY_ID: 'CATEGORY/DELETE_BY_ID',
+        CHECK_DELETE: 'CATEGORY/CHECK_DELETE'
     },
     URL_API: {
         GET_ALL_API:  `${BASE_URL}/category/get-paging-category`,
@@ -32,5 +33,6 @@ export const CATEGORY = {
         CREATE_API:  `${BASE_URL}/category/add-category`,
         UPDATE_API: (id: number) => `${BASE_URL}/category/update-category/${id}`,
         DELETE_API_BY_ID:  (id: number) => `${BASE_URL}/category/delete-category/${id}`,
+        CHECK_DELETE: (id: number) => `${BASE_URL}/category/${id}/check-delete`
     }
 }

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import categoryApi from "src/services/api/Category";
 import { ICategory } from "src/Interfaces/ICategory";
 import formatVietnamTime from "src/utils/formatVietnamTime";
@@ -62,7 +62,11 @@ const CategoryTable = ({
     null
   );
 
-  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [confirmMessage, setConfirmMessage] = useState("");
+  const [pendingDeleteId, setPendingDeleteId] = useState<number | null>(null);
+  const [confirmModalOpen, setConfirmModalOpen] = useState(false);
+  const [showConfirmButton, setShowConfirmButton] = useState(false);
+  
 
   const [anchorEl, setAnchorEl] = useState<
     HTMLElement | { mouseX: number; mouseY: number } | null
@@ -145,7 +149,7 @@ const CategoryTable = ({
           break;
         case "DELETE":
           setSelectedCategory(category);
-          setDeleteModalOpen(true);
+          handleDelete(category.categoryId);
           break;
         default:
           console.log("Chọn menu:", item.id, category);
@@ -160,20 +164,40 @@ const CategoryTable = ({
     });
   };
 
-  const mutation = useMutation({
-    mutationFn: (id: number) => categoryApi.deleteCategoryByIdApi(id),
-    onSuccess: () => {
-      invalidateAllCategoryData();
-      showSuccess("Xoá thành công!");
-    },
-    onError: () => {
-      showError("Xoá thất bại!");
-    },
-  });
-
   const handleDelete = async (id: number) => {
-    mutation.mutate(id); 
-  }
+      const res = await categoryApi.checkCanDeleteCategory(id);
+
+      if (!res.data.success) {
+        setConfirmModalOpen(true);
+        setConfirmMessage(res.data.message);
+        setShowConfirmButton(false)
+        return;
+      }
+
+      setShowConfirmButton(true)
+      setConfirmMessage(res.data.message);
+      setPendingDeleteId(id);
+      setConfirmModalOpen(true);
+  };
+
+  const confirmDeleteCategory = async () => {
+    if (pendingDeleteId !== null) {
+      try {
+        const res = await categoryApi.deleteCategoryByIdApi(pendingDeleteId);
+        if (res.data.success) {
+          showSuccess("Xoá thành công!");
+          invalidateAllCategoryData();
+        } else {
+          showError(res.data.message);
+        }
+      } catch (err) {
+        showError("Lỗi khi xoá danh mục.");
+      } finally {
+        setConfirmModalOpen(false);
+        setPendingDeleteId(null);
+      }
+    }
+  };
 
   if (isDetail && categoryDetail?.type === "Attributes") {
     return (
@@ -199,7 +223,6 @@ const CategoryTable = ({
   const handleDeleteSelected = () => {
     console.log("Danh mục cần xoá:", selected);
   };
-  
 
   return (
     <Box
@@ -490,19 +513,14 @@ const CategoryTable = ({
       />
 
       <ModalConfirm
-        open={deleteModalOpen}
-        message={`Bạn có chắc chắn muốn xoá danh mục "${selectedCategory?.categoryName}"?`}
+        open={confirmModalOpen}
+        message={confirmMessage}
         onClose={() => {
-          setDeleteModalOpen(false);
-          setSelectedCategory(null);
+          setConfirmModalOpen(false);
+          setPendingDeleteId(null);
         }}
-        onConfirm={() => {
-          if (selectedCategory) {
-            handleDelete(selectedCategory.categoryId);
-          }
-          setSelectedCategory(null);
-          setDeleteModalOpen(false);
-        }}
+        onConfirm={confirmDeleteCategory}
+        showConfirmButton={showConfirmButton}
       />
     </Box>
   );
