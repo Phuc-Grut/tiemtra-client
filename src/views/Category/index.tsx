@@ -5,17 +5,11 @@ import { useState } from "react";
 import AddCategoryModal from "./components/AddCategory";
 
 const Category = () => {
-  const [categoryType, setCategoryType] = useState<string | undefined>(
-    undefined
-  );
+  const [categoryType, setCategoryType] = useState<string | undefined>(undefined);
   const [isAddOpen, setIsAddOpen] = useState(false);
 
-  const [parentCategoryId, setParentCategoryId] = useState<
-    number | undefined
-  >();
-  const [parentCategoryName, setParentCategoryName] = useState<
-    string | undefined
-  >();
+  const [parentCategoryId, setParentCategoryId] = useState<number | undefined>();
+  const [parentCategoryName, setParentCategoryName] = useState<string | undefined>();
 
   return (
     <Box

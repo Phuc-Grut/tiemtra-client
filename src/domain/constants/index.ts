@@ -24,13 +24,15 @@ export const CATEGORY = {
         GET_BY_ID: 'CATEGORY/GET_BY_ID_API',
         CREATE: 'CATEGORY/CREATE',
         UPDATE: 'CATEGORY/UPDATE',
-        DELETE_BY_ID: 'CATEGORY/DELETE_BY_ID',
+        CHECK_DELETE_BY_IDS: 'CATEGORY/CHECK_DELETE_MANY',
+        DELETE_API_BY_IDS: 'CATEGORY/DELETE_API_BY_IDS'
     },
     URL_API: {
         GET_ALL_API:  `${BASE_URL}/category/get-paging-category`,
         GET_BY_ID_API:  `${BASE_URL}/category/get-by-id`,
         CREATE_API:  `${BASE_URL}/category/add-category`,
         UPDATE_API: (id: number) => `${BASE_URL}/category/update-category/${id}`,
-        DELETE_API_BY_ID:  (id: number) => `${BASE_URL}/category/delete-category/${id}`,
+        CHECK_DELETE_BY_IDS: `${BASE_URL}/category/check-delete-by-ids`,
+        DELETE_API_BY_IDS: `${BASE_URL}/category/delete-category-by-ids`
     }
 }
