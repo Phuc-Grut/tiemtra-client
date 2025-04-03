@@ -20,21 +20,28 @@ import {
   TextField,
 } from "@mui/material";
 import { useLocation, useNavigate } from "react-router-dom";
-import AttributeTable from "../../Attribute/components/AttributeTable";
+import AttributeTable from "./AttributeTable";
 import GenericContextMenu from "src/components/GenericContextMenu";
 import { categoryContextMenuItems } from "../contextMenu";
-import UpdateCategoryModal from "./UpdateCategory";
+import UpdateCategoryModal from "./modal/UpdateCategory";
 import ModalConfirm from "src/components/ModalConfirm";
 import useToast from "src/components/Toast";
+
+interface BreadcrumbItem {
+  categoryId: number;
+  categoryName: string;
+}
 
 interface CategoryTableProps {
   onTypeChange?: (type: string) => void;
   onParentInfoChange?: (id: number | string, name: string) => void;
+  onBreadcrumbsChange?: (breadcrumbs: BreadcrumbItem[]) => void;
 }
 
 const CategoryTable = ({
   onTypeChange,
   onParentInfoChange,
+  onBreadcrumbsChange,
 }: CategoryTableProps) => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -46,7 +53,7 @@ const CategoryTable = ({
   const [pageSize, setPageSize] = useState(10);
 
   const pathWithoutQuery = location.pathname.split("?")[0];
-  const relativePath = pathWithoutQuery.replace(/^\/category\/?/, "");
+  const relativePath = pathWithoutQuery.replace(/^\/admin\/category\/?/, "");
 
   const pathIds = relativePath.split("/").filter((id) => id.trim() !== "");
   const isDetail = pathIds.length > 0;
@@ -90,7 +97,7 @@ const CategoryTable = ({
       const realTotalPages = response.data.totalPages ?? 1;
       setMaxPages(realTotalPages);
 
-      return response.data.data.$values;
+      return response.data.items.$values;
     },
     enabled: !isDetail && pageNumber > 0,
     placeholderData: (previousData: any) => previousData,
@@ -127,15 +134,45 @@ const CategoryTable = ({
     }
   }, [categoryDetail, onTypeChange, onParentInfoChange]);
 
+  useEffect(() => {
+    if (!isDetail) {
+      onBreadcrumbsChange?.([]);
+      return;
+    }
+
+    if (categoryDetail?.type) {
+      onTypeChange?.(categoryDetail.type);
+    }
+
+    const current = categoryDetail?.currentCategory;
+
+    if (current?.categoryId && current?.categoryName) {
+      setParentCategoryName(current.categoryName);
+      onParentInfoChange?.(current.categoryId, current.categoryName);
+    }
+
+    const breadcrumbs = current?.breadcrumbs ?? [];
+    if (breadcrumbs.length > 0) {
+      onBreadcrumbsChange?.(breadcrumbs);
+    }
+  }, [
+    isDetail,
+    categoryDetail,
+    onTypeChange,
+    onParentInfoChange,
+    onBreadcrumbsChange,
+  ]);
+
   const categoryMenuActions = categoryContextMenuItems.map((item) => ({
     ...item,
     onClick: (category: ICategory) => {
       switch (item.id) {
         case "VIEW":
           console.log("Xem chi tiết:", category);
-          const nextPath = `/category/${[...pathIds, category.categoryId].join(
-            "/"
-          )}`;
+          const nextPath = `/admin/category/${[
+            ...pathIds,
+            category.categoryId,
+          ].join("/")}`;
           navigate(nextPath);
           break;
         case "EDIT":
@@ -183,8 +220,10 @@ const CategoryTable = ({
 
       if (res.data.canDeleteAll === true) {
         setConfirmModalOpen(true);
-        setPendingDeleteIds(categoryIds)
-        setConfirmMessage(['Sau khi xóa, liên kết giữa danh mục với sản phẩm và thuộc tính sẽ bị mất, bạn có xác nhận xóa']);
+        setPendingDeleteIds(categoryIds);
+        setConfirmMessage([
+          "Sau khi xóa, liên kết giữa danh mục với sản phẩm và thuộc tính sẽ bị mất, bạn có xác nhận xóa",
+        ]);
         setShowConfirmButton(true);
       }
     } catch (error) {
@@ -195,11 +234,14 @@ const CategoryTable = ({
   const handleConfirmDelete = async () => {
     try {
       const res = await categoryApi.deleteManyCategories(pendingDeleteIds);
-      console.log("🚀 ~ handleConfirmDelete ~ pendingDeleteIds:", pendingDeleteIds)
+      console.log(
+        "🚀 ~ handleConfirmDelete ~ pendingDeleteIds:",
+        pendingDeleteIds
+      );
       if (res.data.success) {
         showSuccess("Xoá thành công!");
         invalidateAllCategoryData();
-        setSelected([])
+        setSelected([]);
       } else {
         showError("Xoá thất bại!");
       }
@@ -390,7 +432,7 @@ const CategoryTable = ({
                   onClick={() => {
                     setPageNumber(1);
                     setPageSize(10);
-                    const nextPath = `/category/${[
+                    const nextPath = `/admin/category/${[
                       ...pathIds,
                       category.categoryId,
                     ].join("/")}`;
@@ -443,7 +485,9 @@ const CategoryTable = ({
                     {category.description || "Không có mô tả"}
                   </TableCell>
                   <TableCell sx={Styles.tableCellBody}>
-                    {category?.creator?.fullName || "Không có dữ liệu"}
+                    {category?.updaterName ||
+                      category?.creatorName ||
+                      "Không có dữ liệu"}
                   </TableCell>
                   <TableCell sx={Styles.tableCellBody}>
                     {formatVietnamTime(category.updatedAt)}
@@ -472,7 +516,9 @@ const CategoryTable = ({
           pageNumber={pageNumber}
           setPageNumber={(newPage) => {
             setPageNumber(newPage);
-            const newPath = `/category/${pathIds.join("/")}?page=${newPage}`;
+            const newPath = `/admin/category/${pathIds.join(
+              "/"
+            )}?page=${newPage}`;
             navigate(newPath);
           }}
           totalPages={maxPages}
