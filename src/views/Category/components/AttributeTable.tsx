@@ -127,7 +127,7 @@ const AttributeTable = ({
                     {attr.description || "Không có mô tả"}
                   </TableCell>
                   <TableCell sx={Styles.tableCellBody}>
-                    {attr.creator?.fullName || "Không rõ"}
+                    {attr.updaterName || attr.creatorName || 'Không có dữ liệu'}
                   </TableCell>
                   <TableCell sx={Styles.tableCellBody}>
                     {formatVietnamTime(attr.updatedAt)}

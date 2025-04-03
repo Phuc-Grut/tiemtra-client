@@ -1,5 +1,5 @@
 export const BASE_URL = "https://localhost:7021/api"
-
+const URL_ADMIN = `${BASE_URL}/admin`
 
 export const AUTHENTICATION = {
     ACTION_TYPES: {
@@ -28,11 +28,11 @@ export const CATEGORY = {
         DELETE_API_BY_IDS: 'CATEGORY/DELETE_API_BY_IDS'
     },
     URL_API: {
-        GET_ALL_API:  `${BASE_URL}/category/get-paging-category`,
-        GET_BY_ID_API:  `${BASE_URL}/category/get-by-id`,
-        CREATE_API:  `${BASE_URL}/category/add-category`,
-        UPDATE_API: (id: number) => `${BASE_URL}/category/update-category/${id}`,
-        CHECK_DELETE_BY_IDS: `${BASE_URL}/category/check-delete-by-ids`,
-        DELETE_API_BY_IDS: `${BASE_URL}/category/delete-category-by-ids`
+        GET_ALL_API:  `${URL_ADMIN}/category/get-paging-categories`,
+        GET_BY_ID_API:  `${URL_ADMIN}/category/get-by-id`,
+        CREATE_API:  `${URL_ADMIN}/category/add-category`,
+        UPDATE_API: (id: number) => `${URL_ADMIN}/category/update-category/${id}`,
+        CHECK_DELETE_BY_IDS: `${URL_ADMIN}/category/check-delete-by-ids`,
+        DELETE_API_BY_IDS: `${URL_ADMIN}/category/delete-category-by-ids`
     }
 }

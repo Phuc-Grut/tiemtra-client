@@ -5,7 +5,7 @@ import TopBar from "src/components/Layouts/Topbar";
 import Footer from "src/components/Layouts/Footer";
 import { useState } from "react";
 
-const MainLayout = () => {
+const AdminDashboard = () => {
   const [expanded, setExpanded] = useState(true);
   return (
     <Box
@@ -44,4 +44,4 @@ const MainLayout = () => {
   );
 };
 
-export default MainLayout;
+export default AdminDashboard;

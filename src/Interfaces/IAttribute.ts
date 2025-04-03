@@ -2,9 +2,10 @@ export interface IAttribute {
     attributeId: number
     name: string
     description: string
-    creator?: ICreator
     createAt: Date | string
     updatedAt: string
+    creatorName?: string
+    updaterName?: string
 }
 
 export interface ICreator {

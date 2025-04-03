@@ -17,7 +17,7 @@ const LoginForm: React.FC = () => {
     if (result) {
       localStorage.setItem("access_token", result.token); // ✅ Lưu Access Token
       localStorage.setItem("refresh_token", result.refreshToken); // ✅ Lưu Refresh Token
-      navigate("/dashboard");
+      navigate("/admin/dashboard");
     }
   };
 
