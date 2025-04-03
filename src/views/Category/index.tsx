@@ -2,14 +2,26 @@ import { Box } from "@mui/material";
 import PageHeader from "src/components/Layouts/PageHeader";
 import CategoryTable from "./components/CategoryTable";
 import { useState } from "react";
-import AddCategoryModal from "./components/AddCategory";
+import AddCategoryModal from "./components/modal/AddCategory";
+
+interface BreadcrumbItem {
+  categoryId: number;
+  categoryName: string;
+}
 
 const Category = () => {
-  const [categoryType, setCategoryType] = useState<string | undefined>(undefined);
+  const [categoryType, setCategoryType] = useState<string | undefined>(
+    undefined
+  );
   const [isAddOpen, setIsAddOpen] = useState(false);
 
-  const [parentCategoryId, setParentCategoryId] = useState<number | undefined>();
-  const [parentCategoryName, setParentCategoryName] = useState<string | undefined>();
+  const [parentCategoryId, setParentCategoryId] = useState<
+    number | undefined
+  >();
+  const [parentCategoryName, setParentCategoryName] = useState<
+    string | undefined
+  >();
+  const [breadcrumbs, setBreadcrumbs] = useState<BreadcrumbItem[]>([]);
 
   return (
     <Box
@@ -23,7 +35,9 @@ const Category = () => {
       }}
     >
       <PageHeader
-        title="Trang Danh Mục"
+        breadcrumbs={breadcrumbs}
+        pageTitle="Danh mục" // Tên trang (ví dụ: "Danh mục", "Thuộc tính")
+        pageUrl="/admin/category" // URL của trang để dẫn đến khi click vào "Danh mục"
         showAddButton={categoryType !== "Attributes"}
         onAddClick={() => setIsAddOpen(true)}
       />
@@ -42,6 +56,7 @@ const Category = () => {
             setParentCategoryId(Number(id));
             setParentCategoryName(name);
           }}
+          onBreadcrumbsChange={setBreadcrumbs}
         />
       </Box>
       <AddCategoryModal

@@ -3,9 +3,10 @@ export interface ICategory {
     parentId: number
     categoryName: string
     description: string
-    creator?: ICreator
     createAt: Date | string
     updatedAt: string
+    creatorName?: string
+    updaterName?: string
 }
 
 export interface IAddCategoryRequest {

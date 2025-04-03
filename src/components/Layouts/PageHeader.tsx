@@ -1,14 +1,23 @@
 import React from "react";
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Button } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
+import BreadcrumbNavigation, { BreadcrumbItem } from "../BreadcrumbNavigation";
 
 interface PageHeaderProps {
-  title: string;
-  onAddClick?: () => void;
+  breadcrumbs?: BreadcrumbItem[];
   showAddButton?: boolean;
+  onAddClick?: () => void;
+  pageTitle: string
+  pageUrl: string
 }
 
-const PageHeader = ({ title, onAddClick, showAddButton }: PageHeaderProps) => {
+const PageHeader: React.FC<PageHeaderProps> = ({
+  breadcrumbs,
+  showAddButton = true,
+  onAddClick,
+  pageTitle,
+  pageUrl
+}) => {
   return (
     <Box
       sx={{
@@ -25,22 +34,16 @@ const PageHeader = ({ title, onAddClick, showAddButton }: PageHeaderProps) => {
         minHeight: "35px",
       }}
     >
-      <Typography variant="body1" fontWeight="500">
-        {title}
-      </Typography>
+      <BreadcrumbNavigation items={breadcrumbs} pageTitle={pageTitle} pageUrl={pageUrl} />
 
-      {showAddButton !== false && (
+      {showAddButton && (
         <Button
           variant="contained"
           color="primary"
           size="small"
           startIcon={<AddIcon />}
           onClick={onAddClick}
-          sx={{
-            textTransform: "none",
-            justifyContent: "center",
-            maxHeight: "27px",
-          }}
+          sx={{ textTransform: "none", maxHeight: "28px" }}
         >
           Thêm
         </Button>

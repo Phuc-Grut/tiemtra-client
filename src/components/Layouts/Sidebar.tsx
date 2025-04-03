@@ -15,6 +15,7 @@ import {
   CategoryOutlined,
   ChevronLeft,
   ChevronRight,
+  TuneOutlined,
 } from "@mui/icons-material";
 import { Link } from "react-router-dom";
 import { useTheme } from "@mui/material/styles";
@@ -63,7 +64,7 @@ const Sidebar = ({ expanded, setExpanded }: SidebarProps) => {
           marginTop: "0px",
         }}
       >
-        <Link to="/dashboard" style={{ display: "flex", alignItems: "center" }}>
+        <Link to="/admin/dashboard" style={{ display: "flex", alignItems: "center" }}>
           <img
             src={
               expanded ? "/image/logo/fullLogo.png" : "/image/logo/LogoIcon.png"
@@ -89,7 +90,7 @@ const Sidebar = ({ expanded, setExpanded }: SidebarProps) => {
         >
           <ListItem
             component={Link}
-            to="/dashboard"
+            to="/admin/dashboard"
             sx={{ cursor: "pointer", justifyContent: "center" }}
           >
             <ListItemIcon
@@ -112,7 +113,7 @@ const Sidebar = ({ expanded, setExpanded }: SidebarProps) => {
         >
           <ListItem
             component={Link}
-            to="/category"
+            to="/admin/category"
             sx={{ cursor: "pointer", justifyContent: "center" }}
           >
             <ListItemIcon
@@ -129,13 +130,36 @@ const Sidebar = ({ expanded, setExpanded }: SidebarProps) => {
         </Tooltip>
 
         <Tooltip
+          title="category"
+          placement="right"
+          disableHoverListener={expanded}
+        >
+          <ListItem
+            component={Link}
+            to="/admin/attribute"
+            sx={{ cursor: "pointer", justifyContent: "center" }}
+          >
+            <ListItemIcon
+              sx={{
+                minWidth: 0,
+                paddingRight: expanded ? 1 : "auto",
+                justifyContent: "center",
+              }}
+            >
+              <TuneOutlined  />
+            </ListItemIcon>
+            {expanded && <ListItemText primary="Thuộc tính" />}
+          </ListItem>
+        </Tooltip>
+
+        <Tooltip
           title="Users"
           placement="right"
           disableHoverListener={expanded}
         >
           <ListItem
             component={Link}
-            to="/users"
+            to="/admin/users"
             sx={{ cursor: "pointer", justifyContent: "center" }}
           >
             <ListItemIcon
@@ -158,7 +182,7 @@ const Sidebar = ({ expanded, setExpanded }: SidebarProps) => {
         >
           <ListItem
             component={Link}
-            to="/settings"
+            to="/admin/settings"
             sx={{ cursor: "pointer", justifyContent: "center" }}
           >
             <ListItemIcon
