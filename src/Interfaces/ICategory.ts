@@ -3,9 +3,10 @@ export***REMOVED***interface***REMOVED***ICategory***REMOVED***{
 ***REMOVED******REMOVED******REMOVED******REMOVED***parentId:***REMOVED***number
 ***REMOVED******REMOVED******REMOVED******REMOVED***categoryName:***REMOVED***string
 ***REMOVED******REMOVED******REMOVED******REMOVED***description:***REMOVED***string
-***REMOVED******REMOVED******REMOVED******REMOVED***creator?:***REMOVED***ICreator
 ***REMOVED******REMOVED******REMOVED******REMOVED***createAt:***REMOVED***Date***REMOVED***|***REMOVED***string
 ***REMOVED******REMOVED******REMOVED******REMOVED***updatedAt:***REMOVED***string
+***REMOVED******REMOVED******REMOVED******REMOVED***creatorName?:***REMOVED***string
+***REMOVED******REMOVED******REMOVED******REMOVED***updaterName?:***REMOVED***string
 }
 
 export***REMOVED***interface***REMOVED***IAddCategoryRequest***REMOVED***{

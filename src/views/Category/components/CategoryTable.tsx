@@ -20,21 +20,28 @@ import***REMOVED***{
 ***REMOVED******REMOVED***TextField,
 }***REMOVED***from***REMOVED***"@mui/material";
 import***REMOVED***{***REMOVED***useLocation,***REMOVED***useNavigate***REMOVED***}***REMOVED***from***REMOVED***"react-router-dom";
-import***REMOVED***AttributeTable***REMOVED***from***REMOVED***"../../Attribute/components/AttributeTable";
+import***REMOVED***AttributeTable***REMOVED***from***REMOVED***"./AttributeTable";
 import***REMOVED***GenericContextMenu***REMOVED***from***REMOVED***"src/components/GenericContextMenu";
 import***REMOVED***{***REMOVED***categoryContextMenuItems***REMOVED***}***REMOVED***from***REMOVED***"../contextMenu";
-import***REMOVED***UpdateCategoryModal***REMOVED***from***REMOVED***"./UpdateCategory";
+import***REMOVED***UpdateCategoryModal***REMOVED***from***REMOVED***"./modal/UpdateCategory";
 import***REMOVED***ModalConfirm***REMOVED***from***REMOVED***"src/components/ModalConfirm";
 import***REMOVED***useToast***REMOVED***from***REMOVED***"src/components/Toast";
+
+interface***REMOVED***BreadcrumbItem***REMOVED***{
+***REMOVED******REMOVED***categoryId:***REMOVED***number;
+***REMOVED******REMOVED***categoryName:***REMOVED***string;
+}
 
 interface***REMOVED***CategoryTableProps***REMOVED***{
 ***REMOVED******REMOVED***onTypeChange?:***REMOVED***(type:***REMOVED***string)***REMOVED***=>***REMOVED***void;
 ***REMOVED******REMOVED***onParentInfoChange?:***REMOVED***(id:***REMOVED***number***REMOVED***|***REMOVED***string,***REMOVED***name:***REMOVED***string)***REMOVED***=>***REMOVED***void;
+***REMOVED******REMOVED***onBreadcrumbsChange?:***REMOVED***(breadcrumbs:***REMOVED***BreadcrumbItem[])***REMOVED***=>***REMOVED***void;
 }
 
 const***REMOVED***CategoryTable***REMOVED***=***REMOVED***({
 ***REMOVED******REMOVED***onTypeChange,
 ***REMOVED******REMOVED***onParentInfoChange,
+***REMOVED******REMOVED***onBreadcrumbsChange,
 }:***REMOVED***CategoryTableProps)***REMOVED***=>***REMOVED***{
 ***REMOVED******REMOVED***const***REMOVED***navigate***REMOVED***=***REMOVED***useNavigate();
 ***REMOVED******REMOVED***const***REMOVED***queryClient***REMOVED***=***REMOVED***useQueryClient();
@@ -46,7 +53,7 @@ const***REMOVED***CategoryTable***REMOVED***=***REMOVED***({
 ***REMOVED******REMOVED***const***REMOVED***[pageSize,***REMOVED***setPageSize]***REMOVED***=***REMOVED***useState(10);
 
 ***REMOVED******REMOVED***const***REMOVED***pathWithoutQuery***REMOVED***=***REMOVED***location.pathname.split("?")[0];
-***REMOVED******REMOVED***const***REMOVED***relativePath***REMOVED***=***REMOVED***pathWithoutQuery.replace(/^\/category\/?/,***REMOVED***"");
+***REMOVED******REMOVED***const***REMOVED***relativePath***REMOVED***=***REMOVED***pathWithoutQuery.replace(/^\/admin\/category\/?/,***REMOVED***"");
 
 ***REMOVED******REMOVED***const***REMOVED***pathIds***REMOVED***=***REMOVED***relativePath.split("/").filter((id)***REMOVED***=>***REMOVED***id.trim()***REMOVED***!==***REMOVED***"");
 ***REMOVED******REMOVED***const***REMOVED***isDetail***REMOVED***=***REMOVED***pathIds.length***REMOVED***>***REMOVED***0;
@@ -90,7 +97,7 @@ const***REMOVED***CategoryTable***REMOVED***=***REMOVED***({
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***const***REMOVED***realTotalPages***REMOVED***=***REMOVED***response.data.totalPages***REMOVED***??***REMOVED***1;
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***setMaxPages(realTotalPages);
 
-***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***return***REMOVED***response.data.data.$values;
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***return***REMOVED***response.data.items.$values;
 ***REMOVED******REMOVED******REMOVED******REMOVED***},
 ***REMOVED******REMOVED******REMOVED******REMOVED***enabled:***REMOVED***!isDetail***REMOVED***&&***REMOVED***pageNumber***REMOVED***>***REMOVED***0,
 ***REMOVED******REMOVED******REMOVED******REMOVED***placeholderData:***REMOVED***(previousData:***REMOVED***any)***REMOVED***=>***REMOVED***previousData,
@@ -127,15 +134,45 @@ const***REMOVED***CategoryTable***REMOVED***=***REMOVED***({
 ***REMOVED******REMOVED******REMOVED******REMOVED***}
 ***REMOVED******REMOVED***},***REMOVED***[categoryDetail,***REMOVED***onTypeChange,***REMOVED***onParentInfoChange]);
 
+***REMOVED******REMOVED***useEffect(()***REMOVED***=>***REMOVED***{
+***REMOVED******REMOVED******REMOVED******REMOVED***if***REMOVED***(!isDetail)***REMOVED***{
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***onBreadcrumbsChange?.([]);
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***return;
+***REMOVED******REMOVED******REMOVED******REMOVED***}
+
+***REMOVED******REMOVED******REMOVED******REMOVED***if***REMOVED***(categoryDetail?.type)***REMOVED***{
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***onTypeChange?.(categoryDetail.type);
+***REMOVED******REMOVED******REMOVED******REMOVED***}
+
+***REMOVED******REMOVED******REMOVED******REMOVED***const***REMOVED***current***REMOVED***=***REMOVED***categoryDetail?.currentCategory;
+
+***REMOVED******REMOVED******REMOVED******REMOVED***if***REMOVED***(current?.categoryId***REMOVED***&&***REMOVED***current?.categoryName)***REMOVED***{
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***setParentCategoryName(current.categoryName);
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***onParentInfoChange?.(current.categoryId,***REMOVED***current.categoryName);
+***REMOVED******REMOVED******REMOVED******REMOVED***}
+
+***REMOVED******REMOVED******REMOVED******REMOVED***const***REMOVED***breadcrumbs***REMOVED***=***REMOVED***current?.breadcrumbs***REMOVED***??***REMOVED***[];
+***REMOVED******REMOVED******REMOVED******REMOVED***if***REMOVED***(breadcrumbs.length***REMOVED***>***REMOVED***0)***REMOVED***{
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***onBreadcrumbsChange?.(breadcrumbs);
+***REMOVED******REMOVED******REMOVED******REMOVED***}
+***REMOVED******REMOVED***},***REMOVED***[
+***REMOVED******REMOVED******REMOVED******REMOVED***isDetail,
+***REMOVED******REMOVED******REMOVED******REMOVED***categoryDetail,
+***REMOVED******REMOVED******REMOVED******REMOVED***onTypeChange,
+***REMOVED******REMOVED******REMOVED******REMOVED***onParentInfoChange,
+***REMOVED******REMOVED******REMOVED******REMOVED***onBreadcrumbsChange,
+***REMOVED******REMOVED***]);
+
 ***REMOVED******REMOVED***const***REMOVED***categoryMenuActions***REMOVED***=***REMOVED***categoryContextMenuItems.map((item)***REMOVED***=>***REMOVED***({
 ***REMOVED******REMOVED******REMOVED******REMOVED***...item,
 ***REMOVED******REMOVED******REMOVED******REMOVED***onClick:***REMOVED***(category:***REMOVED***ICategory)***REMOVED***=>***REMOVED***{
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***switch***REMOVED***(item.id)***REMOVED***{
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***case***REMOVED***"VIEW":
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***console.log("Xem***REMOVED***chi***REMOVED***tiết:",***REMOVED***category);
-***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***const***REMOVED***nextPath***REMOVED***=***REMOVED***`/category/${[...pathIds,***REMOVED***category.categoryId].join(
-***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***"/"
-***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***)}`;
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***const***REMOVED***nextPath***REMOVED***=***REMOVED***`/admin/category/${[
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***...pathIds,
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***category.categoryId,
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***].join("/")}`;
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***navigate(nextPath);
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***break;
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***case***REMOVED***"EDIT":
@@ -183,8 +220,10 @@ const***REMOVED***CategoryTable***REMOVED***=***REMOVED***({
 
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***if***REMOVED***(res.data.canDeleteAll***REMOVED***===***REMOVED***true)***REMOVED***{
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***setConfirmModalOpen(true);
-***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***setPendingDeleteIds(categoryIds)
-***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***setConfirmMessage(['Sau***REMOVED***khi***REMOVED***xóa,***REMOVED***liên***REMOVED***kết***REMOVED***giữa***REMOVED***danh***REMOVED***mục***REMOVED***với***REMOVED***sản***REMOVED***phẩm***REMOVED***và***REMOVED***thuộc***REMOVED***tính***REMOVED***sẽ***REMOVED***bị***REMOVED***mất,***REMOVED***bạn***REMOVED***có***REMOVED***xác***REMOVED***nhận***REMOVED***xóa']);
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***setPendingDeleteIds(categoryIds);
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***setConfirmMessage([
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***"Sau***REMOVED***khi***REMOVED***xóa,***REMOVED***liên***REMOVED***kết***REMOVED***giữa***REMOVED***danh***REMOVED***mục***REMOVED***với***REMOVED***sản***REMOVED***phẩm***REMOVED***và***REMOVED***thuộc***REMOVED***tính***REMOVED***sẽ***REMOVED***bị***REMOVED***mất,***REMOVED***bạn***REMOVED***có***REMOVED***xác***REMOVED***nhận***REMOVED***xóa",
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***]);
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***setShowConfirmButton(true);
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***}
 ***REMOVED******REMOVED******REMOVED******REMOVED***}***REMOVED***catch***REMOVED***(error)***REMOVED***{
@@ -195,11 +234,14 @@ const***REMOVED***CategoryTable***REMOVED***=***REMOVED***({
 ***REMOVED******REMOVED***const***REMOVED***handleConfirmDelete***REMOVED***=***REMOVED***async***REMOVED***()***REMOVED***=>***REMOVED***{
 ***REMOVED******REMOVED******REMOVED******REMOVED***try***REMOVED***{
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***const***REMOVED***res***REMOVED***=***REMOVED***await***REMOVED***categoryApi.deleteManyCategories(pendingDeleteIds);
-***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***console.log("🚀***REMOVED***~***REMOVED***handleConfirmDelete***REMOVED***~***REMOVED***pendingDeleteIds:",***REMOVED***pendingDeleteIds)
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***console.log(
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***"🚀***REMOVED***~***REMOVED***handleConfirmDelete***REMOVED***~***REMOVED***pendingDeleteIds:",
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***pendingDeleteIds
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***);
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***if***REMOVED***(res.data.success)***REMOVED***{
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***showSuccess("Xoá***REMOVED***thành***REMOVED***công!");
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***invalidateAllCategoryData();
-***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***setSelected([])
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***setSelected([]);
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***}***REMOVED***else***REMOVED***{
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***showError("Xoá***REMOVED***thất***REMOVED***bại!");
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***}
@@ -390,7 +432,7 @@ const***REMOVED***CategoryTable***REMOVED***=***REMOVED***({
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***onClick={()***REMOVED***=>***REMOVED***{
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***setPageNumber(1);
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***setPageSize(10);
-***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***const***REMOVED***nextPath***REMOVED***=***REMOVED***`/category/${[
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***const***REMOVED***nextPath***REMOVED***=***REMOVED***`/admin/category/${[
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***...pathIds,
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***category.categoryId,
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***].join("/")}`;
@@ -443,7 +485,9 @@ const***REMOVED***CategoryTable***REMOVED***=***REMOVED***({
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***{category.description***REMOVED***||***REMOVED***"Không***REMOVED***có***REMOVED***mô***REMOVED***tả"}
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***</TableCell>
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***<TableCell***REMOVED***sx={Styles.tableCellBody}>
-***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***{category?.creator?.fullName***REMOVED***||***REMOVED***"Không***REMOVED***có***REMOVED***dữ***REMOVED***liệu"}
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***{category?.updaterName***REMOVED***||
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***category?.creatorName***REMOVED***||
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***"Không***REMOVED***có***REMOVED***dữ***REMOVED***liệu"}
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***</TableCell>
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***<TableCell***REMOVED***sx={Styles.tableCellBody}>
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***{formatVietnamTime(category.updatedAt)}
@@ -472,7 +516,9 @@ const***REMOVED***CategoryTable***REMOVED***=***REMOVED***({
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***pageNumber={pageNumber}
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***setPageNumber={(newPage)***REMOVED***=>***REMOVED***{
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***setPageNumber(newPage);
-***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***const***REMOVED***newPath***REMOVED***=***REMOVED***`/category/${pathIds.join("/")}?page=${newPage}`;
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***const***REMOVED***newPath***REMOVED***=***REMOVED***`/admin/category/${pathIds.join(
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***"/"
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***)}?page=${newPage}`;
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***navigate(newPath);
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***}}
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***totalPages={maxPages}

@@ -5,7 +5,7 @@ import***REMOVED***TopBar***REMOVED***from***REMOVED***"src/components/Layouts/T
 import***REMOVED***Footer***REMOVED***from***REMOVED***"src/components/Layouts/Footer";
 import***REMOVED***{***REMOVED***useState***REMOVED***}***REMOVED***from***REMOVED***"react";
 
-const***REMOVED***MainLayout***REMOVED***=***REMOVED***()***REMOVED***=>***REMOVED***{
+const***REMOVED***AdminDashboard***REMOVED***=***REMOVED***()***REMOVED***=>***REMOVED***{
 ***REMOVED******REMOVED***const***REMOVED***[expanded,***REMOVED***setExpanded]***REMOVED***=***REMOVED***useState(true);
 ***REMOVED******REMOVED***return***REMOVED***(
 ***REMOVED******REMOVED******REMOVED******REMOVED***<Box
@@ -44,4 +44,4 @@ const***REMOVED***MainLayout***REMOVED***=***REMOVED***()***REMOVED***=>***REMOV
 ***REMOVED******REMOVED***);
 };
 
-export***REMOVED***default***REMOVED***MainLayout;
+export***REMOVED***default***REMOVED***AdminDashboard;

@@ -1,14 +1,23 @@
 import***REMOVED***React***REMOVED***from***REMOVED***"react";
-import***REMOVED***{***REMOVED***Box,***REMOVED***Button,***REMOVED***Typography***REMOVED***}***REMOVED***from***REMOVED***"@mui/material";
+import***REMOVED***{***REMOVED***Box,***REMOVED***Button***REMOVED***}***REMOVED***from***REMOVED***"@mui/material";
 import***REMOVED***AddIcon***REMOVED***from***REMOVED***"@mui/icons-material/Add";
+import***REMOVED***BreadcrumbNavigation,***REMOVED***{***REMOVED***BreadcrumbItem***REMOVED***}***REMOVED***from***REMOVED***"../BreadcrumbNavigation";
 
 interface***REMOVED***PageHeaderProps***REMOVED***{
-***REMOVED******REMOVED***title:***REMOVED***string;
-***REMOVED******REMOVED***onAddClick?:***REMOVED***()***REMOVED***=>***REMOVED***void;
+***REMOVED******REMOVED***breadcrumbs?:***REMOVED***BreadcrumbItem[];
 ***REMOVED******REMOVED***showAddButton?:***REMOVED***boolean;
+***REMOVED******REMOVED***onAddClick?:***REMOVED***()***REMOVED***=>***REMOVED***void;
+***REMOVED******REMOVED***pageTitle:***REMOVED***string
+***REMOVED******REMOVED***pageUrl:***REMOVED***string
 }
 
-const***REMOVED***PageHeader***REMOVED***=***REMOVED***({***REMOVED***title,***REMOVED***onAddClick,***REMOVED***showAddButton***REMOVED***}:***REMOVED***PageHeaderProps)***REMOVED***=>***REMOVED***{
+const***REMOVED***PageHeader:***REMOVED***React.FC<PageHeaderProps>***REMOVED***=***REMOVED***({
+***REMOVED******REMOVED***breadcrumbs,
+***REMOVED******REMOVED***showAddButton***REMOVED***=***REMOVED***true,
+***REMOVED******REMOVED***onAddClick,
+***REMOVED******REMOVED***pageTitle,
+***REMOVED******REMOVED***pageUrl
+})***REMOVED***=>***REMOVED***{
 ***REMOVED******REMOVED***return***REMOVED***(
 ***REMOVED******REMOVED******REMOVED******REMOVED***<Box
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***sx={{
@@ -25,22 +34,16 @@ const***REMOVED***PageHeader***REMOVED***=***REMOVED***({***REMOVED***title,***R
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***minHeight:***REMOVED***"35px",
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***}}
 ***REMOVED******REMOVED******REMOVED******REMOVED***>
-***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***<Typography***REMOVED***variant="body1"***REMOVED***fontWeight="500">
-***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***{title}
-***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***</Typography>
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***<BreadcrumbNavigation***REMOVED***items={breadcrumbs}***REMOVED***pageTitle={pageTitle}***REMOVED***pageUrl={pageUrl}***REMOVED***/>
 
-***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***{showAddButton***REMOVED***!==***REMOVED***false***REMOVED***&&***REMOVED***(
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***{showAddButton***REMOVED***&&***REMOVED***(
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***<Button
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***variant="contained"
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***color="primary"
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***size="small"
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***startIcon={<AddIcon***REMOVED***/>}
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***onClick={onAddClick}
-***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***sx={{
-***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***textTransform:***REMOVED***"none",
-***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***justifyContent:***REMOVED***"center",
-***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***maxHeight:***REMOVED***"27px",
-***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***}}
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***sx={{***REMOVED***textTransform:***REMOVED***"none",***REMOVED***maxHeight:***REMOVED***"28px"***REMOVED***}}
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***>
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***Thêm
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***</Button>

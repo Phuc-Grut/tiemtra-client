@@ -2,14 +2,26 @@ import***REMOVED***{***REMOVED***Box***REMOVED***}***REMOVED***from***REMOVED***
 import***REMOVED***PageHeader***REMOVED***from***REMOVED***"src/components/Layouts/PageHeader";
 import***REMOVED***CategoryTable***REMOVED***from***REMOVED***"./components/CategoryTable";
 import***REMOVED***{***REMOVED***useState***REMOVED***}***REMOVED***from***REMOVED***"react";
-import***REMOVED***AddCategoryModal***REMOVED***from***REMOVED***"./components/AddCategory";
+import***REMOVED***AddCategoryModal***REMOVED***from***REMOVED***"./components/modal/AddCategory";
+
+interface***REMOVED***BreadcrumbItem***REMOVED***{
+***REMOVED******REMOVED***categoryId:***REMOVED***number;
+***REMOVED******REMOVED***categoryName:***REMOVED***string;
+}
 
 const***REMOVED***Category***REMOVED***=***REMOVED***()***REMOVED***=>***REMOVED***{
-***REMOVED******REMOVED***const***REMOVED***[categoryType,***REMOVED***setCategoryType]***REMOVED***=***REMOVED***useState<string***REMOVED***|***REMOVED***undefined>(undefined);
+***REMOVED******REMOVED***const***REMOVED***[categoryType,***REMOVED***setCategoryType]***REMOVED***=***REMOVED***useState<string***REMOVED***|***REMOVED***undefined>(
+***REMOVED******REMOVED******REMOVED******REMOVED***undefined
+***REMOVED******REMOVED***);
 ***REMOVED******REMOVED***const***REMOVED***[isAddOpen,***REMOVED***setIsAddOpen]***REMOVED***=***REMOVED***useState(false);
 
-***REMOVED******REMOVED***const***REMOVED***[parentCategoryId,***REMOVED***setParentCategoryId]***REMOVED***=***REMOVED***useState<number***REMOVED***|***REMOVED***undefined>();
-***REMOVED******REMOVED***const***REMOVED***[parentCategoryName,***REMOVED***setParentCategoryName]***REMOVED***=***REMOVED***useState<string***REMOVED***|***REMOVED***undefined>();
+***REMOVED******REMOVED***const***REMOVED***[parentCategoryId,***REMOVED***setParentCategoryId]***REMOVED***=***REMOVED***useState<
+***REMOVED******REMOVED******REMOVED******REMOVED***number***REMOVED***|***REMOVED***undefined
+***REMOVED******REMOVED***>();
+***REMOVED******REMOVED***const***REMOVED***[parentCategoryName,***REMOVED***setParentCategoryName]***REMOVED***=***REMOVED***useState<
+***REMOVED******REMOVED******REMOVED******REMOVED***string***REMOVED***|***REMOVED***undefined
+***REMOVED******REMOVED***>();
+***REMOVED******REMOVED***const***REMOVED***[breadcrumbs,***REMOVED***setBreadcrumbs]***REMOVED***=***REMOVED***useState<BreadcrumbItem[]>([]);
 
 ***REMOVED******REMOVED***return***REMOVED***(
 ***REMOVED******REMOVED******REMOVED******REMOVED***<Box
@@ -23,7 +35,9 @@ const***REMOVED***Category***REMOVED***=***REMOVED***()***REMOVED***=>***REMOVED
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***}}
 ***REMOVED******REMOVED******REMOVED******REMOVED***>
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***<PageHeader
-***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***title="Trang***REMOVED***Danh***REMOVED***Mục"
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***breadcrumbs={breadcrumbs}
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***pageTitle="Danh***REMOVED***mục"***REMOVED***//***REMOVED***Tên***REMOVED***trang***REMOVED***(ví***REMOVED***dụ:***REMOVED***"Danh***REMOVED***mục",***REMOVED***"Thuộc***REMOVED***tính")
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***pageUrl="/admin/category"***REMOVED***//***REMOVED***URL***REMOVED***của***REMOVED***trang***REMOVED***để***REMOVED***dẫn***REMOVED***đến***REMOVED***khi***REMOVED***click***REMOVED***vào***REMOVED***"Danh***REMOVED***mục"
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***showAddButton={categoryType***REMOVED***!==***REMOVED***"Attributes"}
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***onAddClick={()***REMOVED***=>***REMOVED***setIsAddOpen(true)}
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***/>
@@ -42,6 +56,7 @@ const***REMOVED***Category***REMOVED***=***REMOVED***()***REMOVED***=>***REMOVED
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***setParentCategoryId(Number(id));
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***setParentCategoryName(name);
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***}}
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***onBreadcrumbsChange={setBreadcrumbs}
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***/>
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***</Box>
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***<AddCategoryModal

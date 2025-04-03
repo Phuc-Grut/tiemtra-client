@@ -1,5 +1,5 @@
 export***REMOVED***const***REMOVED***BASE_URL***REMOVED***=***REMOVED***"https://localhost:7021/api"
-
+const***REMOVED***URL_ADMIN***REMOVED***=***REMOVED***`${BASE_URL}/admin`
 
 export***REMOVED***const***REMOVED***AUTHENTICATION***REMOVED***=***REMOVED***{
 ***REMOVED******REMOVED******REMOVED******REMOVED***ACTION_TYPES:***REMOVED***{
@@ -28,11 +28,11 @@ export***REMOVED***const***REMOVED***CATEGORY***REMOVED***=***REMOVED***{
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***DELETE_API_BY_IDS:***REMOVED***'CATEGORY/DELETE_API_BY_IDS'
 ***REMOVED******REMOVED******REMOVED******REMOVED***},
 ***REMOVED******REMOVED******REMOVED******REMOVED***URL_API:***REMOVED***{
-***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***GET_ALL_API:***REMOVED******REMOVED***`${BASE_URL}/category/get-paging-category`,
-***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***GET_BY_ID_API:***REMOVED******REMOVED***`${BASE_URL}/category/get-by-id`,
-***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***CREATE_API:***REMOVED******REMOVED***`${BASE_URL}/category/add-category`,
-***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***UPDATE_API:***REMOVED***(id:***REMOVED***number)***REMOVED***=>***REMOVED***`${BASE_URL}/category/update-category/${id}`,
-***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***CHECK_DELETE_BY_IDS:***REMOVED***`${BASE_URL}/category/check-delete-by-ids`,
-***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***DELETE_API_BY_IDS:***REMOVED***`${BASE_URL}/category/delete-category-by-ids`
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***GET_ALL_API:***REMOVED******REMOVED***`${URL_ADMIN}/category/get-paging-categories`,
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***GET_BY_ID_API:***REMOVED******REMOVED***`${URL_ADMIN}/category/get-by-id`,
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***CREATE_API:***REMOVED******REMOVED***`${URL_ADMIN}/category/add-category`,
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***UPDATE_API:***REMOVED***(id:***REMOVED***number)***REMOVED***=>***REMOVED***`${URL_ADMIN}/category/update-category/${id}`,
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***CHECK_DELETE_BY_IDS:***REMOVED***`${URL_ADMIN}/category/check-delete-by-ids`,
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***DELETE_API_BY_IDS:***REMOVED***`${URL_ADMIN}/category/delete-category-by-ids`
 ***REMOVED******REMOVED******REMOVED******REMOVED***}
 }

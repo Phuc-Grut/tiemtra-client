@@ -17,7 +17,7 @@ const***REMOVED***LoginForm:***REMOVED***React.FC***REMOVED***=***REMOVED***()**
 ***REMOVED******REMOVED******REMOVED******REMOVED***if***REMOVED***(result)***REMOVED***{
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***localStorage.setItem("access_token",***REMOVED***result.token);***REMOVED***//***REMOVED***✅***REMOVED***Lưu***REMOVED***Access***REMOVED***Token
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***localStorage.setItem("refresh_token",***REMOVED***result.refreshToken);***REMOVED***//***REMOVED***✅***REMOVED***Lưu***REMOVED***Refresh***REMOVED***Token
-***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***navigate("/dashboard");
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***navigate("/admin/dashboard");
 ***REMOVED******REMOVED******REMOVED******REMOVED***}
 ***REMOVED******REMOVED***};
 
