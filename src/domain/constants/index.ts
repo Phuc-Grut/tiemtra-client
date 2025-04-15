@@ -1,4 +1,6 @@
 export const BASE_URL = "https://localhost:7021/api"
+// export const BASE_URL = "http://localhost:5001/api";
+
 const URL_ADMIN = `${BASE_URL}/admin`
 
 export const AUTHENTICATION = {
@@ -34,5 +36,15 @@ export const CATEGORY = {
         UPDATE_API: (id: number) => `${URL_ADMIN}/category/update-category/${id}`,
         CHECK_DELETE_BY_IDS: `${URL_ADMIN}/category/check-delete-by-ids`,
         DELETE_API_BY_IDS: `${URL_ADMIN}/category/delete-category-by-ids`
+    }
+}
+
+export const ATTRIBUTE = {
+    ACTION_TYPES: {
+        GET_ALL: 'ATTRIBUTE/GET_ALL',
+    },
+    URL_API: {
+        GET_ALL_API: `${URL_ADMIN}/attributes/get-paging-attributes`,
+        CREATE_API: `${URL_ADMIN}/attributes/add-attributes`,
     }
 }

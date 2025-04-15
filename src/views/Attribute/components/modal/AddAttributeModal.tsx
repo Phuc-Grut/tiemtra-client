@@ -1,68 +1,61 @@
-import React, { useState } from "react";
 import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  TextField,
   Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  TextField,
 } from "@mui/material";
-import LockIcon from "@mui/icons-material/Lock";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { IAddCategoryRequest } from "src/Interfaces/ICategory";
-import categoryApi from "src/services/api/Category";
+import { useState } from "react";
 import useToast from "src/components/Toast";
+import { IAddAttributeRequest } from "src/Interfaces/IAttribute";
+import attributeApi from "src/services/api/Attributes";
 
 interface Props {
   open: boolean;
   onClose: () => void;
-  parentCategoryName?: string;
-  parentCategoryId?: number;
 }
 
-const AddCategoryModal = ({
-  open,
-  onClose,
-  parentCategoryName,
-  parentCategoryId,
-}: Props) => {
+const AddAttributeModal = ({ open, onClose }: Props) => {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [error, setError] = useState(false);
   const { showSuccess, showError } = useToast();
-
   const queryClient = useQueryClient();
-
-  const invalidateAllCategoryData = () => {
-    queryClient.invalidateQueries({
-      predicate: (query) =>
-        ["category", "categories"].includes(query.queryKey[0] as string),
-    });
-  };
-
   const mutation = useMutation({
-    mutationFn: (data: IAddCategoryRequest) => categoryApi.addCategoryApi(data),
+    mutationFn: (data: IAddAttributeRequest) => attributeApi.addAttributeApi(data),
     onSuccess: () => {
-      invalidateAllCategoryData();
       onClose();
+      // invalidateAllCategoryData();
+      queryClient.invalidateQueries({ queryKey: ["attributes"] });
       showSuccess("Thêm thành công!");
     },
   });
+
+  const formatTitleCase = (str: string) => {
+    return str
+      .toLowerCase() // chuyển toàn bộ thành chữ thường
+      .replace(/\b\w/g, (char) => char.toUpperCase()); // viết hoa chữ cái đầu mỗi từ
+  };
+  
 
   const handleSubmit = async () => {
     if (!name.trim()) {
       setError(true);
       return;
     }
-
+  
     setError(false);
+  
     try {
+      const formattedName = formatTitleCase(name);
+  
       await mutation.mutateAsync({
-        categoryName: name,
-        description: description,
-        parentId: parentCategoryId || null,
+        attributeName: formattedName,
+        attributeDescription: description,
       });
-
+  
       setName("");
       setDescription("");
       onClose();
@@ -71,6 +64,7 @@ const AddCategoryModal = ({
       showError("Thêm thất bại!!");
     }
   };
+  
 
   return (
     <Dialog
@@ -85,25 +79,11 @@ const AddCategoryModal = ({
         },
       }}
     >
-      <DialogTitle>Thêm danh mục</DialogTitle>
+      <DialogTitle>Thêm thuộc tính</DialogTitle>
       <DialogContent>
-        {parentCategoryName && (
-          <TextField
-            fullWidth
-            label="Danh mục cha"
-            value={parentCategoryName}
-            margin="dense"
-            InputProps={{
-              readOnly: true,
-              sx: { opacity: 0.6, cursor: "default", fontWeight: "bold" },
-              endAdornment: <LockIcon fontSize="medium" color="secondary" />,
-            }}
-          />
-        )}
-
         <TextField
           fullWidth
-          label="Tên danh mục"
+          label="Tên thuộc tính"
           margin="dense"
           value={name}
           onChange={(e) => {
@@ -114,12 +94,12 @@ const AddCategoryModal = ({
           }}
           onKeyDown={(e) => {
             if (e.key === "Enter") {
-              e.preventDefault();
+              e.preventDefault()
               handleSubmit();
             }
           }}
           error={error}
-          helperText={error ? "Vui lòng nhập tên danh mục" : ""}
+          helperText={error ? "Vui lòng nhập tên thuộc tính" : ""}
         />
 
         <TextField
@@ -144,4 +124,4 @@ const AddCategoryModal = ({
   );
 };
 
-export default AddCategoryModal;
+export default AddAttributeModal;

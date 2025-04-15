@@ -573,6 +573,8 @@ const CategoryTable = ({
         onClose={() => {
           setConfirmModalOpen(false);
           setPendingDeleteIds([]);
+          setSelected([]);
+          setSelectedCategory(null)
         }}
         onConfirm={handleConfirmDelete}
         showConfirmButton={showConfirmButton}
