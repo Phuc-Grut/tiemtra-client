@@ -26,6 +26,8 @@ import { categoryContextMenuItems } from "../contextMenu";
 import UpdateCategoryModal from "./modal/UpdateCategory";
 import ModalConfirm from "src/components/ModalConfirm";
 import useToast from "src/components/Toast";
+import AddAttributeModal from "src/views/Attribute/components/modal/AddAttributeModal";
+import AddAttributeToCategory from "./modal/AddAttributeToCategory";
 
 interface BreadcrumbItem {
   categoryId: number;
@@ -56,8 +58,11 @@ const CategoryTable = ({
   const relativePath = pathWithoutQuery.replace(/^\/admin\/category\/?/, "");
 
   const pathIds = relativePath.split("/").filter((id) => id.trim() !== "");
+  // console.log("🚀 ~ pathIds:", pathIds)
   const isDetail = pathIds.length > 0;
+  // console.log("🚀 ~ isDetail:", isDetail)
   const currentCategoryId = pathIds[pathIds.length - 1];
+  // console.log("🚀 ~ currentCategoryId:", currentCategoryId) 
   const [prentCategoryName, setParentCategoryName] = useState<string | null>(
     null
   );
@@ -68,6 +73,7 @@ const CategoryTable = ({
   const [selectedCategory, setSelectedCategory] = useState<ICategory | null>(
     null
   );
+  const [openAddAttribute, setOpenAddAttribute] = useState(false);
 
   const [confirmMessage, setConfirmMessage] = useState<string[]>([]);
   const [pendingDeleteIds, setPendingDeleteIds] = useState<number[]>([]);
@@ -99,6 +105,7 @@ const CategoryTable = ({
 
       return response.data.items.$values;
     },
+    retry: false,
     enabled: !isDetail && pageNumber > 0,
     placeholderData: (previousData: any) => previousData,
   });
@@ -111,6 +118,7 @@ const CategoryTable = ({
         pageNumber: 1,
         pageSize: 10,
       }),
+    retry: false,
     enabled: !!currentCategoryId && !isNaN(Number(currentCategoryId)),
     select: (res) => {
       const type = res.data?.type ?? "Unknown";
@@ -235,7 +243,7 @@ const CategoryTable = ({
     try {
       const res = await categoryApi.deleteManyCategories(pendingDeleteIds);
       console.log(
-        "🚀 ~ handleConfirmDelete ~ pendingDeleteIds:",
+        // "🚀 ~ handleConfirmDelete ~ pendingDeleteIds:",
         pendingDeleteIds
       );
       if (res.data.success) {
@@ -352,13 +360,18 @@ const CategoryTable = ({
                 padding: "0px 10px",
                 backgroundColor: "#ffa500",
               }}
-              onClick={() => console.log("Thêm thuộc tính")}
+              onClick={() => setOpenAddAttribute(true)}
             >
               + Thêm thuộc tính
             </Button>
           )
         )}
       </Box>
+      <AddAttributeToCategory
+        open={openAddAttribute}
+        categoryId={Number(currentCategoryId)}
+        onClose={() => setOpenAddAttribute(false)}
+      />
 
       <TableContainer component={Paper} sx={{ overflowX: "auto", flexGrow: 1 }}>
         <Table stickyHeader>
@@ -574,7 +587,7 @@ const CategoryTable = ({
           setConfirmModalOpen(false);
           setPendingDeleteIds([]);
           setSelected([]);
-          setSelectedCategory(null)
+          setSelectedCategory(null);
         }}
         onConfirm={handleConfirmDelete}
         showConfirmButton={showConfirmButton}

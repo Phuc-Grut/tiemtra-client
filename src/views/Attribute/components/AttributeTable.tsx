@@ -2,6 +2,7 @@ import {
   Box,
   Button,
   Checkbox,
+  MenuItem,
   Paper,
   Table,
   TableBody,
@@ -9,6 +10,7 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  TextField,
 } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
@@ -18,10 +20,16 @@ import formatVietnamTime from "src/utils/formatVietnamTime";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { atrrinuteContextMenuItems } from "../contextMenu";
 import GenericContextMenu from "src/components/GenericContextMenu";
+import CustomPagination from "src/components/CustomPagination";
+import { useNavigate } from "react-router-dom";
 
 const AttributeTable = () => {
+
+  const navigate = useNavigate();
   const [pageNumber, setPageNumber] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(5);
+  const [maxPages, setMaxPages] = useState<number>(1);
+
   const [selected, setSelected] = useState<number[]>([]);
   const handleSelect = (id: number) => {
     setSelected((prev) =>
@@ -51,8 +59,10 @@ const AttributeTable = () => {
         pageSize,
       });
       const realTotalPages = response.data.totalPages ?? 1;
+      setMaxPages(realTotalPages);
       return response.data.items.$values;
     },
+    retry: false,
   });
 
   const handleDeleteSelected = async (attributeIds: number[] = selected) => {};
@@ -221,10 +231,10 @@ const AttributeTable = () => {
                     setSelectedAttribute(attr);
                     setAnchorEl({ mouseX: e.clientX, mouseY: e.clientY });
                   }}
-                //   onClick={() => {
-                //     setSelectedAttribute(attr);
-                //     setEditModalOpen(true);
-                //   }}
+                  //   onClick={() => {
+                  //     setSelectedAttribute(attr);
+                  //     setEditModalOpen(true);
+                  //   }}
                 >
                   <TableCell
                     sx={{
@@ -271,6 +281,52 @@ const AttributeTable = () => {
           </TableBody>
         </Table>
       </TableContainer>
+
+      <Box
+        mt={0}
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        paddingBottom={0.5}
+        gap={2}
+      >
+        <CustomPagination
+          pageNumber={pageNumber}
+          setPageNumber={(newPage) => {
+            setPageNumber(newPage);
+            const newPath = `/admin/attribute/?page=${newPage}`;
+            navigate(newPath);
+          }}
+          totalPages={maxPages}
+        />
+
+        <Box display="flex" alignItems="center" gap={1} maxHeight={25}>
+          <TextField
+            select
+            value={pageSize}
+            onChange={(e) => {
+              setPageSize(parseInt(e.target.value));
+              setPageNumber(1);
+            }}
+            size="small"
+            variant="standard"
+            sx={{
+              width: 80,
+              maxheight: "25px",
+            }}
+          >
+            {[1, 5, 10, 15, 20].map((option) => (
+              <MenuItem key={option} value={option}>
+                {option}
+              </MenuItem>
+            ))}
+          </TextField>
+
+          <Box fontSize="12px" color="#555">
+            Bản ghi/trang
+          </Box>
+        </Box>
+      </Box>
       <GenericContextMenu
         anchorEl={anchorEl}
         onClose={() => setAnchorEl(null)}

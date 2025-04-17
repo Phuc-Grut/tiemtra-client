@@ -33,13 +33,6 @@ const AddAttributeModal = ({ open, onClose }: Props) => {
     },
   });
 
-  const formatTitleCase = (str: string) => {
-    return str
-      .toLowerCase() // chuyển toàn bộ thành chữ thường
-      .replace(/\b\w/g, (char) => char.toUpperCase()); // viết hoa chữ cái đầu mỗi từ
-  };
-  
-
   const handleSubmit = async () => {
     if (!name.trim()) {
       setError(true);
@@ -49,10 +42,9 @@ const AddAttributeModal = ({ open, onClose }: Props) => {
     setError(false);
   
     try {
-      const formattedName = formatTitleCase(name);
   
       await mutation.mutateAsync({
-        attributeName: formattedName,
+        attributeName: name,
         attributeDescription: description,
       });
   
