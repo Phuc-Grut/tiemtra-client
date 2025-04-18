@@ -27,7 +27,9 @@ export const CATEGORY = {
         CREATE: 'CATEGORY/CREATE',
         UPDATE: 'CATEGORY/UPDATE',
         CHECK_DELETE_BY_IDS: 'CATEGORY/CHECK_DELETE_MANY',
-        DELETE_API_BY_IDS: 'CATEGORY/DELETE_API_BY_IDS'
+        DELETE_API_BY_IDS: 'CATEGORY/DELETE_API_BY_IDS',
+        ATTRIBUTE_BY_ID: 'CATEGORY/ATTRIBUTE_BY_ID',
+        SET_ATTRIBUTES_API: 'CATEGORY/SET_ATTRIBUTES_API'
     },
     URL_API: {
         GET_ALL_API:  `${URL_ADMIN}/category/get-paging-categories`,
@@ -35,7 +37,9 @@ export const CATEGORY = {
         CREATE_API:  `${URL_ADMIN}/category/add-category`,
         UPDATE_API: (id: number) => `${URL_ADMIN}/category/update-category/${id}`,
         CHECK_DELETE_BY_IDS: `${URL_ADMIN}/category/check-delete-by-ids`,
-        DELETE_API_BY_IDS: `${URL_ADMIN}/category/delete-category-by-ids`
+        DELETE_API_BY_IDS: `${URL_ADMIN}/category/delete-category-by-ids`,
+        ATTRIBUTE_BY_ID: (id: number) => `${URL_ADMIN}/category/${id}/select-attributes`,
+        SET_ATTRIBUTES_API: `${URL_ADMIN}/category/set-attributes`
     }
 }
 

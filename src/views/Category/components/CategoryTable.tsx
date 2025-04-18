@@ -60,9 +60,7 @@ const CategoryTable = ({
   const pathIds = relativePath.split("/").filter((id) => id.trim() !== "");
   // console.log("🚀 ~ pathIds:", pathIds)
   const isDetail = pathIds.length > 0;
-  // console.log("🚀 ~ isDetail:", isDetail)
   const currentCategoryId = pathIds[pathIds.length - 1];
-  // console.log("🚀 ~ currentCategoryId:", currentCategoryId) 
   const [prentCategoryName, setParentCategoryName] = useState<string | null>(
     null
   );
@@ -73,7 +71,6 @@ const CategoryTable = ({
   const [selectedCategory, setSelectedCategory] = useState<ICategory | null>(
     null
   );
-  const [openAddAttribute, setOpenAddAttribute] = useState(false);
 
   const [confirmMessage, setConfirmMessage] = useState<string[]>([]);
   const [pendingDeleteIds, setPendingDeleteIds] = useState<number[]>([]);
@@ -129,6 +126,12 @@ const CategoryTable = ({
       return { type, items, totalItems, pageSize, currentCategory };
     },
   });
+
+  const reloadCategoryDetail = () => {
+    queryClient.invalidateQueries({
+      queryKey: ["category", currentCategoryId, pageNumber, pageSize],
+    });
+  };  
 
   useEffect(() => {
     if (categoryDetail?.type) {
@@ -208,7 +211,6 @@ const CategoryTable = ({
   };
 
   const handleDeleteSelected = async (categoryIds: number[] = selected) => {
-    // console.log("🚀 ~ handleDeleteSelected ~ categoryIds:", categoryIds)
     if (categoryIds.length === 0) return;
 
     try {
@@ -243,7 +245,6 @@ const CategoryTable = ({
     try {
       const res = await categoryApi.deleteManyCategories(pendingDeleteIds);
       console.log(
-        // "🚀 ~ handleConfirmDelete ~ pendingDeleteIds:",
         pendingDeleteIds
       );
       if (res.data.success) {
@@ -266,11 +267,13 @@ const CategoryTable = ({
     return (
       <AttributeTable
         rows={categoryDetail.items}
+        categoryId = {Number(currentCategoryId)}
         pageNumber={pageNumber}
         pageSize={pageSize}
         setPageNumber={setPageNumber}
         setPageSize={setPageSize}
         maxPages={Math.ceil(categoryDetail.totalItems / pageSize)}
+        reload={reloadCategoryDetail}
       />
     );
   }
@@ -321,7 +324,7 @@ const CategoryTable = ({
           }}
         />
 
-        {selected.length > 0 ? (
+        {selected.length > 0 && (
           <Button
             variant="contained"
             size="small"
@@ -346,32 +349,8 @@ const CategoryTable = ({
           >
             Xoá ({selected.length})
           </Button>
-        ) : (
-          rows.length === 0 && (
-            <Button
-              variant="contained"
-              size="small"
-              sx={{
-                marginLeft: "12px",
-                textTransform: "none",
-                fontSize: "13px",
-                height: "24px",
-                minWidth: "unset",
-                padding: "0px 10px",
-                backgroundColor: "#ffa500",
-              }}
-              onClick={() => setOpenAddAttribute(true)}
-            >
-              + Thêm thuộc tính
-            </Button>
-          )
         )}
       </Box>
-      <AddAttributeToCategory
-        open={openAddAttribute}
-        categoryId={Number(currentCategoryId)}
-        onClose={() => setOpenAddAttribute(false)}
-      />
 
       <TableContainer component={Paper} sx={{ overflowX: "auto", flexGrow: 1 }}>
         <Table stickyHeader>
@@ -413,21 +392,6 @@ const CategoryTable = ({
                 />
               </TableCell>
 
-              {/* <TableCell
-                sx={{
-                  width: "50px",
-                  textAlign: "center",
-                  fontWeight: "bold",
-                  color: "black",
-                  borderRight: "1px solid rgb(156, 154, 154)",
-                  borderBlock: "1px solid rgb(156, 154, 154)",
-                  height: "30px",
-                  lineHeight: "28px",
-                  padding: "4px 8px",
-                }}
-              >
-                STT
-              </TableCell> */}
               <TableCell sx={Styles.tableCell}>Mã danh mục</TableCell>
               <TableCell sx={Styles.tableCell}>Tên Danh Mục</TableCell>
               <TableCell sx={Styles.tableCell}>Mô tả</TableCell>
@@ -480,14 +444,6 @@ const CategoryTable = ({
                     />
                   </TableCell>
 
-                  {/* <TableCell
-                    sx={{
-                      textAlign: "center",
-                      borderRight: "1px solid rgb(236, 234, 234)",
-                    }}
-                  >
-                    {((pageNumber ?? 1) - 1) * (pageSize ?? 10) + index + 1}
-                  </TableCell> */}
                   <TableCell sx={Styles.tableCellBody}>
                     {category.categoryId}
                   </TableCell>
