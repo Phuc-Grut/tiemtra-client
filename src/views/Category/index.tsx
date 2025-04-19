@@ -36,8 +36,8 @@ const***REMOVED***Category***REMOVED***=***REMOVED***()***REMOVED***=>***REMOVED
 ***REMOVED******REMOVED******REMOVED******REMOVED***>
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***<PageHeader
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***breadcrumbs={breadcrumbs}
-***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***pageTitle="Danh***REMOVED***mục"***REMOVED***//***REMOVED***Tên***REMOVED***trang***REMOVED***(ví***REMOVED***dụ:***REMOVED***"Danh***REMOVED***mục",***REMOVED***"Thuộc***REMOVED***tính")
-***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***pageUrl="/admin/category"***REMOVED***//***REMOVED***URL***REMOVED***của***REMOVED***trang***REMOVED***để***REMOVED***dẫn***REMOVED***đến***REMOVED***khi***REMOVED***click***REMOVED***vào***REMOVED***"Danh***REMOVED***mục"
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***pageTitle="Danh***REMOVED***mục"
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***pageUrl="/admin/category"
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***showAddButton={categoryType***REMOVED***!==***REMOVED***"Attributes"}
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***onAddClick={()***REMOVED***=>***REMOVED***setIsAddOpen(true)}
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***/>

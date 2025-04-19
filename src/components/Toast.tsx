@@ -54,7 +54,7 @@ const***REMOVED***useToast***REMOVED***=***REMOVED***()***REMOVED***=>***REMOVED
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***</Box>
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***),
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***anchorOrigin:***REMOVED***{***REMOVED***vertical:***REMOVED***"top",***REMOVED***horizontal:***REMOVED***"right"***REMOVED***},
-***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***autoHideDuration:***REMOVED***3000,
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***autoHideDuration:***REMOVED***2000,
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***});
 ***REMOVED******REMOVED******REMOVED******REMOVED***},
 ***REMOVED******REMOVED******REMOVED******REMOVED***[enqueueSnackbar]

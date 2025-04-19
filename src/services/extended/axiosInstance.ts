@@ -34,14 +34,20 @@ const***REMOVED***requester***REMOVED***=***REMOVED***axios.create({
 
 requester.interceptors.request.use(
 ***REMOVED******REMOVED***(config)***REMOVED***=>***REMOVED***{
-***REMOVED******REMOVED******REMOVED******REMOVED***const***REMOVED***token***REMOVED***=***REMOVED***getToken();
-***REMOVED******REMOVED******REMOVED******REMOVED***if***REMOVED***(token)***REMOVED***{
-***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***config.headers.Authorization***REMOVED***=***REMOVED***`Bearer***REMOVED***${token}`;
+***REMOVED******REMOVED******REMOVED******REMOVED***const***REMOVED***excludedPaths***REMOVED***=***REMOVED***["/auth/login",***REMOVED***"/auth/register",***REMOVED***"/auth/verify-otp",***REMOVED***"/auth/resend-otp"];
+***REMOVED******REMOVED******REMOVED******REMOVED***const***REMOVED***shouldExclude***REMOVED***=***REMOVED***excludedPaths.some((path)***REMOVED***=>***REMOVED***config.url?.includes(path));
+
+***REMOVED******REMOVED******REMOVED******REMOVED***if***REMOVED***(!shouldExclude)***REMOVED***{
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***const***REMOVED***token***REMOVED***=***REMOVED***getToken();
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***if***REMOVED***(token)***REMOVED***{
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***config.headers.Authorization***REMOVED***=***REMOVED***`Bearer***REMOVED***${token}`;
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***}
 ***REMOVED******REMOVED******REMOVED******REMOVED***}
+
 ***REMOVED******REMOVED******REMOVED******REMOVED***return***REMOVED***config;
 ***REMOVED******REMOVED***},
 ***REMOVED******REMOVED***(error)***REMOVED***=>***REMOVED***Promise.reject(error)
-)
+);
 
 requester.interceptors.response.use(
 ***REMOVED******REMOVED***(response)***REMOVED***=>***REMOVED***response,

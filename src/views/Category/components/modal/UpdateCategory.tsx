@@ -27,7 +27,6 @@ const***REMOVED***UpdateCategoryModal***REMOVED***=***REMOVED***({
 ***REMOVED******REMOVED***category,
 ***REMOVED******REMOVED***parentCategoryName,
 }:***REMOVED***Props)***REMOVED***=>***REMOVED***{
-***REMOVED******REMOVED******REMOVED******REMOVED***
 ***REMOVED******REMOVED***const***REMOVED***[name,***REMOVED***setName]***REMOVED***=***REMOVED***useState("");
 ***REMOVED******REMOVED***const***REMOVED***[description,***REMOVED***setDescription]***REMOVED***=***REMOVED***useState("");
 ***REMOVED******REMOVED***const***REMOVED***[error,***REMOVED***setError]***REMOVED***=***REMOVED***useState(false);
@@ -137,7 +136,17 @@ const***REMOVED***UpdateCategoryModal***REMOVED***=***REMOVED***({
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***/>
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***</DialogContent>
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***<DialogActions>
-***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***<Button***REMOVED***variant="contained"***REMOVED***onClick={handleSubmit}***REMOVED***sx={{***REMOVED***backgroundColor:***REMOVED***"#FFA726",***REMOVED***color:***REMOVED***"white"***REMOVED***}}>
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***<Button
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***variant="contained"
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***onClick={handleSubmit}
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***onKeyDown={(e)***REMOVED***=>***REMOVED***{
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***if***REMOVED***(e.key***REMOVED***===***REMOVED***"Enter")***REMOVED***{
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***e.preventDefault();
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***handleSubmit();
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***}
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***}}
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***sx={{***REMOVED***backgroundColor:***REMOVED***"#FFA726",***REMOVED***color:***REMOVED***"white"***REMOVED***}}
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***>
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***Sửa
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***</Button>
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***<Button***REMOVED***variant="outlined"***REMOVED***onClick={onClose}>
