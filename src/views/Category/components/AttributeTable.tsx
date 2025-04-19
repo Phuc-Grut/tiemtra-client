@@ -11,25 +11,33 @@ import {
   TableRow,
   TextField,
 } from "@mui/material";
+import { useState } from "react";
 import CustomPagination from "src/components/CustomPagination";
 import { IAttribute } from "src/Interfaces/IAttribute";
 import formatVietnamTime from "src/utils/formatVietnamTime";
+import AddAttributeToCategory from "./modal/AddAttributeToCategory";
 
 const AttributeTable = ({
   rows,
+  categoryId,
   pageNumber,
   pageSize,
   setPageSize,
   setPageNumber,
   maxPages,
+  reload
 }: {
   rows: IAttribute[];
+  categoryId?: number
   pageNumber: number;
   pageSize: number;
   setPageSize: (size: number) => void;
   setPageNumber: (page: number) => void;
   maxPages: number;
+  reload?: () => void;
 }) => {
+  const [openAddAttribute, setOpenAddAttribute] = useState(false);
+
   return (
     <Box
       sx={{
@@ -80,11 +88,18 @@ const AttributeTable = ({
             padding: "0px 10px",
             backgroundColor: "#ffa500",
           }}
-          onClick={() => console.log("Thêm thuộc tính")}
+          onClick={() => setOpenAddAttribute(true)}
         >
           + Thêm thuộc tính
         </Button>
       </Box>
+
+      <AddAttributeToCategory
+        open={openAddAttribute}
+        categoryId={Number(categoryId)}
+        onClose={() => setOpenAddAttribute(false)}
+        onUpdated={reload}
+      />
 
       <TableContainer component={Paper} sx={{ overflowX: "auto", flexGrow: 1 }}>
         <Table stickyHeader>
@@ -127,7 +142,7 @@ const AttributeTable = ({
                     {attr.description || "Không có mô tả"}
                   </TableCell>
                   <TableCell sx={Styles.tableCellBody}>
-                    {attr.updaterName || attr.creatorName || 'Không có dữ liệu'}
+                    {attr.updaterName || attr.creatorName || "Không có dữ liệu"}
                   </TableCell>
                   <TableCell sx={Styles.tableCellBody}>
                     {formatVietnamTime(attr.updatedAt)}
