@@ -34,14 +34,20 @@ const requester = axios.create({
 
 requester.interceptors.request.use(
   (config) => {
-    const token = getToken();
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+    const excludedPaths = ["/auth/login", "/auth/register", "/auth/verify-otp", "/auth/resend-otp"];
+    const shouldExclude = excludedPaths.some((path) => config.url?.includes(path));
+
+    if (!shouldExclude) {
+      const token = getToken();
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
     }
+
     return config;
   },
   (error) => Promise.reject(error)
-)
+);
 
 requester.interceptors.response.use(
   (response) => response,

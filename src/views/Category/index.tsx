@@ -36,8 +36,8 @@ const Category = () => {
     >
       <PageHeader
         breadcrumbs={breadcrumbs}
-        pageTitle="Danh mục" // Tên trang (ví dụ: "Danh mục", "Thuộc tính")
-        pageUrl="/admin/category" // URL của trang để dẫn đến khi click vào "Danh mục"
+        pageTitle="Danh mục"
+        pageUrl="/admin/category"
         showAddButton={categoryType !== "Attributes"}
         onAddClick={() => setIsAddOpen(true)}
       />

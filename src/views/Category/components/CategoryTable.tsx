@@ -26,6 +26,8 @@ import { categoryContextMenuItems } from "../contextMenu";
 import UpdateCategoryModal from "./modal/UpdateCategory";
 import ModalConfirm from "src/components/ModalConfirm";
 import useToast from "src/components/Toast";
+import AddAttributeModal from "src/views/Attribute/components/modal/AddAttributeModal";
+import AddAttributeToCategory from "./modal/AddAttributeToCategory";
 
 interface BreadcrumbItem {
   categoryId: number;
@@ -56,6 +58,7 @@ const CategoryTable = ({
   const relativePath = pathWithoutQuery.replace(/^\/admin\/category\/?/, "");
 
   const pathIds = relativePath.split("/").filter((id) => id.trim() !== "");
+  // console.log("🚀 ~ pathIds:", pathIds)
   const isDetail = pathIds.length > 0;
   const currentCategoryId = pathIds[pathIds.length - 1];
   const [prentCategoryName, setParentCategoryName] = useState<string | null>(
@@ -99,6 +102,7 @@ const CategoryTable = ({
 
       return response.data.items.$values;
     },
+    retry: false,
     enabled: !isDetail && pageNumber > 0,
     placeholderData: (previousData: any) => previousData,
   });
@@ -111,6 +115,7 @@ const CategoryTable = ({
         pageNumber: 1,
         pageSize: 10,
       }),
+    retry: false,
     enabled: !!currentCategoryId && !isNaN(Number(currentCategoryId)),
     select: (res) => {
       const type = res.data?.type ?? "Unknown";
@@ -121,6 +126,12 @@ const CategoryTable = ({
       return { type, items, totalItems, pageSize, currentCategory };
     },
   });
+
+  const reloadCategoryDetail = () => {
+    queryClient.invalidateQueries({
+      queryKey: ["category", currentCategoryId, pageNumber, pageSize],
+    });
+  };  
 
   useEffect(() => {
     if (categoryDetail?.type) {
@@ -200,7 +211,6 @@ const CategoryTable = ({
   };
 
   const handleDeleteSelected = async (categoryIds: number[] = selected) => {
-    // console.log("🚀 ~ handleDeleteSelected ~ categoryIds:", categoryIds)
     if (categoryIds.length === 0) return;
 
     try {
@@ -235,7 +245,6 @@ const CategoryTable = ({
     try {
       const res = await categoryApi.deleteManyCategories(pendingDeleteIds);
       console.log(
-        "🚀 ~ handleConfirmDelete ~ pendingDeleteIds:",
         pendingDeleteIds
       );
       if (res.data.success) {
@@ -258,11 +267,13 @@ const CategoryTable = ({
     return (
       <AttributeTable
         rows={categoryDetail.items}
+        categoryId = {Number(currentCategoryId)}
         pageNumber={pageNumber}
         pageSize={pageSize}
         setPageNumber={setPageNumber}
         setPageSize={setPageSize}
         maxPages={Math.ceil(categoryDetail.totalItems / pageSize)}
+        reload={reloadCategoryDetail}
       />
     );
   }
@@ -313,7 +324,7 @@ const CategoryTable = ({
           }}
         />
 
-        {selected.length > 0 ? (
+        {selected.length > 0 && (
           <Button
             variant="contained"
             size="small"
@@ -338,25 +349,6 @@ const CategoryTable = ({
           >
             Xoá ({selected.length})
           </Button>
-        ) : (
-          rows.length === 0 && (
-            <Button
-              variant="contained"
-              size="small"
-              sx={{
-                marginLeft: "12px",
-                textTransform: "none",
-                fontSize: "13px",
-                height: "24px",
-                minWidth: "unset",
-                padding: "0px 10px",
-                backgroundColor: "#ffa500",
-              }}
-              onClick={() => console.log("Thêm thuộc tính")}
-            >
-              + Thêm thuộc tính
-            </Button>
-          )
         )}
       </Box>
 
@@ -400,21 +392,6 @@ const CategoryTable = ({
                 />
               </TableCell>
 
-              {/* <TableCell
-                sx={{
-                  width: "50px",
-                  textAlign: "center",
-                  fontWeight: "bold",
-                  color: "black",
-                  borderRight: "1px solid rgb(156, 154, 154)",
-                  borderBlock: "1px solid rgb(156, 154, 154)",
-                  height: "30px",
-                  lineHeight: "28px",
-                  padding: "4px 8px",
-                }}
-              >
-                STT
-              </TableCell> */}
               <TableCell sx={Styles.tableCell}>Mã danh mục</TableCell>
               <TableCell sx={Styles.tableCell}>Tên Danh Mục</TableCell>
               <TableCell sx={Styles.tableCell}>Mô tả</TableCell>
@@ -467,14 +444,6 @@ const CategoryTable = ({
                     />
                   </TableCell>
 
-                  {/* <TableCell
-                    sx={{
-                      textAlign: "center",
-                      borderRight: "1px solid rgb(236, 234, 234)",
-                    }}
-                  >
-                    {((pageNumber ?? 1) - 1) * (pageSize ?? 10) + index + 1}
-                  </TableCell> */}
                   <TableCell sx={Styles.tableCellBody}>
                     {category.categoryId}
                   </TableCell>
@@ -573,6 +542,8 @@ const CategoryTable = ({
         onClose={() => {
           setConfirmModalOpen(false);
           setPendingDeleteIds([]);
+          setSelected([]);
+          setSelectedCategory(null);
         }}
         onConfirm={handleConfirmDelete}
         showConfirmButton={showConfirmButton}

@@ -54,7 +54,7 @@ const useToast = () => {
           </Box>
         ),
         anchorOrigin: { vertical: "top", horizontal: "right" },
-        autoHideDuration: 3000,
+        autoHideDuration: 2000,
       });
     },
     [enqueueSnackbar]

@@ -27,7 +27,6 @@ const UpdateCategoryModal = ({
   category,
   parentCategoryName,
 }: Props) => {
-    
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [error, setError] = useState(false);
@@ -137,7 +136,17 @@ const UpdateCategoryModal = ({
         />
       </DialogContent>
       <DialogActions>
-        <Button variant="contained" onClick={handleSubmit} sx={{ backgroundColor: "#FFA726", color: "white" }}>
+        <Button
+          variant="contained"
+          onClick={handleSubmit}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              e.preventDefault();
+              handleSubmit();
+            }
+          }}
+          sx={{ backgroundColor: "#FFA726", color: "white" }}
+        >
           Sửa
         </Button>
         <Button variant="outlined" onClick={onClose}>
