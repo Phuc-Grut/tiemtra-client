@@ -1,5 +1,12 @@
+//***REMOVED***//***REMOVED***export***REMOVED***const***REMOVED***BASE_URL***REMOVED***=***REMOVED***"https://localhost:7021/api"
+//***REMOVED***export***REMOVED***const***REMOVED***BASE_URL***REMOVED***=***REMOVED***"http://localhost:5001";
+//***REMOVED***//***REMOVED***export***REMOVED***const***REMOVED***BASE_URL***REMOVED***=***REMOVED***"https://tiemtraapi-eggechbzfqaqc3cf.southeastasia-01.azurewebsites.net/api"
+
+
+
 export***REMOVED***const***REMOVED***BASE_URL***REMOVED***=***REMOVED***"https://localhost:7021/api"
-//***REMOVED***export***REMOVED***const***REMOVED***BASE_URL***REMOVED***=***REMOVED***"http://localhost:5001/api";
+//***REMOVED***https://localhost:7021/api/auth/login
+
 
 const***REMOVED***URL_ADMIN***REMOVED***=***REMOVED***`${BASE_URL}/admin`
 

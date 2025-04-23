@@ -26,8 +26,6 @@ import***REMOVED***{***REMOVED***categoryContextMenuItems***REMOVED***}***REMOVE
 import***REMOVED***UpdateCategoryModal***REMOVED***from***REMOVED***"./modal/UpdateCategory";
 import***REMOVED***ModalConfirm***REMOVED***from***REMOVED***"src/components/ModalConfirm";
 import***REMOVED***useToast***REMOVED***from***REMOVED***"src/components/Toast";
-import***REMOVED***AddAttributeModal***REMOVED***from***REMOVED***"src/views/Attribute/components/modal/AddAttributeModal";
-import***REMOVED***AddAttributeToCategory***REMOVED***from***REMOVED***"./modal/AddAttributeToCategory";
 
 interface***REMOVED***BreadcrumbItem***REMOVED***{
 ***REMOVED******REMOVED***categoryId:***REMOVED***number;
