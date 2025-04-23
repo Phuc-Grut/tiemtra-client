@@ -1,5 +1,12 @@
+// // export const BASE_URL = "https://localhost:7021/api"
+// export const BASE_URL = "http://localhost:5001";
+// // export const BASE_URL = "https://tiemtraapi-eggechbzfqaqc3cf.southeastasia-01.azurewebsites.net/api"
+
+
+
 export const BASE_URL = "https://localhost:7021/api"
-// export const BASE_URL = "http://localhost:5001/api";
+// https://localhost:7021/api/auth/login
+
 
 const URL_ADMIN = `${BASE_URL}/admin`
 
