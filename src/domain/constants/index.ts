@@ -1,12 +1,7 @@
 // // export const BASE_URL = "https://localhost:7021/api"
 // export const BASE_URL = "http://localhost:5001";
 // // export const BASE_URL = "https://tiemtraapi-eggechbzfqaqc3cf.southeastasia-01.azurewebsites.net/api"
-
-
-
 export const BASE_URL = "https://localhost:7021/api"
-// https://localhost:7021/api/auth/login
-
 
 const URL_ADMIN = `${BASE_URL}/admin`
 
@@ -52,10 +47,15 @@ export const CATEGORY = {
 
 export const ATTRIBUTE = {
     ACTION_TYPES: {
-        GET_ALL: 'ATTRIBUTE/GET_ALL',
+        GET_ALL: 'ATTRIBUTE/GET_ALL_API',
+        CREATE: 'ATTRIBUTE/CREATE_API',
+        UPDATE: 'ATTRIBUTE/UPDATE_API',
+        DELETE: 'ATTRIBUTE/DELETE_API'
     },
     URL_API: {
         GET_ALL_API: `${URL_ADMIN}/attributes/get-paging-attributes`,
         CREATE_API: `${URL_ADMIN}/attributes/add-attributes`,
+        UPDATE_API: (id: number) => `${URL_ADMIN}/attributes/update-attributes/${id}`,
+        DELETE_API: `${URL_ADMIN}/attribute/delete-attributes`,
     }
 }

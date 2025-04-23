@@ -1,8 +1,8 @@
 import { Box } from "@mui/material";
-import Sidebar from "../components/Layouts/Sidebar";
+import Sidebar from "../components/Layouts/Admin/Sidebar";
 import { Outlet } from "react-router-dom";
-import TopBar from "src/components/Layouts/Topbar";
-import Footer from "src/components/Layouts/Footer";
+import TopBar from "src/components/Layouts/Admin/Topbar";
+import Footer from "src/components/Layouts/Admin/Footer";
 import { useState } from "react";
 
 const AdminDashboard = () => {

@@ -6,10 +6,13 @@ import Category from "src/views/Category";
 import AdminDashboard from "src/layouts/DashboardLayout";
 import Attribute from "src/views/Attribute";
 import HomePage from "src/views/Home";
+import StoreLayout from "src/layouts/StoreLayout";
 const AppRoutes = () => {
   return (
     <Routes>
-      <Route path="/" element={<HomePage />} />
+      <Route element={<StoreLayout />}>
+        <Route path="/" element={<HomePage />} />
+      </Route>
       <Route path="/admin" element={<AdminDashboard />}>
         <Route path="dashboard" element={<Dashboard />} />
         <Route path="category" element={<Category />} />

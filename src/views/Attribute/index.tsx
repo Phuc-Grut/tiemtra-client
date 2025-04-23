@@ -1,8 +1,8 @@
 import { Box } from "@mui/material";
-import PageHeader from "src/components/Layouts/PageHeader";
 import AttributeTable from "./components/AttributeTable";
 import { useState } from "react";
 import AddAttributeModal from "./components/modal/AddAttributeModal";
+import PageHeader from "src/components/Layouts/Admin/PageHeader";
 
 const Attribute = () => {
   const [isAddOpen, setIsAddOpen] = useState(false);
