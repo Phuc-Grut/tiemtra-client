@@ -22,9 +22,9 @@ import { atrrinuteContextMenuItems } from "../contextMenu";
 import GenericContextMenu from "src/components/GenericContextMenu";
 import CustomPagination from "src/components/CustomPagination";
 import { useNavigate } from "react-router-dom";
+import UpdateAttribute from "./modal/UpdateAttribute";
 
 const AttributeTable = () => {
-
   const navigate = useNavigate();
   const [pageNumber, setPageNumber] = useState(1);
   const [pageSize, setPageSize] = useState(5);
@@ -332,6 +332,15 @@ const AttributeTable = () => {
         onClose={() => setAnchorEl(null)}
         items={attributeMenuActions}
         contextItem={contextItem}
+      />
+
+      <UpdateAttribute
+        open={editModalOpen}
+        onClose={() => {
+          setSelectedAttribute(null);
+          setEditModalOpen(false);
+        }}
+        attribute={selectedAttribute}
       />
     </Box>
   );

@@ -1,8 +1,8 @@
 import { Box } from "@mui/material";
-import PageHeader from "src/components/Layouts/PageHeader";
 import CategoryTable from "./components/CategoryTable";
 import { useState } from "react";
 import AddCategoryModal from "./components/modal/AddCategory";
+import PageHeader from "src/components/Layouts/Admin/PageHeader";
 
 interface BreadcrumbItem {
   categoryId: number;

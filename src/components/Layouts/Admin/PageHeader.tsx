@@ -1,7 +1,7 @@
 import React from "react";
 import { Box, Button } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
-import BreadcrumbNavigation, { BreadcrumbItem } from "../BreadcrumbNavigation";
+import BreadcrumbNavigation, { BreadcrumbItem } from "src/components/BreadcrumbNavigation";
 
 interface PageHeaderProps {
   breadcrumbs?: BreadcrumbItem[];
