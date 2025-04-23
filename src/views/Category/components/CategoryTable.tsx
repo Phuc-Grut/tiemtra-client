@@ -26,8 +26,6 @@ import { categoryContextMenuItems } from "../contextMenu";
 import UpdateCategoryModal from "./modal/UpdateCategory";
 import ModalConfirm from "src/components/ModalConfirm";
 import useToast from "src/components/Toast";
-import AddAttributeModal from "src/views/Attribute/components/modal/AddAttributeModal";
-import AddAttributeToCategory from "./modal/AddAttributeToCategory";
 
 interface BreadcrumbItem {
   categoryId: number;
