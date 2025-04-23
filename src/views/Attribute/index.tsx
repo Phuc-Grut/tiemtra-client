@@ -1,8 +1,8 @@
 import***REMOVED***{***REMOVED***Box***REMOVED***}***REMOVED***from***REMOVED***"@mui/material";
-import***REMOVED***PageHeader***REMOVED***from***REMOVED***"src/components/Layouts/PageHeader";
 import***REMOVED***AttributeTable***REMOVED***from***REMOVED***"./components/AttributeTable";
 import***REMOVED***{***REMOVED***useState***REMOVED***}***REMOVED***from***REMOVED***"react";
 import***REMOVED***AddAttributeModal***REMOVED***from***REMOVED***"./components/modal/AddAttributeModal";
+import***REMOVED***PageHeader***REMOVED***from***REMOVED***"src/components/Layouts/Admin/PageHeader";
 
 const***REMOVED***Attribute***REMOVED***=***REMOVED***()***REMOVED***=>***REMOVED***{
 ***REMOVED******REMOVED***const***REMOVED***[isAddOpen,***REMOVED***setIsAddOpen]***REMOVED***=***REMOVED***useState(false);

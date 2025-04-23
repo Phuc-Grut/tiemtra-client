@@ -1,8 +1,8 @@
 import***REMOVED***{***REMOVED***Box***REMOVED***}***REMOVED***from***REMOVED***"@mui/material";
-import***REMOVED***Sidebar***REMOVED***from***REMOVED***"../components/Layouts/Sidebar";
+import***REMOVED***Sidebar***REMOVED***from***REMOVED***"../components/Layouts/Admin/Sidebar";
 import***REMOVED***{***REMOVED***Outlet***REMOVED***}***REMOVED***from***REMOVED***"react-router-dom";
-import***REMOVED***TopBar***REMOVED***from***REMOVED***"src/components/Layouts/Topbar";
-import***REMOVED***Footer***REMOVED***from***REMOVED***"src/components/Layouts/Footer";
+import***REMOVED***TopBar***REMOVED***from***REMOVED***"src/components/Layouts/Admin/Topbar";
+import***REMOVED***Footer***REMOVED***from***REMOVED***"src/components/Layouts/Admin/Footer";
 import***REMOVED***{***REMOVED***useState***REMOVED***}***REMOVED***from***REMOVED***"react";
 
 const***REMOVED***AdminDashboard***REMOVED***=***REMOVED***()***REMOVED***=>***REMOVED***{

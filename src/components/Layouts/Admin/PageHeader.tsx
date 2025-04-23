@@ -1,7 +1,7 @@
 import***REMOVED***React***REMOVED***from***REMOVED***"react";
 import***REMOVED***{***REMOVED***Box,***REMOVED***Button***REMOVED***}***REMOVED***from***REMOVED***"@mui/material";
 import***REMOVED***AddIcon***REMOVED***from***REMOVED***"@mui/icons-material/Add";
-import***REMOVED***BreadcrumbNavigation,***REMOVED***{***REMOVED***BreadcrumbItem***REMOVED***}***REMOVED***from***REMOVED***"../BreadcrumbNavigation";
+import***REMOVED***BreadcrumbNavigation,***REMOVED***{***REMOVED***BreadcrumbItem***REMOVED***}***REMOVED***from***REMOVED***"src/components/BreadcrumbNavigation";
 
 interface***REMOVED***PageHeaderProps***REMOVED***{
 ***REMOVED******REMOVED***breadcrumbs?:***REMOVED***BreadcrumbItem[];

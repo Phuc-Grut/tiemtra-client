@@ -1,12 +1,7 @@
 //***REMOVED***//***REMOVED***export***REMOVED***const***REMOVED***BASE_URL***REMOVED***=***REMOVED***"https://localhost:7021/api"
 //***REMOVED***export***REMOVED***const***REMOVED***BASE_URL***REMOVED***=***REMOVED***"http://localhost:5001";
 //***REMOVED***//***REMOVED***export***REMOVED***const***REMOVED***BASE_URL***REMOVED***=***REMOVED***"https://tiemtraapi-eggechbzfqaqc3cf.southeastasia-01.azurewebsites.net/api"
-
-
-
 export***REMOVED***const***REMOVED***BASE_URL***REMOVED***=***REMOVED***"https://localhost:7021/api"
-//***REMOVED***https://localhost:7021/api/auth/login
-
 
 const***REMOVED***URL_ADMIN***REMOVED***=***REMOVED***`${BASE_URL}/admin`
 
@@ -52,10 +47,15 @@ export***REMOVED***const***REMOVED***CATEGORY***REMOVED***=***REMOVED***{
 
 export***REMOVED***const***REMOVED***ATTRIBUTE***REMOVED***=***REMOVED***{
 ***REMOVED******REMOVED******REMOVED******REMOVED***ACTION_TYPES:***REMOVED***{
-***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***GET_ALL:***REMOVED***'ATTRIBUTE/GET_ALL',
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***GET_ALL:***REMOVED***'ATTRIBUTE/GET_ALL_API',
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***CREATE:***REMOVED***'ATTRIBUTE/CREATE_API',
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***UPDATE:***REMOVED***'ATTRIBUTE/UPDATE_API',
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***DELETE:***REMOVED***'ATTRIBUTE/DELETE_API'
 ***REMOVED******REMOVED******REMOVED******REMOVED***},
 ***REMOVED******REMOVED******REMOVED******REMOVED***URL_API:***REMOVED***{
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***GET_ALL_API:***REMOVED***`${URL_ADMIN}/attributes/get-paging-attributes`,
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***CREATE_API:***REMOVED***`${URL_ADMIN}/attributes/add-attributes`,
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***UPDATE_API:***REMOVED***(id:***REMOVED***number)***REMOVED***=>***REMOVED***`${URL_ADMIN}/attributes/update-attributes/${id}`,
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***DELETE_API:***REMOVED***`${URL_ADMIN}/attribute/delete-attributes`,
 ***REMOVED******REMOVED******REMOVED******REMOVED***}
 }

@@ -22,9 +22,9 @@ import***REMOVED***{***REMOVED***atrrinuteContextMenuItems***REMOVED***}***REMOV
 import***REMOVED***GenericContextMenu***REMOVED***from***REMOVED***"src/components/GenericContextMenu";
 import***REMOVED***CustomPagination***REMOVED***from***REMOVED***"src/components/CustomPagination";
 import***REMOVED***{***REMOVED***useNavigate***REMOVED***}***REMOVED***from***REMOVED***"react-router-dom";
+import***REMOVED***UpdateAttribute***REMOVED***from***REMOVED***"./modal/UpdateAttribute";
 
 const***REMOVED***AttributeTable***REMOVED***=***REMOVED***()***REMOVED***=>***REMOVED***{
-
 ***REMOVED******REMOVED***const***REMOVED***navigate***REMOVED***=***REMOVED***useNavigate();
 ***REMOVED******REMOVED***const***REMOVED***[pageNumber,***REMOVED***setPageNumber]***REMOVED***=***REMOVED***useState(1);
 ***REMOVED******REMOVED***const***REMOVED***[pageSize,***REMOVED***setPageSize]***REMOVED***=***REMOVED***useState(5);
@@ -332,6 +332,15 @@ const***REMOVED***AttributeTable***REMOVED***=***REMOVED***()***REMOVED***=>***R
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***onClose={()***REMOVED***=>***REMOVED***setAnchorEl(null)}
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***items={attributeMenuActions}
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***contextItem={contextItem}
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***/>
+
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***<UpdateAttribute
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***open={editModalOpen}
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***onClose={()***REMOVED***=>***REMOVED***{
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***setSelectedAttribute(null);
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***setEditModalOpen(false);
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***}}
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***attribute={selectedAttribute}
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***/>
 ***REMOVED******REMOVED******REMOVED******REMOVED***</Box>
 ***REMOVED******REMOVED***);

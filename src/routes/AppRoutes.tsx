@@ -6,10 +6,13 @@ import***REMOVED***Category***REMOVED***from***REMOVED***"src/views/Category";
 import***REMOVED***AdminDashboard***REMOVED***from***REMOVED***"src/layouts/DashboardLayout";
 import***REMOVED***Attribute***REMOVED***from***REMOVED***"src/views/Attribute";
 import***REMOVED***HomePage***REMOVED***from***REMOVED***"src/views/Home";
+import***REMOVED***StoreLayout***REMOVED***from***REMOVED***"src/layouts/StoreLayout";
 const***REMOVED***AppRoutes***REMOVED***=***REMOVED***()***REMOVED***=>***REMOVED***{
 ***REMOVED******REMOVED***return***REMOVED***(
 ***REMOVED******REMOVED******REMOVED******REMOVED***<Routes>
-***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***<Route***REMOVED***path="/"***REMOVED***element={<HomePage***REMOVED***/>}***REMOVED***/>
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***<Route***REMOVED***element={<StoreLayout***REMOVED***/>}>
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***<Route***REMOVED***path="/"***REMOVED***element={<HomePage***REMOVED***/>}***REMOVED***/>
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***</Route>
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***<Route***REMOVED***path="/admin"***REMOVED***element={<AdminDashboard***REMOVED***/>}>
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***<Route***REMOVED***path="dashboard"***REMOVED***element={<Dashboard***REMOVED***/>}***REMOVED***/>
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***<Route***REMOVED***path="category"***REMOVED***element={<Category***REMOVED***/>}***REMOVED***/>
