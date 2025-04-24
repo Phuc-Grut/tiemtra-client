@@ -1,6 +1,6 @@
 import***REMOVED***{***REMOVED***Box***REMOVED***}***REMOVED***from***REMOVED***"@mui/material";
 import***REMOVED***AttributeTable***REMOVED***from***REMOVED***"./components/AttributeTable";
-import***REMOVED***{***REMOVED***useState***REMOVED***}***REMOVED***from***REMOVED***"react";
+import***REMOVED***{***REMOVED***useEffect,***REMOVED***useState***REMOVED***}***REMOVED***from***REMOVED***"react";
 import***REMOVED***AddAttributeModal***REMOVED***from***REMOVED***"./components/modal/AddAttributeModal";
 import***REMOVED***PageHeader***REMOVED***from***REMOVED***"src/components/Layouts/Admin/PageHeader";
 
@@ -21,7 +21,9 @@ const***REMOVED***Attribute***REMOVED***=***REMOVED***()***REMOVED***=>***REMOVE
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***<PageHeader
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***pageTitle="Thuộc***REMOVED***tính"
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***pageUrl="/admin/attribute"
-***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***onAddClick={()***REMOVED***=>***REMOVED***setIsAddOpen(true)}
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***onAddClick={()***REMOVED***=>***REMOVED***{
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***setIsAddOpen(true);
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***}}
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***/>
 
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***<Box
@@ -32,19 +34,10 @@ const***REMOVED***Attribute***REMOVED***=***REMOVED***()***REMOVED***=>***REMOVE
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***flexDirection:***REMOVED***"column",
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***}}
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***>
-***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***<AttributeTable
-***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***//***REMOVED***onTypeChange={setCategoryType}
-***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***//***REMOVED***onParentInfoChange={(id,***REMOVED***name)***REMOVED***=>***REMOVED***{
-***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***//***REMOVED******REMOVED******REMOVED***setParentCategoryId(Number(id));
-***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***//***REMOVED******REMOVED******REMOVED***setParentCategoryName(name);
-***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***//***REMOVED***}}
-***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***//***REMOVED***onBreadcrumbsChange={setBreadcrumbs}
-***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***/>
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***<AttributeTable***REMOVED***/>
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***</Box>
 
-***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***<AddAttributeModal***REMOVED***open={isAddOpen}
-***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***onClose={()***REMOVED***=>***REMOVED***setIsAddOpen(false)}
-***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***/>
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***<AddAttributeModal***REMOVED***open={isAddOpen}***REMOVED***onClose={()***REMOVED***=>***REMOVED***setIsAddOpen(false)}***REMOVED***/>
 ***REMOVED******REMOVED******REMOVED******REMOVED***</Box>
 ***REMOVED******REMOVED***);
 };

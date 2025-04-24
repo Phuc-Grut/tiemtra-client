@@ -129,7 +129,7 @@ const***REMOVED***CategoryTable***REMOVED***=***REMOVED***({
 ***REMOVED******REMOVED******REMOVED******REMOVED***queryClient.invalidateQueries({
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***queryKey:***REMOVED***["category",***REMOVED***currentCategoryId,***REMOVED***pageNumber,***REMOVED***pageSize],
 ***REMOVED******REMOVED******REMOVED******REMOVED***});
-***REMOVED******REMOVED***};***REMOVED******REMOVED***
+***REMOVED******REMOVED***};
 
 ***REMOVED******REMOVED***useEffect(()***REMOVED***=>***REMOVED***{
 ***REMOVED******REMOVED******REMOVED******REMOVED***if***REMOVED***(categoryDetail?.type)***REMOVED***{
@@ -141,7 +141,14 @@ const***REMOVED***CategoryTable***REMOVED***=***REMOVED***({
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***setParentCategoryName(current.categoryName);
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***onParentInfoChange?.(current.categoryId,***REMOVED***current.categoryName);
 ***REMOVED******REMOVED******REMOVED******REMOVED***}
-***REMOVED******REMOVED***},***REMOVED***[categoryDetail,***REMOVED***onTypeChange,***REMOVED***onParentInfoChange]);
+***REMOVED******REMOVED***},***REMOVED***[
+***REMOVED******REMOVED******REMOVED******REMOVED***categoryDetail?.type,
+***REMOVED******REMOVED******REMOVED******REMOVED***categoryDetail?.currentCategory,
+***REMOVED******REMOVED******REMOVED******REMOVED***categoryDetail?.currentCategory?.categoryName,
+***REMOVED******REMOVED******REMOVED******REMOVED***prentCategoryName,
+***REMOVED******REMOVED******REMOVED******REMOVED***onTypeChange,
+***REMOVED******REMOVED******REMOVED******REMOVED***onParentInfoChange,
+***REMOVED******REMOVED***]);
 
 ***REMOVED******REMOVED***useEffect(()***REMOVED***=>***REMOVED***{
 ***REMOVED******REMOVED******REMOVED******REMOVED***if***REMOVED***(!isDetail)***REMOVED***{
@@ -149,12 +156,7 @@ const***REMOVED***CategoryTable***REMOVED***=***REMOVED***({
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***return;
 ***REMOVED******REMOVED******REMOVED******REMOVED***}
 
-***REMOVED******REMOVED******REMOVED******REMOVED***if***REMOVED***(categoryDetail?.type)***REMOVED***{
-***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***onTypeChange?.(categoryDetail.type);
-***REMOVED******REMOVED******REMOVED******REMOVED***}
-
 ***REMOVED******REMOVED******REMOVED******REMOVED***const***REMOVED***current***REMOVED***=***REMOVED***categoryDetail?.currentCategory;
-
 ***REMOVED******REMOVED******REMOVED******REMOVED***if***REMOVED***(current?.categoryId***REMOVED***&&***REMOVED***current?.categoryName)***REMOVED***{
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***setParentCategoryName(current.categoryName);
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***onParentInfoChange?.(current.categoryId,***REMOVED***current.categoryName);
@@ -166,8 +168,10 @@ const***REMOVED***CategoryTable***REMOVED***=***REMOVED***({
 ***REMOVED******REMOVED******REMOVED******REMOVED***}
 ***REMOVED******REMOVED***},***REMOVED***[
 ***REMOVED******REMOVED******REMOVED******REMOVED***isDetail,
-***REMOVED******REMOVED******REMOVED******REMOVED***categoryDetail,
-***REMOVED******REMOVED******REMOVED******REMOVED***onTypeChange,
+***REMOVED******REMOVED******REMOVED******REMOVED***categoryDetail?.currentCategory,
+***REMOVED******REMOVED******REMOVED******REMOVED***categoryDetail?.currentCategory?.breadcrumbs,
+***REMOVED******REMOVED******REMOVED******REMOVED***categoryDetail?.currentCategory?.categoryName,
+***REMOVED******REMOVED******REMOVED******REMOVED***prentCategoryName,
 ***REMOVED******REMOVED******REMOVED******REMOVED***onParentInfoChange,
 ***REMOVED******REMOVED******REMOVED******REMOVED***onBreadcrumbsChange,
 ***REMOVED******REMOVED***]);
@@ -236,16 +240,14 @@ const***REMOVED***CategoryTable***REMOVED***=***REMOVED***({
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***}
 ***REMOVED******REMOVED******REMOVED******REMOVED***}***REMOVED***catch***REMOVED***(error)***REMOVED***{
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***console.error("Error***REMOVED***checking***REMOVED***delete:",***REMOVED***error);
-***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***showError("Xóa***REMOVED***thất***REMOVED***bại")
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***showError("Xóa***REMOVED***thất***REMOVED***bại");
 ***REMOVED******REMOVED******REMOVED******REMOVED***}
 ***REMOVED******REMOVED***};
 
 ***REMOVED******REMOVED***const***REMOVED***handleConfirmDelete***REMOVED***=***REMOVED***async***REMOVED***()***REMOVED***=>***REMOVED***{
 ***REMOVED******REMOVED******REMOVED******REMOVED***try***REMOVED***{
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***const***REMOVED***res***REMOVED***=***REMOVED***await***REMOVED***categoryApi.deleteManyCategories(pendingDeleteIds);
-***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***console.log(
-***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***pendingDeleteIds
-***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***);
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***console.log(pendingDeleteIds);
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***if***REMOVED***(res.data.success)***REMOVED***{
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***showSuccess("Xoá***REMOVED***thành***REMOVED***công!");
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***invalidateAllCategoryData();
@@ -266,7 +268,7 @@ const***REMOVED***CategoryTable***REMOVED***=***REMOVED***({
 ***REMOVED******REMOVED******REMOVED******REMOVED***return***REMOVED***(
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***<AttributeTable
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***rows={categoryDetail.items}
-***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***categoryId***REMOVED***=***REMOVED***{Number(currentCategoryId)}
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***categoryId={Number(currentCategoryId)}
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***pageNumber={pageNumber}
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***pageSize={pageSize}
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***setPageNumber={setPageNumber}

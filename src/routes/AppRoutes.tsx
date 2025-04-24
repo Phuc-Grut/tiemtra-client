@@ -1,12 +1,13 @@
 import***REMOVED***{***REMOVED***Routes,***REMOVED***Route***REMOVED***}***REMOVED***from***REMOVED***"react-router-dom";
 import***REMOVED***Register***REMOVED***from***REMOVED***"../views/Auth/pages/Register";
 import***REMOVED***Login***REMOVED***from***REMOVED***"../views/Auth/pages/Login";
-import***REMOVED***Dashboard***REMOVED***from***REMOVED***"../views/Dashboard";
-import***REMOVED***Category***REMOVED***from***REMOVED***"src/views/Category";
+import***REMOVED***HomePage***REMOVED***from***REMOVED***"src/views/Store/Home";
+import***REMOVED***Dashboard***REMOVED***from***REMOVED***"src/views/Admin/Dashboard";
 import***REMOVED***AdminDashboard***REMOVED***from***REMOVED***"src/layouts/DashboardLayout";
-import***REMOVED***Attribute***REMOVED***from***REMOVED***"src/views/Attribute";
-import***REMOVED***HomePage***REMOVED***from***REMOVED***"src/views/Home";
+import***REMOVED***Category***REMOVED***from***REMOVED***"src/views/Admin/Category";
+import***REMOVED***Attribute***REMOVED***from***REMOVED***"src/views/Admin/Attribute";
 import***REMOVED***StoreLayout***REMOVED***from***REMOVED***"src/layouts/StoreLayout";
+import***REMOVED***Product***REMOVED***from***REMOVED***"src/views/Admin/Product";
 const***REMOVED***AppRoutes***REMOVED***=***REMOVED***()***REMOVED***=>***REMOVED***{
 ***REMOVED******REMOVED***return***REMOVED***(
 ***REMOVED******REMOVED******REMOVED******REMOVED***<Routes>
@@ -15,6 +16,7 @@ const***REMOVED***AppRoutes***REMOVED***=***REMOVED***()***REMOVED***=>***REMOVE
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***</Route>
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***<Route***REMOVED***path="/admin"***REMOVED***element={<AdminDashboard***REMOVED***/>}>
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***<Route***REMOVED***path="dashboard"***REMOVED***element={<Dashboard***REMOVED***/>}***REMOVED***/>
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***<Route***REMOVED***path="product"***REMOVED***element={<Product***REMOVED***/>}***REMOVED***/>
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***<Route***REMOVED***path="category"***REMOVED***element={<Category***REMOVED***/>}***REMOVED***/>
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***<Route***REMOVED***path="attribute"***REMOVED***element={<Attribute***REMOVED***/>}***REMOVED***/>
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***<Route***REMOVED***path="category/*"***REMOVED***element={<Category***REMOVED***/>}***REMOVED***/>
