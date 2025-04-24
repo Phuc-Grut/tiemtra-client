@@ -236,6 +236,7 @@ const CategoryTable = ({
       }
     } catch (error) {
       console.error("Error checking delete:", error);
+      showError("Xóa thất bại")
     }
   };
 

@@ -12,7 +12,7 @@ import {
   TableRow,
   TextField,
 } from "@mui/material";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { IAttribute } from "src/Interfaces/IAttribute";
 import attributeApi from "src/services/api/Attributes";
@@ -23,9 +23,13 @@ import GenericContextMenu from "src/components/GenericContextMenu";
 import CustomPagination from "src/components/CustomPagination";
 import { useNavigate } from "react-router-dom";
 import UpdateAttribute from "./modal/UpdateAttribute";
+import ModalConfirm from "src/components/ModalConfirm";
+import useToast from "src/components/Toast";
 
 const AttributeTable = () => {
   const navigate = useNavigate();
+  const { showSuccess, showError } = useToast();
+  const queryClient = useQueryClient();
   const [pageNumber, setPageNumber] = useState(1);
   const [pageSize, setPageSize] = useState(5);
   const [maxPages, setMaxPages] = useState<number>(1);
@@ -46,6 +50,7 @@ const AttributeTable = () => {
   const [contextItem, setContextItem] = useState<IAttribute | null>(null);
 
   const [editModalOpen, setEditModalOpen] = useState(false);
+  const [confirmModalOpen, setConfirmModalOpen] = useState(false);
 
   const {
     data: attributes = [],
@@ -65,7 +70,40 @@ const AttributeTable = () => {
     retry: false,
   });
 
-  const handleDeleteSelected = async (attributeIds: number[] = selected) => {};
+  const invalidateAllCategoryData = () => {
+    queryClient.invalidateQueries({
+      predicate: (query) =>
+        ["attributes"].includes(query.queryKey[0] as string),
+    });
+  };
+
+  console.log("🚀 ~ handleConfirmDelete ~ attributeIds:", selected)
+  const handleConfirmDelete = async (attributeIds: number[] = selected) => {
+    
+    if (attributeIds.length === 0) {
+      showError("Xóa thất bại");
+      setConfirmModalOpen(false);
+      setSelected([]);
+      setSelectedAttribute(null);
+      return;
+    }
+
+    try {
+      const res = await attributeApi.deleteAttributeApi(attributeIds);
+      if (res.data.success) {
+        showSuccess("Xoá thành công!");
+        invalidateAllCategoryData();
+        setConfirmModalOpen(false);
+        setSelected([]);
+        setSelectedAttribute(null);
+      } else {
+        showError("Xoá thất bại!");
+      }
+    } catch (error) {
+      console.error("Error checking delete:", error);
+      showError("Xoá thất bại!");
+    }
+  };
 
   const attributeMenuActions = atrrinuteContextMenuItems.map((item) => ({
     ...item,
@@ -77,7 +115,8 @@ const AttributeTable = () => {
           setEditModalOpen(true);
           break;
         case "DELETE":
-          handleDeleteSelected([att?.attributeId]);
+          setSelected([att?.attributeId]);
+          setConfirmModalOpen(true);
           break;
         default:
           console.log("Chọn menu:", item.id, att);
@@ -144,7 +183,7 @@ const AttributeTable = () => {
                 backgroundColor: "#cc0000",
               },
             }}
-            onClick={() => handleDeleteSelected()}
+            onClick={() => setConfirmModalOpen(true)}
           >
             Xoá ({selected.length})
           </Button>
@@ -341,6 +380,19 @@ const AttributeTable = () => {
           setEditModalOpen(false);
         }}
         attribute={selectedAttribute}
+      />
+      <ModalConfirm
+        open={confirmModalOpen}
+        onClose={() => {
+          setConfirmModalOpen(false);
+          setSelected([]);
+          setSelectedAttribute(null);
+        }}
+        onConfirm={() => handleConfirmDelete()}
+        showConfirmButton={true}
+        message={
+          "Sau khi xóa, liên kết giữa thuộc tính và danh mục, sản phẩm sẽ bị mất, bạn có xác nhận xóa"
+        }
       />
     </Box>
   );
