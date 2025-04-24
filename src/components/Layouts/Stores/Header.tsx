@@ -7,86 +7,134 @@ import {
   IconButton,
   InputBase,
   Avatar,
+  Container,
+  useMediaQuery,
 } from "@mui/material";
 import { ShoppingCart, Home } from "@mui/icons-material";
 import EmailIcon from "@mui/icons-material/Email";
 import PhoneIcon from "@mui/icons-material/Phone";
+import SearchIcon from "@mui/icons-material/Search";
 
 const Header = () => {
+  const isSmallScreen = useMediaQuery("(max-width:850px)");
+
   return (
     <Box>
-      {/* Phần 1: Email & SĐT */}
-      <Box
-        sx={{
-          height: 28,
-          backgroundColor: "#508815",
-          display: "flex",
-          justifyContent: "flex-start",
-          alignItems: "center",
-          px: 3,
-          color: "#ffffff",
-          fontSize: 14,
-        }}
-      >
-        <EmailIcon sx={{ fontSize: 16, mr: 0.5 }} />
-        <Typography variant="body2" sx={{ mr: 2 }}>
-          support@example.com
-        </Typography>
-        <PhoneIcon sx={{ fontSize: 16, mr: 0.5 }} />
-        <Typography variant="body2">0123 456 789</Typography>
-      </Box>
+      {isSmallScreen ? (
+        <>
+          <Container maxWidth="lg">
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                height: 50,
+                px: { xs: 1, sm: 2 },
+              }}
+            >
+              <IconButton>
+                <SearchIcon />
+              </IconButton>
+              <Typography variant="h6" sx={{ fontWeight: "bold" }}>
+                LOGO
+              </Typography>
+              <IconButton>
+                <ShoppingCart />
+              </IconButton>
+            </Box>
+          </Container>
 
-      {/* Phần 2: Thanh điều hướng chính */}
+          <Box sx={{ borderBottom: "1px solid #508815", mx: "auto" }} />
+        </>
+      ) : (
+        <Box sx={{ backgroundColor: "#508815" }}>
+          <Container maxWidth="lg">
+            <Box
+              sx={{
+                height: 28,
+                display: "flex",
+                justifyContent: "flex-start",
+                alignItems: "center",
+                color: "#ffffff",
+                fontSize: 14,
+                px: { xs: 2, sm: 3 },
+              }}
+            >
+              <EmailIcon sx={{ fontSize: 16, mr: 0.5 }} />
+              <Typography variant="body2" sx={{ mr: 2 }}>
+                support@example.com
+              </Typography>
+              <PhoneIcon sx={{ fontSize: 16, mr: 0.5 }} />
+              <Typography variant="body2">0123 456 789</Typography>
+            </Box>
+          </Container>
+        </Box>
+      )}
+
       <AppBar
         position="static"
         color="default"
         sx={{ height: 50, justifyContent: "center", boxShadow: "none" }}
       >
-        <Toolbar
-          sx={{
-            minHeight: 50,
-            display: "flex",
-            justifyContent: "space-between",
-          }}
-        >
-          {/* Bên trái: logo */}
-          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-            <Typography variant="h6" sx={{ fontWeight: "bold" }}>
-              LOGO
-            </Typography>
-            <Button startIcon={<Home />} size="small">
-              Trang chủ
-            </Button>
-            <Button size="small">Sản phẩm</Button>
-            <Button size="small">Giới thiệu</Button>
-          </Box>
-
-          {/* Giữa: ô tìm kiếm */}
-          <InputBase
-            placeholder="Tìm sản phẩm..."
+        <Container maxWidth="lg">
+          <Toolbar
             sx={{
-              bgcolor: "#eee",
-              px: 2,
-              py: 0.5,
-              borderRadius: 4,
-              width: 250,
+              minHeight: 60,
+              display: "flex",
+              justifyContent: "space-between",
+              gap: 2,
             }}
-          />
+          >
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+              {!isSmallScreen && (
+                <Typography variant="h6" sx={{ fontWeight: "bold" }}>
+                  LOGO
+                </Typography>
+              )}
+              <Button startIcon={<Home />} size="small">
+                Trang chủ
+              </Button>
+              <Button size="small">Sản phẩm</Button>
+              <Button size="small">Giới thiệu</Button>
+            </Box>
 
-          {/* Bên phải: giỏ hàng + user */}
-          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-            <IconButton>
-              <ShoppingCart />
-            </IconButton>
-            <IconButton>
-              {/* Dùng Avatar hình tròn thay cho nút user */}
-              <Avatar
-                sx={{ width: 30, height: 30 }}
-                src="/default-avatar.jpg"
-              />
-            </IconButton>
-          </Box>
-        </Toolbar>
+            {!isSmallScreen && (
+              <Box
+                sx={{
+                  flexGrow: 1,
+                  display: "flex",
+                  justifyContent: "center",
+                }}
+              >
+                <InputBase
+                  placeholder="Tìm sản phẩm..."
+                  sx={{
+                    bgcolor: "#eee",
+                    px: 2,
+                    py: 0.5,
+                    borderRadius: 4,
+                    width: { xs: "100%", sm: 200, md: 250 },
+                    maxWidth: "100%",
+                  }}
+                />
+              </Box>
+            )}
+
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+              {!isSmallScreen && (
+                <IconButton>
+                  <ShoppingCart />
+                </IconButton>
+              )}
+              <IconButton>
+                <Avatar
+                  sx={{ width: 30, height: 30 }}
+                  src="/default-avatar.jpg"
+                />
+              </IconButton>
+            </Box>
+          </Toolbar>
+        </Container>
       </AppBar>
     </Box>
   );
