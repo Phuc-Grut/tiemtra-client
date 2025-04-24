@@ -129,7 +129,7 @@ const CategoryTable = ({
     queryClient.invalidateQueries({
       queryKey: ["category", currentCategoryId, pageNumber, pageSize],
     });
-  };  
+  };
 
   useEffect(() => {
     if (categoryDetail?.type) {
@@ -141,7 +141,14 @@ const CategoryTable = ({
       setParentCategoryName(current.categoryName);
       onParentInfoChange?.(current.categoryId, current.categoryName);
     }
-  }, [categoryDetail, onTypeChange, onParentInfoChange]);
+  }, [
+    categoryDetail?.type,
+    categoryDetail?.currentCategory,
+    categoryDetail?.currentCategory?.categoryName,
+    prentCategoryName,
+    onTypeChange,
+    onParentInfoChange,
+  ]);
 
   useEffect(() => {
     if (!isDetail) {
@@ -149,12 +156,7 @@ const CategoryTable = ({
       return;
     }
 
-    if (categoryDetail?.type) {
-      onTypeChange?.(categoryDetail.type);
-    }
-
     const current = categoryDetail?.currentCategory;
-
     if (current?.categoryId && current?.categoryName) {
       setParentCategoryName(current.categoryName);
       onParentInfoChange?.(current.categoryId, current.categoryName);
@@ -166,8 +168,10 @@ const CategoryTable = ({
     }
   }, [
     isDetail,
-    categoryDetail,
-    onTypeChange,
+    categoryDetail?.currentCategory,
+    categoryDetail?.currentCategory?.breadcrumbs,
+    categoryDetail?.currentCategory?.categoryName,
+    prentCategoryName,
     onParentInfoChange,
     onBreadcrumbsChange,
   ]);
@@ -236,16 +240,14 @@ const CategoryTable = ({
       }
     } catch (error) {
       console.error("Error checking delete:", error);
-      showError("Xóa thất bại")
+      showError("Xóa thất bại");
     }
   };
 
   const handleConfirmDelete = async () => {
     try {
       const res = await categoryApi.deleteManyCategories(pendingDeleteIds);
-      console.log(
-        pendingDeleteIds
-      );
+      console.log(pendingDeleteIds);
       if (res.data.success) {
         showSuccess("Xoá thành công!");
         invalidateAllCategoryData();
@@ -266,7 +268,7 @@ const CategoryTable = ({
     return (
       <AttributeTable
         rows={categoryDetail.items}
-        categoryId = {Number(currentCategoryId)}
+        categoryId={Number(currentCategoryId)}
         pageNumber={pageNumber}
         pageSize={pageSize}
         setPageNumber={setPageNumber}
