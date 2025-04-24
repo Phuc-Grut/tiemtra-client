@@ -2,7 +2,7 @@ import React from "react";
 
 const HomePage = () => {
   return (
-    <div>Trang Chủ</div>
+    <div style={{backgroundColor: "Highlight", height: "100vh"}}>Trang Chủ</div>
   );
 };
 
