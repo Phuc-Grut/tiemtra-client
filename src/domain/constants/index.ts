@@ -1,7 +1,8 @@
-// // export const BASE_URL = "https://localhost:7021/api"
-// export const BASE_URL = "http://localhost:5001";
-// // export const BASE_URL = "https://tiemtraapi-eggechbzfqaqc3cf.southeastasia-01.azurewebsites.net/api"
 export const BASE_URL = "https://localhost:7021/api"
+// // export const BASE_URL = "https://tiemtraapi-eggechbzfqaqc3cf.southeastasia-01.azurewebsites.net/api"
+// export const BASE_URL = "https://localhost:7021/api"
+// export const BASE_URL = process.env.REACT_APP_API_URL
+// export const BASE_URL = "http://localhost:5001/api";
 
 const URL_ADMIN = `${BASE_URL}/admin`
 
@@ -56,6 +57,6 @@ export const ATTRIBUTE = {
         GET_ALL_API: `${URL_ADMIN}/attributes/get-paging-attributes`,
         CREATE_API: `${URL_ADMIN}/attributes/add-attributes`,
         UPDATE_API: (id: number) => `${URL_ADMIN}/attributes/update-attributes/${id}`,
-        DELETE_API: `${URL_ADMIN}/attribute/delete-attributes`,
+        DELETE_API: `${URL_ADMIN}/attributes/delete-by-ids`,
     }
 }
