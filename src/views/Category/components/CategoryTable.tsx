@@ -236,6 +236,7 @@ const***REMOVED***CategoryTable***REMOVED***=***REMOVED***({
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***}
 ***REMOVED******REMOVED******REMOVED******REMOVED***}***REMOVED***catch***REMOVED***(error)***REMOVED***{
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***console.error("Error***REMOVED***checking***REMOVED***delete:",***REMOVED***error);
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***showError("Xóa***REMOVED***thất***REMOVED***bại")
 ***REMOVED******REMOVED******REMOVED******REMOVED***}
 ***REMOVED******REMOVED***};
 

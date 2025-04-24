@@ -1,7 +1,8 @@
-//***REMOVED***//***REMOVED***export***REMOVED***const***REMOVED***BASE_URL***REMOVED***=***REMOVED***"https://localhost:7021/api"
-//***REMOVED***export***REMOVED***const***REMOVED***BASE_URL***REMOVED***=***REMOVED***"http://localhost:5001";
-//***REMOVED***//***REMOVED***export***REMOVED***const***REMOVED***BASE_URL***REMOVED***=***REMOVED***"https://tiemtraapi-eggechbzfqaqc3cf.southeastasia-01.azurewebsites.net/api"
 export***REMOVED***const***REMOVED***BASE_URL***REMOVED***=***REMOVED***"https://localhost:7021/api"
+//***REMOVED***//***REMOVED***export***REMOVED***const***REMOVED***BASE_URL***REMOVED***=***REMOVED***"https://tiemtraapi-eggechbzfqaqc3cf.southeastasia-01.azurewebsites.net/api"
+//***REMOVED***export***REMOVED***const***REMOVED***BASE_URL***REMOVED***=***REMOVED***"https://localhost:7021/api"
+//***REMOVED***export***REMOVED***const***REMOVED***BASE_URL***REMOVED***=***REMOVED***process.env.REACT_APP_API_URL
+//***REMOVED***export***REMOVED***const***REMOVED***BASE_URL***REMOVED***=***REMOVED***"http://localhost:5001/api";
 
 const***REMOVED***URL_ADMIN***REMOVED***=***REMOVED***`${BASE_URL}/admin`
 
@@ -56,6 +57,6 @@ export***REMOVED***const***REMOVED***ATTRIBUTE***REMOVED***=***REMOVED***{
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***GET_ALL_API:***REMOVED***`${URL_ADMIN}/attributes/get-paging-attributes`,
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***CREATE_API:***REMOVED***`${URL_ADMIN}/attributes/add-attributes`,
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***UPDATE_API:***REMOVED***(id:***REMOVED***number)***REMOVED***=>***REMOVED***`${URL_ADMIN}/attributes/update-attributes/${id}`,
-***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***DELETE_API:***REMOVED***`${URL_ADMIN}/attribute/delete-attributes`,
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***DELETE_API:***REMOVED***`${URL_ADMIN}/attributes/delete-by-ids`,
 ***REMOVED******REMOVED******REMOVED******REMOVED***}
 }

@@ -12,7 +12,7 @@ import***REMOVED***{
 ***REMOVED******REMOVED***TableRow,
 ***REMOVED******REMOVED***TextField,
 }***REMOVED***from***REMOVED***"@mui/material";
-import***REMOVED***{***REMOVED***useQuery***REMOVED***}***REMOVED***from***REMOVED***"@tanstack/react-query";
+import***REMOVED***{***REMOVED***useQuery,***REMOVED***useQueryClient***REMOVED***}***REMOVED***from***REMOVED***"@tanstack/react-query";
 import***REMOVED***{***REMOVED***useState***REMOVED***}***REMOVED***from***REMOVED***"react";
 import***REMOVED***{***REMOVED***IAttribute***REMOVED***}***REMOVED***from***REMOVED***"src/Interfaces/IAttribute";
 import***REMOVED***attributeApi***REMOVED***from***REMOVED***"src/services/api/Attributes";
@@ -23,9 +23,13 @@ import***REMOVED***GenericContextMenu***REMOVED***from***REMOVED***"src/componen
 import***REMOVED***CustomPagination***REMOVED***from***REMOVED***"src/components/CustomPagination";
 import***REMOVED***{***REMOVED***useNavigate***REMOVED***}***REMOVED***from***REMOVED***"react-router-dom";
 import***REMOVED***UpdateAttribute***REMOVED***from***REMOVED***"./modal/UpdateAttribute";
+import***REMOVED***ModalConfirm***REMOVED***from***REMOVED***"src/components/ModalConfirm";
+import***REMOVED***useToast***REMOVED***from***REMOVED***"src/components/Toast";
 
 const***REMOVED***AttributeTable***REMOVED***=***REMOVED***()***REMOVED***=>***REMOVED***{
 ***REMOVED******REMOVED***const***REMOVED***navigate***REMOVED***=***REMOVED***useNavigate();
+***REMOVED******REMOVED***const***REMOVED***{***REMOVED***showSuccess,***REMOVED***showError***REMOVED***}***REMOVED***=***REMOVED***useToast();
+***REMOVED******REMOVED***const***REMOVED***queryClient***REMOVED***=***REMOVED***useQueryClient();
 ***REMOVED******REMOVED***const***REMOVED***[pageNumber,***REMOVED***setPageNumber]***REMOVED***=***REMOVED***useState(1);
 ***REMOVED******REMOVED***const***REMOVED***[pageSize,***REMOVED***setPageSize]***REMOVED***=***REMOVED***useState(5);
 ***REMOVED******REMOVED***const***REMOVED***[maxPages,***REMOVED***setMaxPages]***REMOVED***=***REMOVED***useState<number>(1);
@@ -46,6 +50,7 @@ const***REMOVED***AttributeTable***REMOVED***=***REMOVED***()***REMOVED***=>***R
 ***REMOVED******REMOVED***const***REMOVED***[contextItem,***REMOVED***setContextItem]***REMOVED***=***REMOVED***useState<IAttribute***REMOVED***|***REMOVED***null>(null);
 
 ***REMOVED******REMOVED***const***REMOVED***[editModalOpen,***REMOVED***setEditModalOpen]***REMOVED***=***REMOVED***useState(false);
+***REMOVED******REMOVED***const***REMOVED***[confirmModalOpen,***REMOVED***setConfirmModalOpen]***REMOVED***=***REMOVED***useState(false);
 
 ***REMOVED******REMOVED***const***REMOVED***{
 ***REMOVED******REMOVED******REMOVED******REMOVED***data:***REMOVED***attributes***REMOVED***=***REMOVED***[],
@@ -65,7 +70,40 @@ const***REMOVED***AttributeTable***REMOVED***=***REMOVED***()***REMOVED***=>***R
 ***REMOVED******REMOVED******REMOVED******REMOVED***retry:***REMOVED***false,
 ***REMOVED******REMOVED***});
 
-***REMOVED******REMOVED***const***REMOVED***handleDeleteSelected***REMOVED***=***REMOVED***async***REMOVED***(attributeIds:***REMOVED***number[]***REMOVED***=***REMOVED***selected)***REMOVED***=>***REMOVED***{};
+***REMOVED******REMOVED***const***REMOVED***invalidateAllCategoryData***REMOVED***=***REMOVED***()***REMOVED***=>***REMOVED***{
+***REMOVED******REMOVED******REMOVED******REMOVED***queryClient.invalidateQueries({
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***predicate:***REMOVED***(query)***REMOVED***=>
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***["attributes"].includes(query.queryKey[0]***REMOVED***as***REMOVED***string),
+***REMOVED******REMOVED******REMOVED******REMOVED***});
+***REMOVED******REMOVED***};
+
+***REMOVED******REMOVED***console.log("🚀***REMOVED***~***REMOVED***handleConfirmDelete***REMOVED***~***REMOVED***attributeIds:",***REMOVED***selected)
+***REMOVED******REMOVED***const***REMOVED***handleConfirmDelete***REMOVED***=***REMOVED***async***REMOVED***(attributeIds:***REMOVED***number[]***REMOVED***=***REMOVED***selected)***REMOVED***=>***REMOVED***{
+***REMOVED******REMOVED******REMOVED******REMOVED***
+***REMOVED******REMOVED******REMOVED******REMOVED***if***REMOVED***(attributeIds.length***REMOVED***===***REMOVED***0)***REMOVED***{
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***showError("Xóa***REMOVED***thất***REMOVED***bại");
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***setConfirmModalOpen(false);
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***setSelected([]);
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***setSelectedAttribute(null);
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***return;
+***REMOVED******REMOVED******REMOVED******REMOVED***}
+
+***REMOVED******REMOVED******REMOVED******REMOVED***try***REMOVED***{
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***const***REMOVED***res***REMOVED***=***REMOVED***await***REMOVED***attributeApi.deleteAttributeApi(attributeIds);
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***if***REMOVED***(res.data.success)***REMOVED***{
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***showSuccess("Xoá***REMOVED***thành***REMOVED***công!");
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***invalidateAllCategoryData();
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***setConfirmModalOpen(false);
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***setSelected([]);
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***setSelectedAttribute(null);
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***}***REMOVED***else***REMOVED***{
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***showError("Xoá***REMOVED***thất***REMOVED***bại!");
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***}
+***REMOVED******REMOVED******REMOVED******REMOVED***}***REMOVED***catch***REMOVED***(error)***REMOVED***{
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***console.error("Error***REMOVED***checking***REMOVED***delete:",***REMOVED***error);
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***showError("Xoá***REMOVED***thất***REMOVED***bại!");
+***REMOVED******REMOVED******REMOVED******REMOVED***}
+***REMOVED******REMOVED***};
 
 ***REMOVED******REMOVED***const***REMOVED***attributeMenuActions***REMOVED***=***REMOVED***atrrinuteContextMenuItems.map((item)***REMOVED***=>***REMOVED***({
 ***REMOVED******REMOVED******REMOVED******REMOVED***...item,
@@ -77,7 +115,8 @@ const***REMOVED***AttributeTable***REMOVED***=***REMOVED***()***REMOVED***=>***R
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***setEditModalOpen(true);
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***break;
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***case***REMOVED***"DELETE":
-***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***handleDeleteSelected([att?.attributeId]);
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***setSelected([att?.attributeId]);
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***setConfirmModalOpen(true);
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***break;
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***default:
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***console.log("Chọn***REMOVED***menu:",***REMOVED***item.id,***REMOVED***att);
@@ -144,7 +183,7 @@ const***REMOVED***AttributeTable***REMOVED***=***REMOVED***()***REMOVED***=>***R
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***backgroundColor:***REMOVED***"#cc0000",
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***},
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***}}
-***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***onClick={()***REMOVED***=>***REMOVED***handleDeleteSelected()}
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***onClick={()***REMOVED***=>***REMOVED***setConfirmModalOpen(true)}
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***>
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***Xoá***REMOVED***({selected.length})
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***</Button>
@@ -341,6 +380,19 @@ const***REMOVED***AttributeTable***REMOVED***=***REMOVED***()***REMOVED***=>***R
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***setEditModalOpen(false);
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***}}
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***attribute={selectedAttribute}
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***/>
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***<ModalConfirm
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***open={confirmModalOpen}
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***onClose={()***REMOVED***=>***REMOVED***{
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***setConfirmModalOpen(false);
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***setSelected([]);
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***setSelectedAttribute(null);
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***}}
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***onConfirm={()***REMOVED***=>***REMOVED***handleConfirmDelete()}
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***showConfirmButton={true}
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***message={
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***"Sau***REMOVED***khi***REMOVED***xóa,***REMOVED***liên***REMOVED***kết***REMOVED***giữa***REMOVED***thuộc***REMOVED***tính***REMOVED***và***REMOVED***danh***REMOVED***mục,***REMOVED***sản***REMOVED***phẩm***REMOVED***sẽ***REMOVED***bị***REMOVED***mất,***REMOVED***bạn***REMOVED***có***REMOVED***xác***REMOVED***nhận***REMOVED***xóa"
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***}
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***/>
 ***REMOVED******REMOVED******REMOVED******REMOVED***</Box>
 ***REMOVED******REMOVED***);
