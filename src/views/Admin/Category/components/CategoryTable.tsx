@@ -1,4 +1,4 @@
-import***REMOVED***React,***REMOVED***{***REMOVED***useState,***REMOVED***useEffect***REMOVED***}***REMOVED***from***REMOVED***"react";
+import***REMOVED***React,***REMOVED***{***REMOVED***useState,***REMOVED***useEffect,***REMOVED***useRef***REMOVED***}***REMOVED***from***REMOVED***"react";
 import***REMOVED***{***REMOVED***useQuery,***REMOVED***useQueryClient***REMOVED***}***REMOVED***from***REMOVED***"@tanstack/react-query";
 import***REMOVED***categoryApi***REMOVED***from***REMOVED***"src/services/api/Category";
 import***REMOVED***{***REMOVED***ICategory***REMOVED***}***REMOVED***from***REMOVED***"src/Interfaces/ICategory";
@@ -34,7 +34,7 @@ interface***REMOVED***BreadcrumbItem***REMOVED***{
 
 interface***REMOVED***CategoryTableProps***REMOVED***{
 ***REMOVED******REMOVED***onTypeChange?:***REMOVED***(type:***REMOVED***string)***REMOVED***=>***REMOVED***void;
-***REMOVED******REMOVED***onParentInfoChange?:***REMOVED***(id:***REMOVED***number***REMOVED***|***REMOVED***string,***REMOVED***name:***REMOVED***string)***REMOVED***=>***REMOVED***void;
+***REMOVED******REMOVED***onParentInfoChange?:***REMOVED***(id:***REMOVED***number,***REMOVED***name:***REMOVED***string)***REMOVED***=>***REMOVED***void;
 ***REMOVED******REMOVED***onBreadcrumbsChange?:***REMOVED***(breadcrumbs:***REMOVED***BreadcrumbItem[])***REMOVED***=>***REMOVED***void;
 }
 
@@ -59,7 +59,7 @@ const***REMOVED***CategoryTable***REMOVED***=***REMOVED***({
 ***REMOVED******REMOVED***//***REMOVED***console.log("🚀***REMOVED***~***REMOVED***pathIds:",***REMOVED***pathIds)
 ***REMOVED******REMOVED***const***REMOVED***isDetail***REMOVED***=***REMOVED***pathIds.length***REMOVED***>***REMOVED***0;
 ***REMOVED******REMOVED***const***REMOVED***currentCategoryId***REMOVED***=***REMOVED***pathIds[pathIds.length***REMOVED***-***REMOVED***1];
-***REMOVED******REMOVED***const***REMOVED***[prentCategoryName,***REMOVED***setParentCategoryName]***REMOVED***=***REMOVED***useState<string***REMOVED***|***REMOVED***null>(
+***REMOVED******REMOVED***const***REMOVED***[parentCategoryName,***REMOVED***setParentCategoryName]***REMOVED***=***REMOVED***useState<string***REMOVED***|***REMOVED***null>(
 ***REMOVED******REMOVED******REMOVED******REMOVED***null
 ***REMOVED******REMOVED***);
 
@@ -115,6 +115,7 @@ const***REMOVED***CategoryTable***REMOVED***=***REMOVED***({
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***}),
 ***REMOVED******REMOVED******REMOVED******REMOVED***retry:***REMOVED***false,
 ***REMOVED******REMOVED******REMOVED******REMOVED***enabled:***REMOVED***!!currentCategoryId***REMOVED***&&***REMOVED***!isNaN(Number(currentCategoryId)),
+***REMOVED******REMOVED******REMOVED******REMOVED***staleTime:***REMOVED***5***REMOVED*******REMOVED***60***REMOVED*******REMOVED***1000,
 ***REMOVED******REMOVED******REMOVED******REMOVED***select:***REMOVED***(res)***REMOVED***=>***REMOVED***{
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***const***REMOVED***type***REMOVED***=***REMOVED***res.data?.type***REMOVED***??***REMOVED***"Unknown";
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***const***REMOVED***items***REMOVED***=***REMOVED***res.data?.data?.items?.$values***REMOVED***??***REMOVED***[];
@@ -131,47 +132,46 @@ const***REMOVED***CategoryTable***REMOVED***=***REMOVED***({
 ***REMOVED******REMOVED******REMOVED******REMOVED***});
 ***REMOVED******REMOVED***};
 
-***REMOVED******REMOVED***useEffect(()***REMOVED***=>***REMOVED***{
-***REMOVED******REMOVED******REMOVED******REMOVED***if***REMOVED***(categoryDetail?.type)***REMOVED***{
-***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***onTypeChange?.(categoryDetail.type);
-***REMOVED******REMOVED******REMOVED******REMOVED***}
+***REMOVED******REMOVED***const***REMOVED***lastBreadcrumbsRef***REMOVED***=***REMOVED***useRef<BreadcrumbItem[]>([]);
 
-***REMOVED******REMOVED******REMOVED******REMOVED***const***REMOVED***current***REMOVED***=***REMOVED***categoryDetail?.currentCategory;
-***REMOVED******REMOVED******REMOVED******REMOVED***if***REMOVED***(current?.categoryId***REMOVED***&&***REMOVED***current?.categoryName)***REMOVED***{
-***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***setParentCategoryName(current.categoryName);
-***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***onParentInfoChange?.(current.categoryId,***REMOVED***current.categoryName);
-***REMOVED******REMOVED******REMOVED******REMOVED***}
-***REMOVED******REMOVED***},***REMOVED***[
-***REMOVED******REMOVED******REMOVED******REMOVED***categoryDetail?.type,
-***REMOVED******REMOVED******REMOVED******REMOVED***categoryDetail?.currentCategory,
-***REMOVED******REMOVED******REMOVED******REMOVED***categoryDetail?.currentCategory?.categoryName,
-***REMOVED******REMOVED******REMOVED******REMOVED***prentCategoryName,
-***REMOVED******REMOVED******REMOVED******REMOVED***onTypeChange,
-***REMOVED******REMOVED******REMOVED******REMOVED***onParentInfoChange,
-***REMOVED******REMOVED***]);
-
+***REMOVED******REMOVED***//***REMOVED***useEffect***REMOVED***để***REMOVED***xử***REMOVED***lý***REMOVED***khi***REMOVED***isDetail***REMOVED***là***REMOVED***false***REMOVED***(không***REMOVED***phụ***REMOVED***thuộc***REMOVED***vào***REMOVED***categoryDetail)
 ***REMOVED******REMOVED***useEffect(()***REMOVED***=>***REMOVED***{
 ***REMOVED******REMOVED******REMOVED******REMOVED***if***REMOVED***(!isDetail)***REMOVED***{
-***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***onBreadcrumbsChange?.([]);
-***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***return;
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***if***REMOVED***(lastBreadcrumbsRef.current.length***REMOVED***!==***REMOVED***0)***REMOVED***{
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***onBreadcrumbsChange?.([]);
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***lastBreadcrumbsRef.current***REMOVED***=***REMOVED***[];
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***}
 ***REMOVED******REMOVED******REMOVED******REMOVED***}
+***REMOVED******REMOVED***},***REMOVED***[isDetail,***REMOVED***onBreadcrumbsChange]);
 
-***REMOVED******REMOVED******REMOVED******REMOVED***const***REMOVED***current***REMOVED***=***REMOVED***categoryDetail?.currentCategory;
-***REMOVED******REMOVED******REMOVED******REMOVED***if***REMOVED***(current?.categoryId***REMOVED***&&***REMOVED***current?.categoryName)***REMOVED***{
-***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***setParentCategoryName(current.categoryName);
-***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***onParentInfoChange?.(current.categoryId,***REMOVED***current.categoryName);
-***REMOVED******REMOVED******REMOVED******REMOVED***}
+***REMOVED******REMOVED***//***REMOVED***useEffect***REMOVED***để***REMOVED***xử***REMOVED***lý***REMOVED***logic***REMOVED***liên***REMOVED***quan***REMOVED***đến***REMOVED***categoryDetail
+***REMOVED******REMOVED***useEffect(()***REMOVED***=>***REMOVED***{
+***REMOVED******REMOVED******REMOVED******REMOVED***if***REMOVED***(isDetail)***REMOVED***{
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***//***REMOVED***Xử***REMOVED***lý***REMOVED***type
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***if***REMOVED***(categoryDetail?.type)***REMOVED***{
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***onTypeChange?.(categoryDetail.type);
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***}
 
-***REMOVED******REMOVED******REMOVED******REMOVED***const***REMOVED***breadcrumbs***REMOVED***=***REMOVED***current?.breadcrumbs***REMOVED***??***REMOVED***[];
-***REMOVED******REMOVED******REMOVED******REMOVED***if***REMOVED***(breadcrumbs.length***REMOVED***>***REMOVED***0)***REMOVED***{
-***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***onBreadcrumbsChange?.(breadcrumbs);
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***const***REMOVED***current***REMOVED***=***REMOVED***categoryDetail?.currentCategory;
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***if***REMOVED***(current?.categoryId***REMOVED***&&***REMOVED***current?.categoryName)***REMOVED***{
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***setParentCategoryName(current.categoryName);
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***onParentInfoChange?.(current.categoryId,***REMOVED***current.categoryName);
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***}
+
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***const***REMOVED***breadcrumbs***REMOVED***=***REMOVED***current?.breadcrumbs***REMOVED***??***REMOVED***[];
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***if***REMOVED***(
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***breadcrumbs.length***REMOVED***>***REMOVED***0***REMOVED***&&
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***JSON.stringify(breadcrumbs)***REMOVED***!==
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***JSON.stringify(lastBreadcrumbsRef.current)
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***)***REMOVED***{
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***onBreadcrumbsChange?.(breadcrumbs);
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***lastBreadcrumbsRef.current***REMOVED***=***REMOVED***breadcrumbs;
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***}
 ***REMOVED******REMOVED******REMOVED******REMOVED***}
 ***REMOVED******REMOVED***},***REMOVED***[
 ***REMOVED******REMOVED******REMOVED******REMOVED***isDetail,
-***REMOVED******REMOVED******REMOVED******REMOVED***categoryDetail?.currentCategory,
-***REMOVED******REMOVED******REMOVED******REMOVED***categoryDetail?.currentCategory?.breadcrumbs,
-***REMOVED******REMOVED******REMOVED******REMOVED***categoryDetail?.currentCategory?.categoryName,
-***REMOVED******REMOVED******REMOVED******REMOVED***prentCategoryName,
+***REMOVED******REMOVED******REMOVED******REMOVED***categoryDetail,
+***REMOVED******REMOVED******REMOVED******REMOVED***onTypeChange,
 ***REMOVED******REMOVED******REMOVED******REMOVED***onParentInfoChange,
 ***REMOVED******REMOVED******REMOVED******REMOVED***onBreadcrumbsChange,
 ***REMOVED******REMOVED***]);
@@ -529,7 +529,7 @@ const***REMOVED***CategoryTable***REMOVED***=***REMOVED***({
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***/>
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***<UpdateCategoryModal
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***open={editModalOpen}
-***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***parentCategoryName={prentCategoryName}
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***parentCategoryName={parentCategoryName}
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***category={selectedCategory}
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***onClose={()***REMOVED***=>***REMOVED***{
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***setEditModalOpen(false);

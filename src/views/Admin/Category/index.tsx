@@ -1,6 +1,6 @@
 import***REMOVED***{***REMOVED***Box***REMOVED***}***REMOVED***from***REMOVED***"@mui/material";
 import***REMOVED***CategoryTable***REMOVED***from***REMOVED***"./components/CategoryTable";
-import***REMOVED***{***REMOVED***useState***REMOVED***}***REMOVED***from***REMOVED***"react";
+import***REMOVED***{***REMOVED***useState,***REMOVED***useCallback***REMOVED***}***REMOVED***from***REMOVED***"react";
 import***REMOVED***AddCategoryModal***REMOVED***from***REMOVED***"./components/modal/AddCategory";
 import***REMOVED***PageHeader***REMOVED***from***REMOVED***"src/components/Layouts/Admin/PageHeader";
 
@@ -14,7 +14,6 @@ const***REMOVED***Category***REMOVED***=***REMOVED***()***REMOVED***=>***REMOVED
 ***REMOVED******REMOVED******REMOVED******REMOVED***undefined
 ***REMOVED******REMOVED***);
 ***REMOVED******REMOVED***const***REMOVED***[isAddOpen,***REMOVED***setIsAddOpen]***REMOVED***=***REMOVED***useState(false);
-
 ***REMOVED******REMOVED***const***REMOVED***[parentCategoryId,***REMOVED***setParentCategoryId]***REMOVED***=***REMOVED***useState<
 ***REMOVED******REMOVED******REMOVED******REMOVED***number***REMOVED***|***REMOVED***undefined
 ***REMOVED******REMOVED***>();
@@ -22,6 +21,19 @@ const***REMOVED***Category***REMOVED***=***REMOVED***()***REMOVED***=>***REMOVED
 ***REMOVED******REMOVED******REMOVED******REMOVED***string***REMOVED***|***REMOVED***undefined
 ***REMOVED******REMOVED***>();
 ***REMOVED******REMOVED***const***REMOVED***[breadcrumbs,***REMOVED***setBreadcrumbs]***REMOVED***=***REMOVED***useState<BreadcrumbItem[]>([]);
+
+***REMOVED******REMOVED***const***REMOVED***onTypeChange***REMOVED***=***REMOVED***useCallback((type:***REMOVED***string)***REMOVED***=>***REMOVED***{
+***REMOVED******REMOVED******REMOVED******REMOVED***setCategoryType(type);
+***REMOVED******REMOVED***},***REMOVED***[]);
+
+***REMOVED******REMOVED***const***REMOVED***onParentInfoChange***REMOVED***=***REMOVED***useCallback((id:***REMOVED***number,***REMOVED***name:***REMOVED***string)***REMOVED***=>***REMOVED***{
+***REMOVED******REMOVED******REMOVED******REMOVED***setParentCategoryId(Number(id));
+***REMOVED******REMOVED******REMOVED******REMOVED***setParentCategoryName(name);
+***REMOVED******REMOVED***},***REMOVED***[]);
+
+***REMOVED******REMOVED***const***REMOVED***onBreadcrumbsChange***REMOVED***=***REMOVED***useCallback((newBreadcrumbs:***REMOVED***BreadcrumbItem[])***REMOVED***=>***REMOVED***{
+***REMOVED******REMOVED******REMOVED******REMOVED***setBreadcrumbs(newBreadcrumbs);
+***REMOVED******REMOVED***},***REMOVED***[]);
 
 ***REMOVED******REMOVED***return***REMOVED***(
 ***REMOVED******REMOVED******REMOVED******REMOVED***<Box
@@ -51,12 +63,9 @@ const***REMOVED***Category***REMOVED***=***REMOVED***()***REMOVED***=>***REMOVED
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***}}
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***>
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***<CategoryTable
-***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***onTypeChange={setCategoryType}
-***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***onParentInfoChange={(id,***REMOVED***name)***REMOVED***=>***REMOVED***{
-***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***setParentCategoryId(Number(id));
-***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***setParentCategoryName(name);
-***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***}}
-***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***onBreadcrumbsChange={setBreadcrumbs}
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***onTypeChange={onTypeChange}
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***onParentInfoChange={onParentInfoChange}
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***onBreadcrumbsChange={onBreadcrumbsChange}
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***/>
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***</Box>
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***<AddCategoryModal
