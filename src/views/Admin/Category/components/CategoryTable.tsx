@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import categoryApi from "src/services/api/Category";
 import { ICategory } from "src/Interfaces/ICategory";
@@ -34,7 +34,7 @@ interface BreadcrumbItem {
 
 interface CategoryTableProps {
   onTypeChange?: (type: string) => void;
-  onParentInfoChange?: (id: number | string, name: string) => void;
+  onParentInfoChange?: (id: number, name: string) => void;
   onBreadcrumbsChange?: (breadcrumbs: BreadcrumbItem[]) => void;
 }
 
@@ -59,7 +59,7 @@ const CategoryTable = ({
   // console.log("🚀 ~ pathIds:", pathIds)
   const isDetail = pathIds.length > 0;
   const currentCategoryId = pathIds[pathIds.length - 1];
-  const [prentCategoryName, setParentCategoryName] = useState<string | null>(
+  const [parentCategoryName, setParentCategoryName] = useState<string | null>(
     null
   );
 
@@ -115,6 +115,7 @@ const CategoryTable = ({
       }),
     retry: false,
     enabled: !!currentCategoryId && !isNaN(Number(currentCategoryId)),
+    staleTime: 5 * 60 * 1000,
     select: (res) => {
       const type = res.data?.type ?? "Unknown";
       const items = res.data?.data?.items?.$values ?? [];
@@ -131,47 +132,46 @@ const CategoryTable = ({
     });
   };
 
-  useEffect(() => {
-    if (categoryDetail?.type) {
-      onTypeChange?.(categoryDetail.type);
-    }
+  const lastBreadcrumbsRef = useRef<BreadcrumbItem[]>([]);
 
-    const current = categoryDetail?.currentCategory;
-    if (current?.categoryId && current?.categoryName) {
-      setParentCategoryName(current.categoryName);
-      onParentInfoChange?.(current.categoryId, current.categoryName);
-    }
-  }, [
-    categoryDetail?.type,
-    categoryDetail?.currentCategory,
-    categoryDetail?.currentCategory?.categoryName,
-    prentCategoryName,
-    onTypeChange,
-    onParentInfoChange,
-  ]);
-
+  // useEffect để xử lý khi isDetail là false (không phụ thuộc vào categoryDetail)
   useEffect(() => {
     if (!isDetail) {
-      onBreadcrumbsChange?.([]);
-      return;
+      if (lastBreadcrumbsRef.current.length !== 0) {
+        onBreadcrumbsChange?.([]);
+        lastBreadcrumbsRef.current = [];
+      }
     }
+  }, [isDetail, onBreadcrumbsChange]);
 
-    const current = categoryDetail?.currentCategory;
-    if (current?.categoryId && current?.categoryName) {
-      setParentCategoryName(current.categoryName);
-      onParentInfoChange?.(current.categoryId, current.categoryName);
-    }
+  // useEffect để xử lý logic liên quan đến categoryDetail
+  useEffect(() => {
+    if (isDetail) {
+      // Xử lý type
+      if (categoryDetail?.type) {
+        onTypeChange?.(categoryDetail.type);
+      }
 
-    const breadcrumbs = current?.breadcrumbs ?? [];
-    if (breadcrumbs.length > 0) {
-      onBreadcrumbsChange?.(breadcrumbs);
+      const current = categoryDetail?.currentCategory;
+      if (current?.categoryId && current?.categoryName) {
+        setParentCategoryName(current.categoryName);
+        onParentInfoChange?.(current.categoryId, current.categoryName);
+      }
+
+      const breadcrumbs = current?.breadcrumbs ?? [];
+      if (
+        breadcrumbs.length > 0 &&
+        JSON.stringify(breadcrumbs) !==
+          JSON.stringify(lastBreadcrumbsRef.current)
+      ) {
+        onBreadcrumbsChange?.(breadcrumbs);
+        lastBreadcrumbsRef.current = breadcrumbs;
+      }
     }
   }, [
     isDetail,
-    categoryDetail?.currentCategory,
-    categoryDetail?.currentCategory?.breadcrumbs,
-    categoryDetail?.currentCategory?.categoryName,
-    prentCategoryName,
+    categoryDetail,
+    onTypeChange,
     onParentInfoChange,
     onBreadcrumbsChange,
   ]);
@@ -529,7 +529,7 @@ const CategoryTable = ({
       />
       <UpdateCategoryModal
         open={editModalOpen}
-        parentCategoryName={prentCategoryName}
+        parentCategoryName={parentCategoryName}
         category={selectedCategory}
         onClose={() => {
           setEditModalOpen(false);
