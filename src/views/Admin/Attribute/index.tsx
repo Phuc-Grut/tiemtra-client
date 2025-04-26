@@ -1,6 +1,6 @@
 import { Box } from "@mui/material";
 import AttributeTable from "./components/AttributeTable";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import AddAttributeModal from "./components/modal/AddAttributeModal";
 import PageHeader from "src/components/Layouts/Admin/PageHeader";
 

@@ -1,4 +1,4 @@
-import { Box, Tabs, Tab, Dialog, useTheme, IconButton } from "@mui/material";
+import { Box, Tabs, Tab, Dialog, IconButton } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { useState } from "react";
 import ProductInfoTab from "./ProductInfoTab";
@@ -12,7 +12,6 @@ const tabLabels = ["Thêm sản phẩm"];
 
 const AddProductModal = ({ open, onClose }: AddProductModalProps) => {
   const [activeTab, setActiveTab] = useState(0);
-  const theme = useTheme();
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setActiveTab(newValue);
