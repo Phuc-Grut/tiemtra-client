@@ -1,10 +1,7 @@
-export***REMOVED***const***REMOVED***BASE_URL***REMOVED***=***REMOVED***"https://localhost:7021/api"
-//***REMOVED***//***REMOVED***export***REMOVED***const***REMOVED***BASE_URL***REMOVED***=***REMOVED***"https://tiemtraapi-eggechbzfqaqc3cf.southeastasia-01.azurewebsites.net/api"
-//***REMOVED***export***REMOVED***const***REMOVED***BASE_URL***REMOVED***=***REMOVED***"https://localhost:7021/api"
-//***REMOVED***export***REMOVED***const***REMOVED***BASE_URL***REMOVED***=***REMOVED***process.env.REACT_APP_API_URL
-//***REMOVED***export***REMOVED***const***REMOVED***BASE_URL***REMOVED***=***REMOVED***"http://localhost:5001/api";
+export***REMOVED***const***REMOVED***BASE_URL***REMOVED***=***REMOVED***process.env.REACT_APP_API_URL;
 
-const***REMOVED***URL_ADMIN***REMOVED***=***REMOVED***`${BASE_URL}/admin`
+const***REMOVED***URL_ADMIN***REMOVED***=***REMOVED***`${BASE_URL}/api/admin`
+const***REMOVED***URL_AUTH***REMOVED***=***REMOVED***`${BASE_URL}/api`
 
 export***REMOVED***const***REMOVED***AUTHENTICATION***REMOVED***=***REMOVED***{
 ***REMOVED******REMOVED******REMOVED******REMOVED***ACTION_TYPES:***REMOVED***{
@@ -15,11 +12,11 @@ export***REMOVED***const***REMOVED***AUTHENTICATION***REMOVED***=***REMOVED***{
 ***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***REFRESH_TOKEN:***REMOVED***'AUTHENTICATION/REFRESH_TOKEN',
 ***REMOVED******REMOVED******REMOVED******REMOVED***},
 ***REMOVED******REMOVED******REMOVED******REMOVED***URL_API:***REMOVED***{
-***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***LOGIN_API:***REMOVED******REMOVED***`${BASE_URL}/auth/login`,
-***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***REGISTER_API:***REMOVED******REMOVED***`${BASE_URL}/auth/register`,
-***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***VERIFY_OTP:***REMOVED******REMOVED***`${BASE_URL}/auth/verify-otp`,
-***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***RESEND_OTP:***REMOVED******REMOVED***`${BASE_URL}/auth/resend-otp`,
-***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***REFRESH_TOKEN_API:***REMOVED******REMOVED***`${BASE_URL}/auth/refresh-token`,
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***LOGIN_API:***REMOVED******REMOVED***`${URL_AUTH}/auth/login`,
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***REGISTER_API:***REMOVED******REMOVED***`${URL_AUTH}/auth/register`,
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***VERIFY_OTP:***REMOVED******REMOVED***`${URL_AUTH}/auth/verify-otp`,
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***RESEND_OTP:***REMOVED******REMOVED***`${URL_AUTH}/auth/resend-otp`,
+***REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED******REMOVED***REFRESH_TOKEN_API:***REMOVED******REMOVED***`${URL_AUTH}/auth/refresh-token`,
 ***REMOVED******REMOVED******REMOVED******REMOVED***}
 }
 

@@ -4,10 +4,6 @@ WORKDIR***REMOVED***/app
 COPY***REMOVED***.***REMOVED***.
 RUN***REMOVED***yarn***REMOVED***install***REMOVED***&&***REMOVED***yarn***REMOVED***build
 
-#***REMOVED***Stage***REMOVED***2:***REMOVED***Serve***REMOVED***with***REMOVED***nginx
-FROM***REMOVED***nginx:alpine
-COPY***REMOVED***--from=build***REMOVED***/app/build***REMOVED***/usr/share/nginx/html
-
 #***REMOVED***Overwrite***REMOVED***nginx***REMOVED***config***REMOVED***to***REMOVED***proxy***REMOVED***API
 RUN***REMOVED***rm***REMOVED***/etc/nginx/conf.d/default.conf
 COPY***REMOVED***nginx.conf***REMOVED***/etc/nginx/conf.d/
