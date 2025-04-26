@@ -1,12 +1,13 @@
 import { Routes, Route } from "react-router-dom";
 import Register from "../views/Auth/pages/Register";
 import Login from "../views/Auth/pages/Login";
-import Dashboard from "../views/Dashboard";
-import Category from "src/views/Category";
+import HomePage from "src/views/Store/Home";
+import Dashboard from "src/views/Admin/Dashboard";
 import AdminDashboard from "src/layouts/DashboardLayout";
-import Attribute from "src/views/Attribute";
-import HomePage from "src/views/Home";
+import Category from "src/views/Admin/Category";
+import Attribute from "src/views/Admin/Attribute";
 import StoreLayout from "src/layouts/StoreLayout";
+import Product from "src/views/Admin/Product";
 const AppRoutes = () => {
   return (
     <Routes>
@@ -15,6 +16,7 @@ const AppRoutes = () => {
       </Route>
       <Route path="/admin" element={<AdminDashboard />}>
         <Route path="dashboard" element={<Dashboard />} />
+        <Route path="product" element={<Product />} />
         <Route path="category" element={<Category />} />
         <Route path="attribute" element={<Attribute />} />
         <Route path="category/*" element={<Category />} />

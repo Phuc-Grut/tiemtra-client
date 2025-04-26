@@ -1,6 +1,6 @@
 import { Box } from "@mui/material";
 import CategoryTable from "./components/CategoryTable";
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import AddCategoryModal from "./components/modal/AddCategory";
 import PageHeader from "src/components/Layouts/Admin/PageHeader";
 
@@ -14,7 +14,6 @@ const Category = () => {
     undefined
   );
   const [isAddOpen, setIsAddOpen] = useState(false);
-
   const [parentCategoryId, setParentCategoryId] = useState<
     number | undefined
   >();
@@ -22,6 +21,19 @@ const Category = () => {
     string | undefined
   >();
   const [breadcrumbs, setBreadcrumbs] = useState<BreadcrumbItem[]>([]);
+
+  const onTypeChange = useCallback((type: string) => {
+    setCategoryType(type);
+  }, []);
+
+  const onParentInfoChange = useCallback((id: number, name: string) => {
+    setParentCategoryId(Number(id));
+    setParentCategoryName(name);
+  }, []);
+
+  const onBreadcrumbsChange = useCallback((newBreadcrumbs: BreadcrumbItem[]) => {
+    setBreadcrumbs(newBreadcrumbs);
+  }, []);
 
   return (
     <Box
@@ -51,12 +63,9 @@ const Category = () => {
         }}
       >
         <CategoryTable
-          onTypeChange={setCategoryType}
-          onParentInfoChange={(id, name) => {
-            setParentCategoryId(Number(id));
-            setParentCategoryName(name);
-          }}
-          onBreadcrumbsChange={setBreadcrumbs}
+          onTypeChange={onTypeChange}
+          onParentInfoChange={onParentInfoChange}
+          onBreadcrumbsChange={onBreadcrumbsChange}
         />
       </Box>
       <AddCategoryModal
