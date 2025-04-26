@@ -16,6 +16,7 @@ import {
   ChevronLeft,
   ChevronRight,
   TuneOutlined,
+  Inventory2
 } from "@mui/icons-material";
 import { Link } from "react-router-dom";
 import { useTheme } from "@mui/material/styles";
@@ -103,6 +104,29 @@ const Sidebar = ({ expanded, setExpanded }: SidebarProps) => {
               <Dashboard />
             </ListItemIcon>
             {expanded && <ListItemText primary="Dashboard" />}
+          </ListItem>
+        </Tooltip>
+
+        <Tooltip
+          title="Product"
+          placement="right"
+          disableHoverListener={expanded}
+        >
+          <ListItem
+            component={Link}
+            to="/admin/product"
+            sx={{ cursor: "pointer", justifyContent: "center" }}
+          >
+            <ListItemIcon
+              sx={{
+                minWidth: 0,
+                paddingRight: expanded ? 1 : "auto",
+                justifyContent: "center",
+              }}
+            >
+              <Inventory2  />
+            </ListItemIcon>
+            {expanded && <ListItemText primary="Sản phẩm" />}
           </ListItem>
         </Tooltip>
 
