@@ -1,10 +1,7 @@
-export const BASE_URL = "https://localhost:7021/api"
-// // export const BASE_URL = "https://tiemtraapi-eggechbzfqaqc3cf.southeastasia-01.azurewebsites.net/api"
-// export const BASE_URL = "https://localhost:7021/api"
-// export const BASE_URL = process.env.REACT_APP_API_URL
-// export const BASE_URL = "http://localhost:5001/api";
+export const BASE_URL = process.env.REACT_APP_API_URL;
 
-const URL_ADMIN = `${BASE_URL}/admin`
+const URL_ADMIN = `${BASE_URL}/api/admin`
+const URL_AUTH = `${BASE_URL}/api`
 
 export const AUTHENTICATION = {
     ACTION_TYPES: {
@@ -15,11 +12,11 @@ export const AUTHENTICATION = {
         REFRESH_TOKEN: 'AUTHENTICATION/REFRESH_TOKEN',
     },
     URL_API: {
-        LOGIN_API:  `${BASE_URL}/auth/login`,
-        REGISTER_API:  `${BASE_URL}/auth/register`,
-        VERIFY_OTP:  `${BASE_URL}/auth/verify-otp`,
-        RESEND_OTP:  `${BASE_URL}/auth/resend-otp`,
-        REFRESH_TOKEN_API:  `${BASE_URL}/auth/refresh-token`,
+        LOGIN_API:  `${URL_AUTH}/auth/login`,
+        REGISTER_API:  `${URL_AUTH}/auth/register`,
+        VERIFY_OTP:  `${URL_AUTH}/auth/verify-otp`,
+        RESEND_OTP:  `${URL_AUTH}/auth/resend-otp`,
+        REFRESH_TOKEN_API:  `${URL_AUTH}/auth/refresh-token`,
     }
 }
 
