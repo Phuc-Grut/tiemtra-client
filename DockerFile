@@ -1,12 +1,32 @@
 # Stage 1: Build React app
-FROM node:18 AS build
+FROM node:18-alpine AS build
 WORKDIR /app
-COPY . .
-RUN yarn install && yarn build
 
-# Overwrite nginx config to proxy API
-RUN rm /etc/nginx/conf.d/default.conf
-COPY nginx.conf /etc/nginx/conf.d/
+# Chỉ copy những thứ cần thiết để cache yarn install
+COPY package.json yarn.lock ./
+
+# Cài dependency trước
+RUN yarn install --frozen-lockfile
+
+# Sau đó mới copy toàn bộ code vào
+COPY . .
+
+# Build production
+RUN yarn build
+
+# Stage 2: Serve with Nginx
+FROM nginx:1.25-alpine
+
+# Xóa default nginx page
+RUN rm -rf /usr/share/nginx/html/*
+
+# Copy build output vào nginx
+COPY --from=build /app/build /usr/share/nginx/html
+
+# Copy file nginx config
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 80
+
+# Run nginx in foreground
 CMD ["nginx", "-g", "daemon off;"]
