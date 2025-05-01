@@ -98,12 +98,13 @@ const CategoryTable = ({
       const realTotalPages = response.data.totalPages ?? 1;
       setMaxPages(realTotalPages);
 
-      return response.data.items.$values;
+      return response.data.items ?? [];
     },
     retry: false,
     enabled: !isDetail && pageNumber > 0,
     placeholderData: (previousData: any) => previousData,
   });
+  console.log("🚀 ~ categories:", categories);
 
   const { data: categoryDetail } = useQuery({
     queryKey: ["category", currentCategoryId, pageNumber, pageSize],
@@ -118,7 +119,7 @@ const CategoryTable = ({
     staleTime: 5 * 60 * 1000,
     select: (res) => {
       const type = res.data?.type ?? "Unknown";
-      const items = res.data?.data?.items?.$values ?? [];
+      const items = res.data?.data?.items ?? [];
       const totalItems = res.data?.data?.totalItems ?? 0;
       const pageSize = res.data?.data?.pageSize ?? 10;
       const currentCategory = res?.data?.currentCategory;
