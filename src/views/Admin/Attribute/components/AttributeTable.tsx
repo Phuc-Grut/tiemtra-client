@@ -53,7 +53,7 @@ const AttributeTable = () => {
   const [confirmModalOpen, setConfirmModalOpen] = useState(false);
 
   const {
-    data: attributes = [],
+    data: attributes,
     isLoading,
     error,
   } = useQuery({
@@ -65,10 +65,11 @@ const AttributeTable = () => {
       });
       const realTotalPages = response.data.totalPages ?? 1;
       setMaxPages(realTotalPages);
-      return response.data.items.$values;
+      return response.data.items ?? []
     },
     retry: false,
   });
+    console.log("🚀 ~ AttributeTable ~ attributes:", attributes)
 
   const invalidateAllCategoryData = () => {
     queryClient.invalidateQueries({

@@ -16,8 +16,8 @@ const categoryApi = {
   getPagingApi: (params: ICategoryRequest) =>
     requester.get(CATEGORY.URL_API.GET_ALL_API, { params }),
 
-  getByIdApi: (data: CategoryIdRequest) =>
-    requester.post(CATEGORY.URL_API.GET_BY_ID_API, data),
+  getByIdApi: (params: CategoryIdRequest) =>
+    requester.get(CATEGORY.URL_API.GET_BY_ID_API, {params}),
 
   addCategoryApi: (data: IAddCategoryRequest): Promise<AxiosResponse<any>> =>
     requester.post(CATEGORY.URL_API.CREATE_API, data),
