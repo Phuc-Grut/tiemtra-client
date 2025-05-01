@@ -32,11 +32,12 @@ const ProductInfoTab = () => {
     <Box
       sx={{
         display: "flex",
-        flexDirection: "row",
+        flexDirection: { xs: "column", md: "row" }, 
         gap: 3,
         p: 2,
         height: "100%",
         position: "relative",
+        overflow: 'auto',
       }}
     >
       {/* Danh sách ảnh chi tiết */}

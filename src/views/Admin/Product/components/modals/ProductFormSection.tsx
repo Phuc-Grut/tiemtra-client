@@ -69,7 +69,7 @@ const ProductFormSection = ({
         display: "flex",
         flexDirection: "column",
         gap: 3,
-        maxWidth: "600px",
+        maxWidth: { xs: "100%", md: "600px" },
       }}
     >
       <Typography variant="h6" sx={{ fontWeight: 600, color: "#333" }}>
