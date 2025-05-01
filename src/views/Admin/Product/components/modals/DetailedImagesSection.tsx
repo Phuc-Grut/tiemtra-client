@@ -20,7 +20,7 @@ const DetailedImagesSection = ({ detailedImages, setDetailedImages }: DetailedIm
   return (
     <Box
       sx={{
-        width: "250px",
+        width: { xs: "100%", md: "250px" },
         display: "flex",
         flexDirection: "column",
         gap: 2,

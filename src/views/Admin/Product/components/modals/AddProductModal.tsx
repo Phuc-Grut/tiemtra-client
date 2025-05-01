@@ -1,4 +1,4 @@
-import { Box, Tabs, Tab, Dialog, IconButton } from "@mui/material";
+import { Box, Tabs, Tab, Dialog, Button } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { useState } from "react";
 import ProductInfoTab from "./ProductInfoTab";
@@ -8,9 +8,10 @@ interface AddProductModalProps {
   onClose: () => void;
 }
 
-const tabLabels = ["Thêm sản phẩm"];
+const tabLabels = ["Thêm sản phẩm", "Thêm thuộc tính"];
 
 const AddProductModal = ({ open, onClose }: AddProductModalProps) => {
+  console.log("🚀 ~ AddProductModal ~ open:", open);
   const [activeTab, setActiveTab] = useState(0);
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -29,9 +30,8 @@ const AddProductModal = ({ open, onClose }: AddProductModalProps) => {
   return (
     <Dialog
       open={open}
-      onClick={() => {
-        onClose();
-      }}
+      onClose={onClose}
+      keepMounted={false}
       maxWidth="xl"
       fullWidth
       PaperProps={{
@@ -39,27 +39,39 @@ const AddProductModal = ({ open, onClose }: AddProductModalProps) => {
           borderRadius: 2,
           boxShadow: "0 4px 20px rgba(0,0,0,0.1)",
           overflow: "hidden",
-          height: "95%",
+          height: "100%",
           maxHeight: "95%",
           position: "relative",
+          width: { xs: "90%", md: "80%", lg: "90%"},
+          maxWidth: "none",
         },
       }}
     >
-      <IconButton
+      <Button
         onClick={onClose}
         sx={{
+          zIndex: 10,
+          width: 40,
+          height: 40,
+          minWidth: "unset",
+          borderRadius: "50%",
+          backgroundColor: "#f5f5f5",
           position: "absolute",
+          color: '#333',
           top: 8,
           right: 8,
-          color: "#666",
+          padding: 0,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
           "&:hover": {
+            backgroundColor: "#f5f5f5",
             color: "#333",
-            backgroundColor: "#e8e8e8",
           },
         }}
       >
-        <CloseIcon />
-      </IconButton>
+        <CloseIcon sx={{ fontSize: 28 }} />
+      </Button>
 
       {/* Tabs tích hợp bên trong modal */}
       <Box sx={{ borderBottom: 1, borderColor: "divider", bgcolor: "#f5f5f5" }}>
