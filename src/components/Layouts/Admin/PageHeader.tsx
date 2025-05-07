@@ -27,7 +27,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({
         boxShadow: "0px 2px 5px rgba(0, 0, 0, 0.1)",
         borderRadius: "8px",
         marginBottom: "0",
-        marginTop: 3,
+        marginTop: 2,
         display: "flex",
         alignItems: "center",
         justifyContent: "space-between",

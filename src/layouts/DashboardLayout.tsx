@@ -14,13 +14,12 @@ const AdminDashboard = () => {
         flexDirection: "column",
         minHeight: "100vh",
         backgroundColor: "#EEEEEE",
-        // overflowX: "hidden",
         overflowX: "auto",
         width: '100vw'
       }}
     >
       <TopBar setExpanded={setExpanded} />
-      <TopBar setExpanded={setExpanded} />
+      {/* <TopBar setExpanded={setExpanded} /> */}
 
       <Box sx={{ display: "flex", flexGrow: 1 }}>
       <Sidebar expanded={expanded} setExpanded={setExpanded} />

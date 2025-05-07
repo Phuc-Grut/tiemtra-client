@@ -31,6 +31,8 @@ const TopBar = ({ setExpanded } : TopBarProps) => {
         backgroundColor: "#fff",
         color: "#333",
         boxShadow: "0px 2px 5px rgba(0, 0, 0, 0.1)",
+        height: "56px",
+        justifyContent: "center"
       }}
     >
       <Toolbar>

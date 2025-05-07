@@ -297,7 +297,7 @@ const CategoryTable = ({
         backgroundColor: "#fff",
         borderRadius: "8px",
         boxShadow: "0px 2px 5px rgba(0, 0, 0, 0.1)",
-        minHeight: "calc(100vh - 178px)",
+        minHeight: "calc(100vh - 171px)",
         overflow: "auto",
         maxHeight: "calc(100vh - 198px)",
       }}
