@@ -42,7 +42,7 @@ const AddAttributeToCategory = ({ categoryId, open, onClose, onUpdated }: Props)
         pageSize,
       });
       return {
-        items: res.data.items.$values,
+        items: res.data.items ?? [],
         nextPage:
           res.data.currentPage < res.data.totalPages
             ? pageParam + 1
@@ -57,13 +57,13 @@ const AddAttributeToCategory = ({ categoryId, open, onClose, onUpdated }: Props)
   const { data: selectedAttributesRes, } = useQuery({
     queryKey: ["selectedAttributesRes", categoryId],
     queryFn: () => categoryApi.getAttributeById(categoryId),
-    // enabled: open,
+    enabled: open,
   });
 
   useEffect(() => {
-    if (open && selectedAttributesRes?.data?.$values) {
-      setInitialSelected(selectedAttributesRes.data.$values);
-      setSelected(selectedAttributesRes.data.$values);
+    if (open && selectedAttributesRes?.data) {
+      setInitialSelected(selectedAttributesRes?.data);
+      setSelected(selectedAttributesRes?.data);
       setTouched(new Set());
     }
     if (!open) {
