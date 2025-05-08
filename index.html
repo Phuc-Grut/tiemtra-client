@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>E-commerce Database ERD</title>
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    body {
+      background-color: #f8f9fa;
+      padding: 20px;
+    }
+    
+    .header {
+      background-color: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      margin-bottom: 30px;
+    }
+    
+    .header h1 {
+      font-size: 24px;
+      color: #333;
+      margin-bottom: 15px;
+    }
+    
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 15px;
+    }
+    
+    .legend-item {
+      display: flex;
+      align-items: center;
+      padding: 5px 10px;
+      border-radius: 4px;
+      font-size: 12px;
+    }
+    
+    .legend-color {
+      width: 12px;
+      height: 12px;
+      border: 1px solid #999;
+      margin-right: 5px;
+    }
+    
+    .data-entity {
+      background-color: #c0d6e4;
+    }
+    
+    .user-entity {
+      background-color: #d4e5d2;
+    }
+    
+    .relationship-type {
+      background-color: white;
+      border: 1px solid #ddd;
+    }
+    
+    .erd-container {
+      position: relative;
+      min-height: 1800px;
+      padding: 20px;
+    }
+    
+    .entity {
+      position: absolute;
+      width: 250px;
+      background-color: white;
+      border-radius: 6px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+      z-index: 1;
+    }
+    
+    .entity-header {
+      padding: 10px;
+      border-bottom: 1px solid #ddd;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+    }
+    
+    .entity-header i {
+      margin-right: 6px;
+    }
+    
+    .entity-attributes {
+      padding: 10px;
+      font-size: 13px;
+    }
+    
+    .attribute {
+      padding: 4px 0;
+      display: flex;
+      align-items: center;
+    }
+    
+    .attribute i {
+      margin-right: 6px;
+      font-size: 14px;
+      color: #0078d4;
+    }
+    
+    .data-entity .entity-header {
+      background-color: #c0d6e4;
+    }
+    
+    .user-entity .entity-header {
+      background-color: #d4e5d2;
+    }
+    
+    .relationship-lines {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+    }
+    
+    .line {
+      stroke: #999;
+      stroke-width: 1.5;
+      fill: none;
+    }
+    
+    .relationship-marker {
+      fill: none;
+      stroke: #999;
+      stroke-width: 1.5;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>E-commerce Database Schema - ERD Diagram</h1>
+    <div class="legend">
+      <div class="legend-item data-entity">
+        <span class="legend-color data-entity"></span>
+        Data Entities
+      </div>
+      <div class="legend-item user-entity">
+        <span class="legend-color user-entity"></span>
+        User Entities
+      </div>
+      <div class="legend-item relationship-type">
+        <i class="ri-arrow-right-line"></i>
+        One-to-Many
+      </div>
+      <div class="legend-item relationship-type">
+        <i class="ri-arrow-left-right-line"></i>
+        Many-to-Many
+      </div>
+      <div class="legend-item relationship-type">
+        <i class="ri-refresh-line"></i>
+        Self-Reference
+      </div>
+    </div>
+  </div>
+  
+  <div class="erd-container">
+    <!-- Relationship Lines (SVG) -->
+    <svg class="relationship-lines" viewBox="0 0 1200 1800">
+      <!-- Products to Category -->
+      <path class="line" d="M 400 375 L 700 500" />
+      <circle cx="700" cy="500" r="3" class="relationship-marker" />
+      
+      <!-- Products to Brands -->
+      <path class="line" d="M 400 400 L 400 670" />
+      <circle cx="400" cy="670" r="3" class="relationship-marker" />
+      
+      <!-- Products to ProductAttributes -->
+      <path class="line" d="M 400 300 L 200 150" />
+      <circle cx="200" cy="150" r="3" class="relationship-marker" />
+      
+      <!-- Products to ProductImages -->
+      <path class="line" d="M 400 330 L 200 300" />
+      <circle cx="200" cy="300" r="3" class="relationship-marker" />
+      
+      <!-- Products to ProductVariations -->
+      <path class="line" d="M 400 370 L 200 450" />
+      <circle cx="200" cy="450" r="3" class="relationship-marker" />
+      
+      <!-- Category self-reference -->
+      <path class="line" d="M 750 480 C 800 480, 800 430, 750 430" />
+      <circle cx="750" cy="430" r="3" class="relationship-marker" />
+      
+      <!-- ProductVariations to ProductVariationDetails -->
+      <path class="line" d="M 200 500 L 200 630" />
+      <circle cx="200" cy="630" r="3" class="relationship-marker" />
+      
+      <!-- Attributes to ProductAttributes -->
+      <path class="line" d="M 350 150 L 250 150" />
+      <circle cx="250" cy="150" r="3" class="relationship-marker" />
+      
+      <!-- Users to UserRoles -->
+      <path class="line" d="M 700 250 L 700 150" />
+      <circle cx="700" cy="150" r="3" class="relationship-marker" />
+      
+      <!-- Roles to UserRoles -->
+      <path class="line" d="M 900 150 L 750 150" />
+      <circle cx="750" cy="150" r="3" class="relationship-marker" />
+    </svg>
+    
+    <!-- Entities -->
+    <!-- Products -->
+    <div class="entity data-entity" style="left: 350px; top: 250px;">
+      <div class="entity-header">
+        <i class="ri-database-2-line"></i> Products
+      </div>
+      <div class="entity-attributes">
+        <div class="attribute">
+          <i class="ri-key-2-line"></i>
+          <span>ProductId (PK)</span>
+        </div>
+        <div class="attribute">
+          <span>ProductCode</span>
+        </div>
+        <div class="attribute">
+          <span>ProductName</span>
+        </div>
+        <div class="attribute">
+          <span>PreviewImage</span>
+        </div>
+        <div class="attribute">
+          <i class="ri-link"></i>
+          <span>CategoryId (FK)</span>
+        </div>
+        <div class="attribute">
+          <i class="ri-link"></i>
+          <span>BrandId (FK)</span>
+        </div>
+        <div class="attribute">
+          <span>Price</span>
+        </div>
+        <div class="attribute">
+          <span>Stock</span>
+        </div>
+        <div class="attribute">
+          <span>Description</span>
+        </div>
+      </div>
+    </div>
+    
+    <!-- ProductAttributes -->
+    <div class="entity data-entity" style="left: 100px; top: 100px;">
+      <div class="entity-header">
+        <i class="ri-database-2-line"></i> ProductAttributes
+      </div>
+      <div class="entity-attributes">
+        <div class="attribute">
+          <i class="ri-key-2-line"></i>
+          <span>ProductAttributeId (PK)</span>
+        </div>
+        <div class="attribute">
+          <i class="ri-link"></i>
+          <span>ProductId (FK)</span>
+        </div>
+        <div class="attribute">
+          <i class="ri-link"></i>
+          <span>AttributeId (FK)</span>
+        </div>
+        <div class="attribute">
+          <span>Value</span>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Attributes -->
+    <div class="entity data-entity" style="left: 350px; top: 100px;">
+      <div class="entity-header">
+        <i class="ri-database-2-line"></i> Attributes
+      </div>
+      <div class="entity-attributes">
+        <div class="attribute">
+          <i class="ri-key-2-line"></i>
+          <span>AttributeId (PK)</span>
+        </div>
+        <div class="attribute">
+          <span>Name</span>
+        </div>
+        <div class="attribute">
+          <span>Description</span>
+        </div>
+        <div class="attribute">
+          <span>Category</span>
+        </div>
+      </div>
+    </div>
+    
+    <!-- ProductImages -->
+    <div class="entity data-entity" style="left: 100px; top: 250px;">
+      <div class="entity-header">
+        <i class="ri-database-2-line"></i> ProductImages
+      </div>
+      <div class="entity-attributes">
+        <div class="attribute">
+          <i class="ri-key-2-line"></i>
+          <span>ProductImageId (PK)</span>
+        </div>
+        <div class="attribute">
+          <i class="ri-link"></i>
+          <span>ProductId (FK)</span>
+        </div>
+        <div class="attribute">
+          <span>ImageUrl</span>
+        </div>
+      </div>
+    </div>
+    
+    <!-- ProductVariations -->
+    <div class="entity data-entity" style="left: 100px; top: 400px;">
+      <div class="entity-header">
+        <i class="ri-database-2-line"></i> ProductVariations
+      </div>
+      <div class="entity-attributes">
+        <div class="attribute">
+          <i class="ri-key-2-line"></i>
+          <span>ProductVariationId (PK)</span>
+        </div>
+        <div class="attribute">
+          <i class="ri-link"></i>
+          <span>ProductId (FK)</span>
+        </div>
+        <div class="attribute">
+          <span>VariationType</span>
+        </div>
+        <div class="attribute">
+          <span>VariationValue</span>
+        </div>
+      </div>
+    </div>
+    
+    <!-- ProductVariationDetails -->
+    <div class="entity data-entity" style="left: 100px; top: 580px;">
+      <div class="entity-header">
+        <i class="ri-database-2-line"></i> ProductVariationDetails
+      </div>
+      <div class="entity-attributes">
+        <div class="attribute">
+          <i class="ri-key-2-line"></i>
+          <span>ProductVariationDetailId (PK)</span>
+        </div>
+        <div class="attribute">
+          <i class="ri-link"></i>
+          <span>ProductVariationId (FK)</span>
+        </div>
+        <div class="attribute">
+          <span>ProductCode</span>
+        </div>
+        <div class="attribute">
+          <span>Price</span>
+        </div>
+        <div class="attribute">
+          <span>Stock</span>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Category -->
+    <div class="entity data-entity" style="left: 650px; top: 420px;">
+      <div class="entity-header">
+        <i class="ri-database-2-line"></i> Categories
+      </div>
+      <div class="entity-attributes">
+        <div class="attribute">
+          <i class="ri-key-2-line"></i>
+          <span>CategoryId (PK)</span>
+        </div>
+        <div class="attribute">
+          <span>CategoryName</span>
+        </div>
+        <div class="attribute">
+          <i class="ri-link"></i>
+          <span>ParentId (FK)</span>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Brands -->
+    <div class="entity data-entity" style="left: 350px; top: 620px;">
+      <div class="entity-header">
+        <i class="ri-database-2-line"></i> Brands
+      </div>
+      <div class="entity-attributes">
+        <div class="attribute">
+          <i class="ri-key-2-line"></i>
+          <span>BrandId (PK)</span>
+        </div>
+        <div class="attribute">
+          <span>BrandName</span>
+        </div>
+        <div class="attribute">
+          <span>Logo</span>
+        </div>
+        <div class="attribute">
+          <span>Description</span>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Users -->
+    <div class="entity user-entity" style="left: 650px; top: 200px;">
+      <div class="entity-header">
+        <i class="ri-user-line"></i> Users
+      </div>
+      <div class="entity-attributes">
+        <div class="attribute">
+          <i class="ri-key-2-line"></i>
+          <span>UserId (PK)</span>
+        </div>
+        <div class="attribute">
+          <span>Email</span>
+        </div>
+        <div class="attribute">
+          <span>Username</span>
+        </div>
+        <div class="attribute">
+          <span>PasswordHash</span>
+        </div>
+        <div class="attribute">
+          <span>EmailConfirmed</span>
+        </div>
+        <div class="attribute">
+          <span>PhoneNumber</span>
+        </div>
+        <div class="attribute">
+          <span>Address</span>
+        </div>
+      </div>
+    </div>
+    
+    <!-- UserRoles -->
+    <div class="entity user-entity" style="left: 650px; top: 100px;">
+      <div class="entity-header">
+        <i class="ri-user-settings-line"></i> UserRoles
+      </div>
+      <div class="entity-attributes">
+        <div class="attribute">
+          <i class="ri-link"></i>
+          <span>UserId (FK)</span>
+        </div>
+        <div class="attribute">
+          <i class="ri-link"></i>
+          <span>RoleId (FK)</span>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Roles -->
+    <div class="entity user-entity" style="left: 850px; top: 100px;">
+      <div class="entity-header">
+        <i class="ri-shield-user-line"></i> Roles
+      </div>
+      <div class="entity-attributes">
+        <div class="attribute">
+          <i class="ri-key-2-line"></i>
+          <span>RoleId (PK)</span>
+        </div>
+        <div class="attribute">
+          <span>RoleName</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

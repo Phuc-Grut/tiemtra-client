@@ -26,6 +26,7 @@ import { categoryContextMenuItems } from "../contextMenu";
 import UpdateCategoryModal from "./modal/UpdateCategory";
 import ModalConfirm from "src/components/ModalConfirm";
 import useToast from "src/components/Toast";
+import AddAttributeToCategory from "./modal/AddAttributeToCategory";
 
 interface BreadcrumbItem {
   categoryId: number;
@@ -56,7 +57,7 @@ const CategoryTable = ({
   const relativePath = pathWithoutQuery.replace(/^\/admin\/category\/?/, "");
 
   const pathIds = relativePath.split("/").filter((id) => id.trim() !== "");
-  // console.log("🚀 ~ pathIds:", pathIds)
+
   const isDetail = pathIds.length > 0;
   const currentCategoryId = pathIds[pathIds.length - 1];
   const [parentCategoryName, setParentCategoryName] = useState<string | null>(
@@ -74,6 +75,8 @@ const CategoryTable = ({
   const [pendingDeleteIds, setPendingDeleteIds] = useState<number[]>([]);
   const [confirmModalOpen, setConfirmModalOpen] = useState(false);
   const [showConfirmButton, setShowConfirmButton] = useState(false);
+
+  const [openAddAttribute, setOpenAddAttribute] = useState(false);
 
   const [anchorEl, setAnchorEl] = useState<
     HTMLElement | { mouseX: number; mouseY: number } | null
@@ -324,6 +327,32 @@ const CategoryTable = ({
             borderRadius: "4px",
             border: "2px solid #ccc",
           }}
+        />
+
+        {categoryDetail?.type === "Empty" && (
+          <Button
+            variant="contained"
+            size="small"
+            sx={{
+              marginLeft: "12px",
+              textTransform: "none",
+              fontSize: "13px",
+              height: "24px",
+              minWidth: "unset",
+              padding: "0px 10px",
+              backgroundColor: "#ffa500",
+            }}
+            onClick={() => setOpenAddAttribute(true)}
+          >
+            + Thêm thuộc tính
+          </Button>
+        )}
+
+        <AddAttributeToCategory
+          open={openAddAttribute}
+          categoryId={Number(currentCategoryId)}
+          onClose={() => setOpenAddAttribute(false)}
+          onUpdated={reloadCategoryDetail}
         />
 
         {selected.length > 0 && (
