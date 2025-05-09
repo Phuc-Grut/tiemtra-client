@@ -10,7 +10,7 @@ import {
   Container,
   useMediaQuery,
 } from "@mui/material";
-import { ShoppingCart, Home } from "@mui/icons-material";
+import { ShoppingCart } from "@mui/icons-material";
 import EmailIcon from "@mui/icons-material/Email";
 import PhoneIcon from "@mui/icons-material/Phone";
 import SearchIcon from "@mui/icons-material/Search";
@@ -35,19 +35,32 @@ const Header = () => {
               <IconButton>
                 <SearchIcon />
               </IconButton>
-              <Typography variant="h6" sx={{ fontWeight: "bold" }}>
+              {/* <Typography variant="h6" sx={{ fontWeight: "bold" }}>
                 LOGO
-              </Typography>
+              </Typography> */}
+              <Box sx={{ display: "flex", alignItems: "center", height: 40 }}>
+                <Box
+                  component="img"
+                  src="/image/logo/LogoOval2.png"
+                  alt="Logo"
+                  sx={{
+                    height: 48,
+                    maxWidth: 160,
+                    objectFit: "contain",
+                    display: "block",
+                  }}
+                />
+              </Box>
               <IconButton>
                 <ShoppingCart />
               </IconButton>
             </Box>
           </Container>
 
-          <Box sx={{ borderBottom: "1px solid #508815", mx: "auto" }} />
+          <Box sx={{ borderBottom: "1px solid #3c9447", mx: "auto" }} />
         </>
       ) : (
-        <Box sx={{ backgroundColor: "#508815" }}>
+        <Box sx={{ backgroundColor: "#3c9447" }}>
           <Container maxWidth="lg">
             <Box
               sx={{
@@ -91,7 +104,7 @@ const Header = () => {
                   LOGO
                 </Typography>
               )}
-              <Button startIcon={<Home />} size="small">
+              <Button size="small">
                 Trang chủ
               </Button>
               <Button size="small">Sản phẩm</Button>

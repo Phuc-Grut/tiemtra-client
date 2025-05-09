@@ -15,8 +15,8 @@ export interface BreadcrumbItem {
 
 interface BreadcrumbNavigationProps {
   items?: BreadcrumbItem[];
-  pageTitle: string; // Tên trang hiện tại (Trang chủ > Tên trang)
-  pageUrl: string; // URL của trang hiện tại để dẫn đến khi click
+  pageTitle: string;
+  pageUrl: string;
 }
 
 const BreadcrumbNavigation: React.FC<BreadcrumbNavigationProps> = ({
