@@ -2,29 +2,55 @@ import { Box, Tabs, Tab, Dialog, Button } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { useState } from "react";
 import ProductInfoTab from "./ProductInfoTab";
+import DetailedImagesSection from "../DetailedImagesSection";
 
 interface AddProductModalProps {
   open: boolean;
   onClose: () => void;
 }
 
-const tabLabels = ["Thêm sản phẩm", "Thêm thuộc tính"];
+const tabLabels = ["Thêm sản phẩm", "Ảnh chi tiết"];
 
 const AddProductModal = ({ open, onClose }: AddProductModalProps) => {
-  console.log("🚀 ~ AddProductModal ~ open:", open);
   const [activeTab, setActiveTab] = useState(0);
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setActiveTab(newValue);
   };
 
+  const [detailedImages, setDetailedImages] = useState<File[]>([]);
+  const [formData, setFormData] = useState({
+    productCode: "",
+    productName: "",
+    previewImage: null as File | null,
+    price: "",
+    stock: "",
+    origin: "",
+    description: "",
+    brandId: "",
+  });
+  const [selectedCategory, setSelectedCategory] = useState("");
+
   const renderContent = () => {
     switch (activeTab) {
       case 0:
         return <ProductInfoTab />;
+      case 1:
+        return (
+          <DetailedImagesSection
+            detailedImages={detailedImages}
+            setDetailedImages={setDetailedImages}
+          />
+        );
       default:
         return null;
     }
+  };
+
+  const handleSubmit = () => {
+    console.log("Form Data:", formData);
+    console.log("Selected Category:", selectedCategory);
+    // console.log("Attributes:", attributes);
   };
 
   return (
@@ -42,7 +68,7 @@ const AddProductModal = ({ open, onClose }: AddProductModalProps) => {
           height: "100%",
           maxHeight: "95%",
           position: "relative",
-          width: { xs: "90%", md: "80%", lg: "90%"},
+          width: { xs: "90%", md: "80%", lg: "90%" },
           maxWidth: "none",
         },
       }}
@@ -57,7 +83,7 @@ const AddProductModal = ({ open, onClose }: AddProductModalProps) => {
           borderRadius: "50%",
           backgroundColor: "#f5f5f5",
           position: "absolute",
-          color: '#333',
+          color: "#333",
           top: 8,
           right: 8,
           padding: 0,
@@ -114,6 +140,26 @@ const AddProductModal = ({ open, onClose }: AddProductModalProps) => {
 
       {/* Nội dung bên trong modal */}
       <Box sx={{ p: 4, flex: 1, overflowY: "auto" }}>{renderContent()}</Box>
+
+      <Box sx={{ px: 4, pb: 4, textAlign: "right" }}>
+        <Button
+          onClick={handleSubmit}
+          variant="contained"
+          sx={{
+            bgcolor: "#508815",
+            color: "#fff",
+            textTransform: "none",
+            fontWeight: 500,
+            borderRadius: 1,
+            boxShadow: 2,
+            "&:hover": {
+              bgcolor: "#5e9b17",
+            },
+          }}
+        >
+          Lưu
+        </Button>
+      </Box>
     </Dialog>
   );
 };
