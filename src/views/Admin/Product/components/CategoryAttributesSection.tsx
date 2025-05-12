@@ -66,7 +66,6 @@ const CategoryAttributesSection = ({
     const value = e.target.value;
     setSelectedCategory(value);
 
-    // Load fake attributes theo category
     const newAttrs = fakeAttributes[parseInt(value)] || [];
     setAttributes(newAttrs);
   };
@@ -83,11 +82,10 @@ const CategoryAttributesSection = ({
   return (
     <Box
       sx={{
-        width: { xs: "30%", md: "30%" },
+        width: "85%",
         display: "flex",
         flexDirection: "column",
         gap: 4,
-        ml: { xs: 0, md: 9 },
       }}
     >
       {/* Danh mục */}
@@ -123,13 +121,24 @@ const CategoryAttributesSection = ({
         <Box sx={{ flex: 1 }}>
           <Typography
             variant="body1"
-            sx={{ fontWeight: 500, color: "#333", mb: 1 }}
+            sx={{
+              fontWeight: 500,
+              color: "#333",
+              mb: 1,
+              overflow: "auto",
+              maxHeight: "80%",
+            }}
           >
             Thuộc tính
           </Typography>
           <TableContainer
             component={Paper}
-            sx={{ maxHeight: "75%", overflowY: "auto" }}
+            sx={{
+              maxHeight: 320,
+              overflowY: "auto",
+              border: "1px solid #eee",
+            }}
+
           >
             <Table stickyHeader size="small">
               <TableHead>
@@ -139,7 +148,7 @@ const CategoryAttributesSection = ({
                   >
                     Thuộc tính
                   </TableCell>
-                  <TableCell sx={{ fontWeight: 600 }}>Giá trị</TableCell>
+                  <TableCell sx={{ fontWeight: 600 }}>Thông tin</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -150,14 +159,14 @@ const CategoryAttributesSection = ({
                       <TextField
                         variant="standard"
                         size="small"
-                        placeholder="Nhập giá trị..."
+                        placeholder="Nhập thông tin..."
                         fullWidth
                         value={attr.value || ""}
                         onChange={(e) =>
                           handleAttributeValueChange(index, e.target.value)
                         }
                         InputProps={{
-                          disableUnderline: true, // ✨ Tắt underline luôn cho mượt
+                          disableUnderline: true,
                           sx: {
                             fontSize: "14px",
                             lineHeight: "27px",
