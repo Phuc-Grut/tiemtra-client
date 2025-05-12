@@ -65,11 +65,11 @@ const AttributeTable = () => {
       });
       const realTotalPages = response.data.totalPages ?? 1;
       setMaxPages(realTotalPages);
-      return response.data.items ?? []
+      return response.data.items ?? [];
     },
     retry: false,
   });
-    console.log("🚀 ~ AttributeTable ~ attributes:", attributes)
+  console.log("🚀 ~ AttributeTable ~ attributes:", attributes);
 
   const invalidateAllCategoryData = () => {
     queryClient.invalidateQueries({
@@ -78,9 +78,8 @@ const AttributeTable = () => {
     });
   };
 
-  console.log("🚀 ~ handleConfirmDelete ~ attributeIds:", selected)
+  console.log("🚀 ~ handleConfirmDelete ~ attributeIds:", selected);
   const handleConfirmDelete = async (attributeIds: number[] = selected) => {
-    
     if (attributeIds.length === 0) {
       showError("Xóa thất bại");
       setConfirmModalOpen(false);
@@ -254,8 +253,8 @@ const AttributeTable = () => {
               </TableRow>
             ) : error ? (
               <TableRow>
-                <TableCell colSpan={6} align="center">
-                  Có lỗi xảy ra khi tải dữ liệu.
+                <TableCell colSpan={6} sx={{ padding: "10px" }}>
+                  Danh sách trống!!
                 </TableCell>
               </TableRow>
             ) : attributes && attributes.length > 0 ? (

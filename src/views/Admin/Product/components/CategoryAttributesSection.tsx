@@ -37,6 +37,10 @@ const fakeAttributes: { [categoryId: number]: Attribute[] } = {
     { id: 5, name: "Hạn sử dụng", value: "" },
     { id: 5, name: "Hạn sử dụng", value: "" },
     { id: 5, name: "Hạn sử dụngggg", value: "" },
+    { id: 5, name: "Hạn sử dụngggg", value: "" },
+    { id: 5, name: "Hạn sử dụngggg", value: "" },
+    { id: 5, name: "Hạn sử dụngggg", value: "" },
+    { id: 5, name: "Hạn sử dụngggg", value: "" },
   ],
   2: [
     { id: 1, name: "Trọng lượng", value: "" },
@@ -134,7 +138,7 @@ const CategoryAttributesSection = ({
           <TableContainer
             component={Paper}
             sx={{
-              maxHeight: 320,
+              maxHeight: 360,
               overflowY: "auto",
               border: "1px solid #eee",
             }}

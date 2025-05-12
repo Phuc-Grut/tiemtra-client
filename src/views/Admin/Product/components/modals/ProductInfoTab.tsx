@@ -3,6 +3,7 @@ import { useState } from "react";
 import { attributes, brands, categories } from "src/Interfaces/test";
 import ProductFormSection from "../ProductFormSection";
 import CategoryAttributesSection from "../CategoryAttributesSection";
+import ProductVariationsSection from "../ProductVariationsSection";
 
 const ProductInfoTab = () => {
   const [formData, setFormData] = useState({
@@ -42,6 +43,7 @@ const ProductInfoTab = () => {
             setFormData={setFormData}
             brands={brands}
           />
+          <ProductVariationsSection/>
         </Box>
         <Box sx={{ flex: 1 }}>
           <CategoryAttributesSection
