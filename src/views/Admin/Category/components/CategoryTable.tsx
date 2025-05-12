@@ -283,12 +283,6 @@ const CategoryTable = ({
     );
   }
 
-  if (isLoading) {
-    return (
-      <p style={{ textAlign: "center", fontWeight: "bold" }}>Đang tải...</p>
-    );
-  }
-
   const rows = isDetail ? categoryDetail?.items ?? [] : categories ?? [];
 
   return (
@@ -431,7 +425,13 @@ const CategoryTable = ({
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows.length > 0 ? (
+            {isLoading ? (
+              <TableRow>
+                <TableCell colSpan={6} align="center">
+                  Đang tải dữ liệu...
+                </TableCell>
+              </TableRow>
+            ) : rows.length > 0 ? (
               rows.map((category: ICategory, index: number) => (
                 <TableRow
                   key={category.categoryId}

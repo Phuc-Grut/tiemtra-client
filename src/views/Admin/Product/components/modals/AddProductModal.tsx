@@ -19,7 +19,7 @@ const AddProductModal = ({ open, onClose }: AddProductModalProps) => {
   };
 
   const [detailedImages, setDetailedImages] = useState<File[]>([]);
-  const [formData, setFormData] = useState({
+  const [formData] = useState({
     productCode: "",
     productName: "",
     previewImage: null as File | null,
@@ -29,7 +29,7 @@ const AddProductModal = ({ open, onClose }: AddProductModalProps) => {
     description: "",
     brandId: "",
   });
-  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedCategory] = useState("");
 
   const renderContent = () => {
     switch (activeTab) {
@@ -64,101 +64,112 @@ const AddProductModal = ({ open, onClose }: AddProductModalProps) => {
         sx: {
           borderRadius: 2,
           boxShadow: "0 4px 20px rgba(0,0,0,0.1)",
-          overflow: "hidden",
-          height: "100%",
-          maxHeight: "95%",
-          position: "relative",
+          height: "95vh",
+          display: "flex",
+          flexDirection: "column",
           width: { xs: "90%", md: "80%", lg: "90%" },
-          maxWidth: "none",
+          maxWidth: "none"
         },
       }}
     >
-      <Button
-        onClick={onClose}
-        sx={{
-          zIndex: 10,
-          width: 40,
-          height: 40,
-          minWidth: "unset",
-          borderRadius: "50%",
-          backgroundColor: "#f5f5f5",
-          position: "absolute",
-          color: "#333",
-          top: 8,
-          right: 8,
-          padding: 0,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          "&:hover": {
-            backgroundColor: "#f5f5f5",
-            color: "#333",
-          },
-        }}
-      >
-        <CloseIcon sx={{ fontSize: 28 }} />
-      </Button>
-
-      {/* Tabs tích hợp bên trong modal */}
-      <Box sx={{ borderBottom: 1, borderColor: "divider", bgcolor: "#f5f5f5" }}>
-        <Tabs
-          value={activeTab}
-          onChange={handleTabChange}
-          aria-label="product tabs"
-          sx={{
-            "& .MuiTabs-indicator": {
-              backgroundColor: "#508815",
-              height: 3,
-            },
-            px: 2,
-          }}
-        >
-          {tabLabels.map((label, index) => (
-            <Tab
-              key={label}
-              label={label}
-              sx={{
-                textTransform: "none",
-                fontWeight: 500,
-                fontSize: 14,
-                color: activeTab === index ? "#508815" : "#666",
-                "&:hover": {
-                  color: "#508815",
-                  backgroundColor: "#e8e8e8",
-                },
-                "&.Mui-selected": {
-                  color: "#508815",
-                  fontWeight: 600,
-                },
-                px: 3,
-                py: 1.5,
-              }}
-            />
-          ))}
-        </Tabs>
-      </Box>
-
-      {/* Nội dung bên trong modal */}
-      <Box sx={{ p: 4, flex: 1, overflowY: "auto" }}>{renderContent()}</Box>
-
-      <Box sx={{ px: 4, pb: 4, textAlign: "right" }}>
+      <Box sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
         <Button
-          onClick={handleSubmit}
-          variant="contained"
+          onClick={onClose}
           sx={{
-            bgcolor: "#508815",
-            color: "#fff",
-            textTransform: "none",
-            fontWeight: 500,
-            borderRadius: 1,
-            boxShadow: 2,
+            zIndex: 10,
+            width: 40,
+            height: 40,
+            minWidth: "unset",
+            borderRadius: "50%",
+            backgroundColor: "#f5f5f5",
+            position: "absolute",
+            color: "#333",
+            top: 8,
+            right: 8,
+            padding: 0,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
             "&:hover": {
-              bgcolor: "#5e9b17",
+              backgroundColor: "#f5f5f5",
+              color: "#333",
             },
           }}
         >
-          Lưu
+          <CloseIcon sx={{ fontSize: 28 }} />
         </Button>
+
+        {/* Tabs tích hợp bên trong modal */}
+        <Box
+          sx={{ borderBottom: 1, borderColor: "divider", bgcolor: "#f5f5f5" }}
+        >
+          <Tabs
+            value={activeTab}
+            onChange={handleTabChange}
+            aria-label="product tabs"
+            sx={{
+              "& .MuiTabs-indicator": {
+                backgroundColor: "#508815",
+                height: 3,
+              },
+              px: 2,
+            }}
+          >
+            {tabLabels.map((label, index) => (
+              <Tab
+                key={label}
+                label={label}
+                sx={{
+                  textTransform: "none",
+                  fontWeight: 500,
+                  fontSize: 14,
+                  color: activeTab === index ? "#508815" : "#666",
+                  "&:hover": {
+                    color: "#508815",
+                    backgroundColor: "#e8e8e8",
+                  },
+                  "&.Mui-selected": {
+                    color: "#508815",
+                    fontWeight: 600,
+                  },
+                  px: 3,
+                  py: 1.5,
+                }}
+              />
+            ))}
+          </Tabs>
+        </Box>
+
+        {/* Nội dung bên trong modal */}
+        <Box sx={{ p: 4, flex: 1 }}>{renderContent()}</Box>
+
+        <Box
+          sx={{
+            px: 4,
+            pb: 4,
+            pt: 2,
+            textAlign: "right",
+            bgcolor: "#fff",
+            flexShrink: 0, // 👈 NGĂN không bị co lại
+          }}
+        >
+          <Button
+            onClick={handleSubmit}
+            variant="contained"
+            sx={{
+              bgcolor: "#508815",
+              color: "#fff",
+              textTransform: "none",
+              fontWeight: 500,
+              boxShadow: 2,
+              "&:hover": {
+                bgcolor: "#5e9b17",
+              },
+            }}
+          >
+            Lưu
+          </Button>
+        </Box>
       </Box>
     </Dialog>
   );

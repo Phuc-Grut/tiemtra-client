@@ -57,3 +57,9 @@ export const ATTRIBUTE = {
         DELETE_API: `${URL_ADMIN}/attributes/delete-by-ids`,
     }
 }
+
+export const PRODUCT = {
+    URL_API: {
+        GENERATE_PRODUCT_CODE: `${URL_ADMIN}/product/generate-product-code`,
+    }
+}
