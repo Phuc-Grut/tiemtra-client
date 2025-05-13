@@ -1,23 +1,59 @@
 import { Box } from "@mui/material";
-import { useState } from "react";
-import { attributes, brands, categories } from "src/Interfaces/test";
+import { useEffect, useState } from "react";
 import ProductFormSection from "../ProductFormSection";
 import CategoryAttributesSection from "../CategoryAttributesSection";
 import ProductVariationsSection from "../ProductVariationsSection";
+import { CreateProductRequest } from "src/Interfaces/IProduct";
+import productApi from "src/services/api/Products/indext";
+import categoryApi from "src/services/api/Category";
+
+export interface CategoryDropdown {
+  categoryId?: number;
+  categoryName?: string;
+}
 
 const ProductInfoTab = () => {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<CreateProductRequest>({
     productCode: "",
     productName: "",
-    previewImage: null as File | null,
-    price: "",
-    stock: "",
-    origin: "",
-    description: "",
-    brandId: "",
+    price: null,
+    stock: null,
+    hasVariations: false,
+    productImages: [],
+    productAttributes: [],
+    productVariations: [],
   });
 
-  const [selectedCategory, setSelectedCategory] = useState("");
+  const [categories, setCategories] = useState<CategoryDropdown[]>([]);
+
+  const [selectedCategoryID, setSelectedCategoryID] = useState("");
+  console.log("🚀 ~ ProductInfoTab ~ selectedCategory:", selectedCategoryID)
+
+  useEffect(() => {
+    const fetchProductCode = async () => {
+      const res = await productApi.generateProductCode();
+      setFormData((prev) => ({
+        ...prev,
+        productCode: res.data,
+      }));
+    };
+    fetchProductCode();
+  }, []);
+
+  useEffect(() => {
+  const getLeafCategoriesAsync = async () => {
+    const res = await categoryApi.getLeafCategories();
+    const dropdownData: CategoryDropdown[] = res.data.map((cat) => ({
+      categoryId: cat.categoryId,
+      categoryName: cat.categoryName,
+    }));
+
+    setCategories(dropdownData);
+  };
+
+  getLeafCategoriesAsync();
+}, []);
+
 
   return (
     <Box
@@ -41,21 +77,19 @@ const ProductInfoTab = () => {
           <ProductFormSection
             formData={formData}
             setFormData={setFormData}
-            brands={brands}
+            // brands={brands}
           />
-          <ProductVariationsSection/>
+          <ProductVariationsSection />
         </Box>
         <Box sx={{ flex: 1 }}>
           <CategoryAttributesSection
             categories={categories}
-            selectedCategory={selectedCategory}
-            setSelectedCategory={setSelectedCategory}
-            attributes={attributes}
+            selectedCategory={selectedCategoryID}
+            setSelectedCategory={setSelectedCategoryID}
+            // attributes={attributes}
           />
         </Box>
       </Box>
-
-      
     </Box>
   );
 };

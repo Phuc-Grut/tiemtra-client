@@ -2,6 +2,7 @@ import { AxiosResponse } from "axios";
 import { CATEGORY } from "src/domain/constants";
 import {
   IAddCategoryRequest,
+  ICategory,
   ICategoryRequest,
 } from "src/Interfaces/ICategory";
 import requester from "src/services/extended/axiosInstance";
@@ -39,6 +40,8 @@ const categoryApi = {
     attributeIds: number[];
   }): Promise<AxiosResponse<any>> =>
     requester.post(CATEGORY.URL_API.SET_ATTRIBUTES_API, data),
+
+  getLeafCategories: (): Promise<AxiosResponse<ICategory[]>> => requester.get(CATEGORY.URL_API.GET_LEAF_CATEGORY)
 };
 
 export default categoryApi;
