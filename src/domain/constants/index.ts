@@ -39,7 +39,8 @@ export const CATEGORY = {
         CHECK_DELETE_BY_IDS: `${URL_ADMIN}/category/check-delete-by-ids`,
         DELETE_API_BY_IDS: `${URL_ADMIN}/category/delete-category-by-ids`,
         ATTRIBUTE_BY_ID: (id: number) => `${URL_ADMIN}/category/${id}/select-attributes`,
-        SET_ATTRIBUTES_API: `${URL_ADMIN}/category/set-attributes`
+        SET_ATTRIBUTES_API: `${URL_ADMIN}/category/set-attributes`,
+        GET_LEAF_CATEGORY : `${URL_ADMIN}/category/get-leaf-categories`
     }
 }
 

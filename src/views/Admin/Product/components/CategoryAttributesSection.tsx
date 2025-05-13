@@ -16,69 +16,40 @@ import {
   TextField,
 } from "@mui/material";
 import { useState } from "react";
-import { Attribute, Category } from "src/Interfaces/test"; // Import đúng interface bạn có nhé
+import { IAttribute } from "src/Interfaces/IAttribute";
 
-// Dữ liệu fake để test
-const fakeCategories: Category[] = [
-  { id: 1, name: "Đồ uống" },
-  { id: 2, name: "Thực phẩm" },
-  { id: 3, name: "Đồ gia dụng" },
-];
-
-const fakeAttributes: { [categoryId: number]: Attribute[] } = {
-  1: [
-    { id: 1, name: "Thể tích", value: "" },
-    { id: 5, name: "Hạn sử dụng", value: "" },
-    { id: 5, name: "Hạn sử dụng", value: "" },
-    { id: 5, name: "Hạn sử dụng", value: "" },
-    { id: 5, name: "Hạn sử dụng", value: "" },
-    { id: 5, name: "Hạn sử dụng", value: "" },
-    { id: 5, name: "Hạn sử dụng", value: "" },
-    { id: 5, name: "Hạn sử dụng", value: "" },
-    { id: 5, name: "Hạn sử dụng", value: "" },
-    { id: 5, name: "Hạn sử dụngggg", value: "" },
-    { id: 5, name: "Hạn sử dụngggg", value: "" },
-    { id: 5, name: "Hạn sử dụngggg", value: "" },
-    { id: 5, name: "Hạn sử dụngggg", value: "" },
-    { id: 5, name: "Hạn sử dụngggg", value: "" },
-  ],
-  2: [
-    { id: 1, name: "Trọng lượng", value: "" },
-    { id: 5, name: "Hạn sử dụng", value: "" },
-  ],
-  3: [
-    { id: 2, name: "Kích thước", value: "" },
-    { id: 3, name: "Màu sắc", value: "" },
-    { id: 4, name: "Chất liệu", value: "" },
-  ],
-};
+export interface CategoryDropdown {
+  categoryId?: number;
+  categoryName?: string;
+}
 
 interface CategoryAttributesSectionProps {
-  categories?: Category[];
+  categories?: CategoryDropdown[];
   selectedCategory?: string;
   setSelectedCategory?: React.Dispatch<React.SetStateAction<string>>;
-  attributes?: Attribute[];
+  attributes?: IAttribute[];
 }
 
 const CategoryAttributesSection = ({
   categories,
+  setSelectedCategory,
+  selectedCategory
 }: CategoryAttributesSectionProps) => {
-  const [selectedCategory, setSelectedCategory] = useState<string>("");
-  const [attributes, setAttributes] = useState<Attribute[]>([]);
+
+  const [attributes, setAttributes] = useState<IAttribute[]>([]);
 
   const handleCategoryChange = (e: SelectChangeEvent<string>) => {
-    const value = e.target.value;
+  const value = e.target.value;
+  if (setSelectedCategory) {
     setSelectedCategory(value);
-
-    const newAttrs = fakeAttributes[parseInt(value)] || [];
-    setAttributes(newAttrs);
-  };
+  }
+};
 
   const handleAttributeValueChange = (index: number, value: string) => {
     const updatedAttributes = [...attributes];
     updatedAttributes[index] = {
       ...updatedAttributes[index],
-      value,
+      // value,
     };
     setAttributes(updatedAttributes);
   };
@@ -111,9 +82,12 @@ const CategoryAttributesSection = ({
             <MenuItem value="">
               <em>Chọn danh mục</em>
             </MenuItem>
-            {fakeCategories.map((category) => (
-              <MenuItem key={category.id} value={category.id.toString()}>
-                {category.name}
+            {categories?.map((category) => (
+              <MenuItem
+                key={category.categoryId}
+                value={category?.categoryId?.toString()}
+              >
+                {category.categoryName}
               </MenuItem>
             ))}
           </Select>
@@ -142,7 +116,6 @@ const CategoryAttributesSection = ({
               overflowY: "auto",
               border: "1px solid #eee",
             }}
-
           >
             <Table stickyHeader size="small">
               <TableHead>
@@ -157,7 +130,7 @@ const CategoryAttributesSection = ({
               </TableHead>
               <TableBody>
                 {attributes.map((attr, index) => (
-                  <TableRow key={attr.id}>
+                  <TableRow key={attr.attributeId}>
                     <TableCell>{attr.name}</TableCell>
                     <TableCell>
                       <TextField
@@ -165,7 +138,7 @@ const CategoryAttributesSection = ({
                         size="small"
                         placeholder="Nhập thông tin..."
                         fullWidth
-                        value={attr.value || ""}
+                        value={attr.attributeId || ""}
                         onChange={(e) =>
                           handleAttributeValueChange(index, e.target.value)
                         }

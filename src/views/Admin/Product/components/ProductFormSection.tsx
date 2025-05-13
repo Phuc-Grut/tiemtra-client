@@ -9,39 +9,20 @@ import {
   SelectChangeEvent,
 } from "@mui/material";
 import { ChangeEvent } from "react";
-import { Brand } from "src/Interfaces/test";
+import { Brand, CreateProductRequest } from "src/Interfaces/IProduct";
 
 interface ProductFormSectionProps {
-  formData: {
-    productCode: string;
-    productName: string;
-    previewImage: File | null;
-    price: string;
-    stock: string;
-    origin: string;
-    description: string;
-    brandId: string;
-  };
-  setFormData: React.Dispatch<
-    React.SetStateAction<{
-      productCode: string;
-      productName: string;
-      previewImage: File | null;
-      price: string;
-      stock: string;
-      origin: string;
-      description: string;
-      brandId: string;
-    }>
-  >;
-  brands: Brand[];
+  formData: CreateProductRequest;
+  setFormData: React.Dispatch<React.SetStateAction<CreateProductRequest>>;
+  brands?: Brand[] | undefined;
 }
 
 const ProductFormSection = ({
   formData,
   setFormData,
-  brands,
+  brands
 }: ProductFormSectionProps) => {
+
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | { value: unknown }>
   ) => {
@@ -89,7 +70,7 @@ const ProductFormSection = ({
           sx={{
             order: { xs: 0, md: 1 },
             width: { xs: "100%", md: "35%" },
-            marginLeft: {xs: 3}
+            marginLeft: { xs: 3 },
           }}
         >
           <Typography variant="body2" sx={{ mb: 1, color: "#666" }}>
@@ -101,10 +82,10 @@ const ProductFormSection = ({
             onChange={handleFileChange}
             style={{ width: "100%", padding: "8px 0" }}
           />
-          {formData.previewImage && (
+          {formData?.privewImage && (
             <Box sx={{ mt: 1 }}>
               <img
-                src={URL.createObjectURL(formData.previewImage)}
+                src={URL.createObjectURL(formData.privewImage)}
                 alt="Preview"
                 style={{
                   width: "150px",
@@ -114,7 +95,7 @@ const ProductFormSection = ({
                 }}
               />
               <Typography variant="body2" sx={{ color: "#508815" }}>
-                Đã chọn: {formData.previewImage.name}
+                Đã chọn: {formData.privewImage.name}
               </Typography>
             </Box>
           )}
@@ -180,15 +161,15 @@ const ProductFormSection = ({
               <Select
                 label="Thương hiệu"
                 name="brandId"
-                value={formData.brandId}
+                value={(formData.brandId ?? "").toString()}
                 onChange={handleSelectChange}
                 sx={{ bgcolor: "#fff" }}
               >
                 <MenuItem value="">
                   <em>Chọn thương hiệu</em>
                 </MenuItem>
-                {brands.map((brand) => (
-                  <MenuItem key={brand.id} value={brand.id.toString()}>
+                {brands?.map((brand: Brand) => (
+                  <MenuItem key={brand.id} value={brand.id ?? ""}>
                     {brand.name}
                   </MenuItem>
                 ))}
