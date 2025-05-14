@@ -9,8 +9,8 @@ import requester from "src/services/extended/axiosInstance";
 
 interface CategoryIdRequest {
   categoryId: number;
-  pageNumber: number;
-  pageSize: number;
+  pageNumber?: number;
+  pageSize?: number;
 }
 
 const categoryApi = {

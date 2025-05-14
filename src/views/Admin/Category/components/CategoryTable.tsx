@@ -107,7 +107,6 @@ const CategoryTable = ({
     enabled: !isDetail && pageNumber > 0,
     placeholderData: (previousData: any) => previousData,
   });
-  console.log("🚀 ~ categories:", categories);
 
   const { data: categoryDetail } = useQuery({
     queryKey: ["category", currentCategoryId, pageNumber, pageSize],

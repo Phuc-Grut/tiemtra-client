@@ -4,19 +4,19 @@
 // import categoryReducer from "src/views/Category/store/index"; 
 
 // interface CategoryState {
-//   categories: ICategory[]; // ✅ Sửa lại thành mảng ICategory[]
+//   categories: ICategory[];
 //   loading: boolean;
 //   error: string | null;
 // }
 
 // const initialState: CategoryState = {
-//   categories: [], // ✅ Đảm bảo kiểu là mảng []
+//   categories: [], //
 //   loading: false,
 //   error: null,
 // };
 
 // export const fetchCategories = createAsyncThunk<
-//   ICategory[], // ✅ Chỉ trả về danh mục
+//   ICategory[], // 
 //   ICategoryRequest
 // >(
 //   "category/fetchCategories",
@@ -24,9 +24,9 @@
 //     try {
 //       const response = await categoryApi.getPagingApi(params);
 
-//       console.log("🚀 ~ response:", response.data.data.$values); // ✅ Kiểm tra API trả về đúng không
+//       console.log("🚀 ~ response:", response.data.data.$values); // 
 
-//       return response.data.data.$values; // ✅ Trả về danh mục trực tiếp
+//       return response.data.data.$values; // 
 //     } catch (error: any) {
 //       return thunkAPI.rejectWithValue(error.response?.data?.message || "Lỗi khi tải danh mục");
 //     }
@@ -47,12 +47,12 @@
 //       .addCase(fetchCategories.fulfilled, (state, action) => {
 //         state.loading = false;
       
-//         console.log("🚀 ~ Fetched Categories from API:", action.payload); // ✅ Kiểm tra Redux có nhận đúng dữ liệu không
+//         console.log("🚀 ~ Fetched Categories from API:", action.payload); // 
       
 //         if (Array.isArray(action.payload)) {
-//           state.categories = action.payload; // ✅ Lưu vào Redux Store đúng kiểu
+//           state.categories = action.payload; // u
 //         } else {
-//           state.categories = []; // ✅ Nếu không có dữ liệu, đặt mảng rỗng
+//           state.categories = []; //
 //         }
 //       })
       
@@ -66,7 +66,7 @@
 
 // export const store = configureStore({
 //   reducer: {
-//     category: categoryReducer, // ✅ Đảm bảo reducer có tên đúng
+//     category: categoryReducer, //
 //   },
 // });
 
