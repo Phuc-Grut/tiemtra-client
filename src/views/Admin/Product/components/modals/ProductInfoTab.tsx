@@ -6,6 +6,7 @@ import ProductVariationsSection from "../ProductVariationsSection";
 import { CreateProductRequest } from "src/Interfaces/IProduct";
 import productApi from "src/services/api/Products/indext";
 import categoryApi from "src/services/api/Category";
+import { useQuery } from "@tanstack/react-query";
 
 export interface CategoryDropdown {
   categoryId?: number;
@@ -54,6 +55,20 @@ const ProductInfoTab = () => {
   getLeafCategoriesAsync();
 }, []);
 
+const {data: attributes} = useQuery({
+  queryKey: ["get-attribute-by-categeryId"],
+  queryFn: () =>
+    categoryApi.getByIdApi({
+      categoryId: Number(selectedCategoryID)
+    }),
+    select: (res) => {
+      
+      return res.data.data.items
+      
+    },
+    enabled: !!selectedCategoryID
+})
+console.log("🚀 ~ ProductInfoTab ~ res:", attributes)
 
   return (
     <Box
@@ -86,7 +101,7 @@ const ProductInfoTab = () => {
             categories={categories}
             selectedCategory={selectedCategoryID}
             setSelectedCategory={setSelectedCategoryID}
-            // attributes={attributes}
+            attributes={attributes}
           />
         </Box>
       </Box>

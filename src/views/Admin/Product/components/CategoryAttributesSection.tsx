@@ -33,25 +33,25 @@ interface CategoryAttributesSectionProps {
 const CategoryAttributesSection = ({
   categories,
   setSelectedCategory,
-  selectedCategory
+  selectedCategory,
+  attributes,
 }: CategoryAttributesSectionProps) => {
-
-  const [attributes, setAttributes] = useState<IAttribute[]>([]);
+  const [attributeValues, setAttributeValues] = useState<string[]>([]);
 
   const handleCategoryChange = (e: SelectChangeEvent<string>) => {
-  const value = e.target.value;
-  if (setSelectedCategory) {
-    setSelectedCategory(value);
-  }
-};
+    const value = e.target.value;
+    if (setSelectedCategory) {
+      setSelectedCategory(value);
+    }
+  };
 
   const handleAttributeValueChange = (index: number, value: string) => {
-    const updatedAttributes = [...attributes];
-    updatedAttributes[index] = {
-      ...updatedAttributes[index],
-      // value,
-    };
-    setAttributes(updatedAttributes);
+    // const updatedAttributes = [...attributes];
+    // updatedAttributes[index] = {
+    //   ...updatedAttributes[index],
+    //   // value,
+    // };
+    // setAttributes(updatedAttributes);
   };
 
   return (
@@ -95,7 +95,7 @@ const CategoryAttributesSection = ({
       </Box>
 
       {/* Thuộc tính */}
-      {selectedCategory && attributes.length > 0 && (
+      {selectedCategory && attributes && attributes?.length > 0 && (
         <Box sx={{ flex: 1 }}>
           <Typography
             variant="body1"
@@ -121,7 +121,7 @@ const CategoryAttributesSection = ({
               <TableHead>
                 <TableRow>
                   <TableCell
-                    sx={{ fontWeight: 600, bgcolor: "#f5f5f5", width: "40%" }}
+                    sx={{ fontWeight: 600, bgcolor: "#f5f5f5", width: "50%" }}
                   >
                     Thuộc tính
                   </TableCell>
@@ -129,7 +129,7 @@ const CategoryAttributesSection = ({
                 </TableRow>
               </TableHead>
               <TableBody>
-                {attributes.map((attr, index) => (
+                {attributes?.map((attr, index) => (
                   <TableRow key={attr.attributeId}>
                     <TableCell>{attr.name}</TableCell>
                     <TableCell>
@@ -138,10 +138,12 @@ const CategoryAttributesSection = ({
                         size="small"
                         placeholder="Nhập thông tin..."
                         fullWidth
-                        value={attr.attributeId || ""}
-                        onChange={(e) =>
-                          handleAttributeValueChange(index, e.target.value)
-                        }
+                        value={attributeValues[index] || ""}
+                        onChange={(e) => {
+                          const newValues = [...attributeValues];
+                          newValues[index] = e.target.value;
+                          setAttributeValues(newValues);
+                        }}
                         InputProps={{
                           disableUnderline: true,
                           sx: {
