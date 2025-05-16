@@ -17,6 +17,7 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import { IAttribute } from "src/Interfaces/IAttribute";
+import { CreateProductRequest } from "src/Interfaces/IProduct";
 
 export interface CategoryDropdown {
   categoryId?: number;
@@ -25,9 +26,10 @@ export interface CategoryDropdown {
 
 interface CategoryAttributesSectionProps {
   categories?: CategoryDropdown[];
-  selectedCategory?: string;
-  setSelectedCategory?: React.Dispatch<React.SetStateAction<string>>;
+  selectedCategory?: number;
+  setSelectedCategory?: React.Dispatch<React.SetStateAction<number | undefined>>;
   attributes?: IAttribute[];
+  setFormData?: React.Dispatch<React.SetStateAction<CreateProductRequest>>;
 }
 
 const CategoryAttributesSection = ({
@@ -35,23 +37,33 @@ const CategoryAttributesSection = ({
   setSelectedCategory,
   selectedCategory,
   attributes,
+  setFormData,
 }: CategoryAttributesSectionProps) => {
   const [attributeValues, setAttributeValues] = useState<string[]>([]);
 
-  const handleCategoryChange = (e: SelectChangeEvent<string>) => {
-    const value = e.target.value;
+  const handleCategoryChange = (e: SelectChangeEvent) => {
+    const value = Number(e.target.value); // ép từ string sang number
     if (setSelectedCategory) {
-      setSelectedCategory(value);
+      setSelectedCategory(value); // value lúc này là number
     }
   };
 
   const handleAttributeValueChange = (index: number, value: string) => {
-    // const updatedAttributes = [...attributes];
-    // updatedAttributes[index] = {
-    //   ...updatedAttributes[index],
-    //   // value,
-    // };
-    // setAttributes(updatedAttributes);
+    const newValues = [...attributeValues];
+    newValues[index] = value;
+    setAttributeValues(newValues);
+
+    if (setFormData && attributes) {
+      const newProductAttributes = attributes.map((attr, idx) => ({
+        attributeId: attr.attributeId,
+        value: newValues[idx] || "",
+      }));
+
+      setFormData((prev) => ({
+        ...prev,
+        productAttributes: newProductAttributes,
+      }));
+    }
   };
 
   return (
@@ -75,7 +87,7 @@ const CategoryAttributesSection = ({
           <InputLabel>Danh mục</InputLabel>
           <Select
             label="Danh mục"
-            value={selectedCategory}
+            value={selectedCategory?.toString() ?? ""}
             onChange={handleCategoryChange}
             sx={{ bgcolor: "#fff" }}
           >
@@ -139,11 +151,9 @@ const CategoryAttributesSection = ({
                         placeholder="Nhập thông tin..."
                         fullWidth
                         value={attributeValues[index] || ""}
-                        onChange={(e) => {
-                          const newValues = [...attributeValues];
-                          newValues[index] = e.target.value;
-                          setAttributeValues(newValues);
-                        }}
+                        onChange={(e) =>
+                          handleAttributeValueChange(index, e.target.value)
+                        }
                         InputProps={{
                           disableUnderline: true,
                           sx: {

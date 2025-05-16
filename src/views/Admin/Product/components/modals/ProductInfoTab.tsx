@@ -13,22 +13,16 @@ export interface CategoryDropdown {
   categoryName?: string;
 }
 
-const ProductInfoTab = () => {
-  const [formData, setFormData] = useState<CreateProductRequest>({
-    productCode: "",
-    productName: "",
-    price: null,
-    stock: null,
-    hasVariations: false,
-    productImages: [],
-    productAttributes: [],
-    productVariations: [],
-  });
+interface ProductInfoTabProps {
+  formData: CreateProductRequest;
+  setFormData: React.Dispatch<React.SetStateAction<CreateProductRequest>>;
+  selectedCategoryID: number | undefined;
+  setSelectedCategoryID: React.Dispatch<React.SetStateAction<number | undefined>>;
+}
 
+
+const ProductInfoTab = ({ formData, setFormData, selectedCategoryID, setSelectedCategoryID }: ProductInfoTabProps) => {
   const [categories, setCategories] = useState<CategoryDropdown[]>([]);
-
-  const [selectedCategoryID, setSelectedCategoryID] = useState("");
-  console.log("🚀 ~ ProductInfoTab ~ selectedCategory:", selectedCategoryID)
 
   useEffect(() => {
     const fetchProductCode = async () => {
@@ -39,33 +33,42 @@ const ProductInfoTab = () => {
       }));
     };
     fetchProductCode();
+  }, [setFormData]);
+
+  useEffect(() => {
+    const getLeafCategoriesAsync = async () => {
+      const res = await categoryApi.getLeafCategories();
+      const dropdownData: CategoryDropdown[] = res.data.map((cat) => ({
+        categoryId: cat.categoryId,
+        categoryName: cat.categoryName,
+      }));
+
+      setCategories(dropdownData);
+    };
+
+    getLeafCategoriesAsync();
   }, []);
 
   useEffect(() => {
-  const getLeafCategoriesAsync = async () => {
-    const res = await categoryApi.getLeafCategories();
-    const dropdownData: CategoryDropdown[] = res.data.map((cat) => ({
-      categoryId: cat.categoryId,
-      categoryName: cat.categoryName,
-    }));
+    if (selectedCategoryID !== undefined) {
+      setFormData((prev) => ({
+        ...prev,
+        categoryId: Number(selectedCategoryID),
+      }));
+    }
+  }, [selectedCategoryID, setFormData]);
 
-    setCategories(dropdownData);
-  };
-
-  getLeafCategoriesAsync();
-}, []);
-
-const {data: attributes} = useQuery({
-  queryKey: ["get-attribute-by-categeryId", selectedCategoryID],
-  queryFn: () =>
-    categoryApi.getByIdApi({
-      categoryId: Number(selectedCategoryID)
-    }),
+  const { data: attributes } = useQuery({
+    queryKey: ["get-attribute-by-categeryId", selectedCategoryID],
+    queryFn: () =>
+      categoryApi.getByIdApi({
+        categoryId: Number(selectedCategoryID),
+      }),
     select: (res) => {
-      return res.data.data.items
+      return res.data.data.items;
     },
-    enabled: !!selectedCategoryID
-})
+    enabled: !!selectedCategoryID,
+  });
 
   return (
     <Box
@@ -86,12 +89,8 @@ const {data: attributes} = useQuery({
         }}
       >
         <Box sx={{ flex: 2 }}>
-          <ProductFormSection
-            formData={formData}
-            setFormData={setFormData}
-            // brands={brands}
-          />
-          <ProductVariationsSection />
+          <ProductFormSection formData={formData} setFormData={setFormData} />
+          <ProductVariationsSection formData={formData} setFormData={setFormData} />
         </Box>
         <Box sx={{ flex: 1 }}>
           <CategoryAttributesSection
@@ -99,6 +98,7 @@ const {data: attributes} = useQuery({
             selectedCategory={selectedCategoryID}
             setSelectedCategory={setSelectedCategoryID}
             attributes={attributes}
+            setFormData={setFormData}
           />
         </Box>
       </Box>
