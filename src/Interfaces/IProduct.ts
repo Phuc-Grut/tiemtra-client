@@ -13,19 +13,21 @@ export interface CreateProductRequest {
     productImages?: ProductImage[];
     productAttributes?: ProductAttribute[];
     productVariations?: ProductVariation[];
-    brand?: Brand
 }
 
 export interface ProductImage{
-    imageFile: File | null
+    imageFile: File;
 }
 
 export interface ProductAttribute {
-    
+    attributeId: number;
+    value: string;
 }
 
 export interface ProductVariation{
-
+    typeName: string;
+    price: number;
+    stock: number;
 }
 
 export interface Brand {

@@ -12,35 +12,59 @@ import {
   Paper,
 } from "@mui/material";
 import { Delete } from "@mui/icons-material";
-import { useState } from "react";
+import { CreateProductRequest } from "src/Interfaces/IProduct";
 
 interface Variation {
   typeName: string;
-  price: string;
-  stock: string;
+  price: number;
+  stock: number;
 }
 
-const ProductVariationsSection = () => {
-  const [variations, setVariations] = useState<Variation[]>([]);
+interface props {
+  formData: CreateProductRequest;
+  setFormData: React.Dispatch<React.SetStateAction<CreateProductRequest>>;
+}
+
+const ProductVariationsSection = ({ formData, setFormData }: props) => {
 
   const handleAddVariation = () => {
-    setVariations([...variations, { typeName: "", price: "", stock: "" }]);
-  };
+  setFormData((prev) => ({
+    ...prev,
+    productVariations: [
+      ...(prev.productVariations ?? []),
+      { typeName: "", price: 0, stock: 0 },
+    ],
+  }));
+};
 
   const handleChange = (
-    index: number,
-    field: keyof Variation,
-    value: string
-  ) => {
-    const updated = [...variations];
-    updated[index][field] = value;
-    setVariations(updated);
+  index: number,
+  field: keyof Variation,
+  value: string
+) => {
+  const updated = [...(formData.productVariations ?? [])];
+
+  updated[index] = {
+    ...updated[index],
+    [field]:
+      field === "price" || field === "stock"
+        ? Number(value)
+        : value,
   };
 
+  setFormData((prev) => ({
+    ...prev,
+    productVariations: updated,
+  }));
+};
+
   const handleDelete = (index: number) => {
-    const updated = [...variations];
+    const updated = [...(formData.productVariations ?? [])];
     updated.splice(index, 1);
-    setVariations(updated);
+    setFormData((prev) => ({
+      ...prev,
+      productVariations: updated,
+    }));
   };
 
   return (
@@ -52,9 +76,9 @@ const ProductVariationsSection = () => {
           maxWidth: "100%",
           width: { xs: "100%", sm: "100%", md: "100%" },
           maxHeight: {
-            xs: "200px", // Mobile
-            sm: "250px", // Tablet
-            md: "220px", // Desktop
+            xs: "200px",
+            sm: "250px",
+            md: "220px",
           },
           overflowY: "auto",
         }}
@@ -79,7 +103,7 @@ const ProductVariationsSection = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {variations.map((variation, index) => (
+            {(formData.productVariations ?? []).map((variation, index) => (
               <TableRow key={index}>
                 <TableCell sx={Styles.tableCellBody}>
                   <TextField

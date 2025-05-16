@@ -3,6 +3,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import { useState } from "react";
 import ProductInfoTab from "./ProductInfoTab";
 import DetailedImagesSection from "../DetailedImagesSection";
+import { CreateProductRequest } from "src/Interfaces/IProduct";
 
 interface AddProductModalProps {
   open: boolean;
@@ -14,27 +15,43 @@ const tabLabels = ["Thêm sản phẩm", "Ảnh chi tiết"];
 const AddProductModal = ({ open, onClose }: AddProductModalProps) => {
   const [activeTab, setActiveTab] = useState(0);
 
+  const [formData, setFormData] = useState<CreateProductRequest>({
+    productCode: "",
+    productName: "",
+    privewImage: undefined,
+    price: null,
+    stock: null,
+    origin: "",
+    description: "",
+    hasVariations: false,
+    categoryId: undefined,
+    brandId: undefined,
+    productImages: [],
+    productAttributes: [],
+    productVariations: [],
+  });
+
+  const [selectedCategoryID, setSelectedCategoryID] = useState<
+    number | undefined
+  >(undefined);
+
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setActiveTab(newValue);
   };
 
   const [detailedImages, setDetailedImages] = useState<File[]>([]);
-  const [formData] = useState({
-    productCode: "",
-    productName: "",
-    previewImage: null as File | null,
-    price: "",
-    stock: "",
-    origin: "",
-    description: "",
-    brandId: "",
-  });
-  const [selectedCategory] = useState("");
 
   const renderContent = () => {
     switch (activeTab) {
       case 0:
-        return <ProductInfoTab />;
+        return (
+          <ProductInfoTab
+            formData={formData}
+            setFormData={setFormData}
+            selectedCategoryID={selectedCategoryID}
+            setSelectedCategoryID={setSelectedCategoryID}
+          />
+        );
       case 1:
         return (
           <DetailedImagesSection
@@ -48,9 +65,7 @@ const AddProductModal = ({ open, onClose }: AddProductModalProps) => {
   };
 
   const handleSubmit = () => {
-    console.log("Form Data:", formData);
-    console.log("Selected Category:", selectedCategory);
-    // console.log("Attributes:", attributes);
+    console.log("🚀 ~ AddProductModal ~ formData:", formData);
   };
 
   return (
@@ -68,7 +83,7 @@ const AddProductModal = ({ open, onClose }: AddProductModalProps) => {
           display: "flex",
           flexDirection: "column",
           width: { xs: "90%", md: "80%", lg: "90%" },
-          maxWidth: "none"
+          maxWidth: "none",
         },
       }}
     >
