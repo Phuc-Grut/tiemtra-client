@@ -69,7 +69,6 @@ const AttributeTable = () => {
     },
     retry: false,
   });
-  console.log("🚀 ~ AttributeTable ~ attributes:", attributes);
 
   const invalidateAllCategoryData = () => {
     queryClient.invalidateQueries({
@@ -77,8 +76,7 @@ const AttributeTable = () => {
         ["attributes"].includes(query.queryKey[0] as string),
     });
   };
-
-  console.log("🚀 ~ handleConfirmDelete ~ attributeIds:", selected);
+  
   const handleConfirmDelete = async (attributeIds: number[] = selected) => {
     if (attributeIds.length === 0) {
       showError("Xóa thất bại");
