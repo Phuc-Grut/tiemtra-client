@@ -56,19 +56,16 @@ const ProductInfoTab = () => {
 }, []);
 
 const {data: attributes} = useQuery({
-  queryKey: ["get-attribute-by-categeryId"],
+  queryKey: ["get-attribute-by-categeryId", selectedCategoryID],
   queryFn: () =>
     categoryApi.getByIdApi({
       categoryId: Number(selectedCategoryID)
     }),
     select: (res) => {
-      
       return res.data.data.items
-      
     },
     enabled: !!selectedCategoryID
 })
-console.log("🚀 ~ ProductInfoTab ~ res:", attributes)
 
   return (
     <Box
