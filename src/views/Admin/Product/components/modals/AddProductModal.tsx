@@ -39,7 +39,6 @@ const AddProductModal = ({ open, onClose }: AddProductModalProps) => {
     setActiveTab(newValue);
   };
 
-  const [detailedImages, setDetailedImages] = useState<File[]>([]);
 
   const renderContent = () => {
     switch (activeTab) {
@@ -55,8 +54,8 @@ const AddProductModal = ({ open, onClose }: AddProductModalProps) => {
       case 1:
         return (
           <DetailedImagesSection
-            detailedImages={detailedImages}
-            setDetailedImages={setDetailedImages}
+            formData={formData}
+            setFormData={setFormData}
           />
         );
       default:
