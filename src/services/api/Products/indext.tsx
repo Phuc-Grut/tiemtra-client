@@ -1,9 +1,25 @@
-import { AxiosResponse } from "axios"
-import { PRODUCT } from "src/domain/constants"
-import requester from "src/services/extended/axiosInstance"
+import { AxiosResponse } from "axios";
+import { PRODUCT } from "src/domain/constants";
+import requester from "src/services/extended/axiosInstance";
 
 const productApi = {
-    generateProductCode: (): Promise<AxiosResponse<string>> => requester.get(PRODUCT.URL_API.GENERATE_PRODUCT_CODE)  
-}
+  generateProductCode: (): Promise<AxiosResponse<string>> =>
+    requester.get(PRODUCT.URL_API.GENERATE_PRODUCT_CODE),
 
-export default productApi
+  uploadImage: (file: File): Promise<AxiosResponse<{ fileUrl: string }>> => {
+    const formData = new FormData();
+    formData.append("file", file);
+
+    return requester.post(PRODUCT.URL_API.UP_PRODUCT_IMAGE, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+  },
+
+  // Bạn có thể thêm hàm tạo sản phẩm tại đây
+  // createProduct: (data: CreateProductRequest): Promise<AxiosResponse<any>> =>
+  //   requester.post(PRODUCT.URL_API.CREATE_PRODUCT, data),
+};
+
+export default productApi;

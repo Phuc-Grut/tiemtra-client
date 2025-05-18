@@ -2,7 +2,7 @@
 export interface CreateProductRequest {
     productCode : string
     productName: string
-    privewImage?: File
+    privewImage?: string
     price?: number | null;
     stock?: number | null;
     origin?: string;
@@ -10,13 +10,9 @@ export interface CreateProductRequest {
     description?: string
     categoryId?: number;
     brandId?: number | null;
-    productImages?: ProductImage[];
+    productImageUrls: string[];    
     productAttributes?: ProductAttribute[];
     productVariations?: ProductVariation[];
-}
-
-export interface ProductImage{
-    imageFile: File;
 }
 
 export interface ProductAttribute {

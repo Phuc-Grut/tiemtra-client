@@ -26,7 +26,7 @@ const AddProductModal = ({ open, onClose }: AddProductModalProps) => {
     hasVariations: false,
     categoryId: undefined,
     brandId: undefined,
-    productImages: [],
+    productImageUrls: [],
     productAttributes: [],
     productVariations: [],
   });
