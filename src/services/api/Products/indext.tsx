@@ -1,5 +1,6 @@
 import { AxiosResponse } from "axios";
 import { PRODUCT } from "src/domain/constants";
+import { CreateProductRequest } from "src/Interfaces/IProduct";
 import requester from "src/services/extended/axiosInstance";
 
 const productApi = {
@@ -17,9 +18,8 @@ const productApi = {
     });
   },
 
-  // Bạn có thể thêm hàm tạo sản phẩm tại đây
-  // createProduct: (data: CreateProductRequest): Promise<AxiosResponse<any>> =>
-  //   requester.post(PRODUCT.URL_API.CREATE_PRODUCT, data),
+  createProduct: (data: CreateProductRequest): Promise<AxiosResponse<any>> =>
+    requester.post(PRODUCT.URL_API.CREATE_PRODUCT, data),
 };
 
 export default productApi;

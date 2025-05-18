@@ -1,6 +1,6 @@
 import { Box, Typography, IconButton, Grid } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { ChangeEvent, useRef, useState } from "react";
+import { ChangeEvent, useRef } from "react";
 import { CreateProductRequest } from "src/Interfaces/IProduct";
 import productApi from "src/services/api/Products/indext";
 import useToast from "src/components/Toast";
@@ -11,8 +11,8 @@ interface Props {
 }
 
 const DetailedImagesSection = ({ formData, setFormData }: Props) => {
-  const MAX_FILE_SIZE = 200 * 1024;
-  const [detailedImages, setDetailedImages] = useState<File[]>([]);
+  const MAX_FILE_SIZE = 300 * 1024;
+
   const { showSuccess, showError } = useToast();
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -22,7 +22,7 @@ const DetailedImagesSection = ({ formData, setFormData }: Props) => {
     if (!file) return;
 
     if (file.size > MAX_FILE_SIZE) {
-      showError("Vui lòng chọn ảnh dưới 200KB");
+      showError("Vui lòng chọn ảnh dưới 300KB");
 
       if (fileInputRef.current) {
         fileInputRef.current.value = "";
@@ -34,8 +34,6 @@ const DetailedImagesSection = ({ formData, setFormData }: Props) => {
     try {
       const res = await productApi.uploadImage(file);
       const fileUrl = res.data.fileUrl;
-
-      setDetailedImages((prev) => [...prev, file]);
       setFormData((prev) => ({
         ...prev,
         productImageUrls: [...prev.productImageUrls, fileUrl],
@@ -53,8 +51,6 @@ const DetailedImagesSection = ({ formData, setFormData }: Props) => {
   };
 
   const handleRemoveImage = (index: number) => {
-    setDetailedImages((prev) => prev.filter((_, i) => i !== index));
-
     setFormData((prev) => ({
       ...prev,
       productImageUrls: prev.productImageUrls.filter((_, i) => i !== index),
@@ -83,7 +79,7 @@ const DetailedImagesSection = ({ formData, setFormData }: Props) => {
       />
 
       <Grid container spacing={2}>
-        {detailedImages.map((image, index) => (
+        {formData.productImageUrls.map((url, index) => (
           <Grid item xs={4} sm={3} md={2} key={index}>
             <Box
               sx={{
@@ -96,8 +92,8 @@ const DetailedImagesSection = ({ formData, setFormData }: Props) => {
               }}
             >
               <img
-                src={URL.createObjectURL(image)}
-                alt={`detailed-${index}`}
+                src={url}
+                alt={`product-${index}`}
                 style={{
                   position: "absolute",
                   top: 0,

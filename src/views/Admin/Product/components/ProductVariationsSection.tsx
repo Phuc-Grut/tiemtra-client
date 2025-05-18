@@ -16,8 +16,8 @@ import { CreateProductRequest } from "src/Interfaces/IProduct";
 
 interface Variation {
   typeName: string;
-  price: number;
-  stock: number;
+  price?: number;
+  stock?: number;
 }
 
 interface props {
@@ -26,37 +26,39 @@ interface props {
 }
 
 const ProductVariationsSection = ({ formData, setFormData }: props) => {
-
   const handleAddVariation = () => {
-  setFormData((prev) => ({
-    ...prev,
-    productVariations: [
+  setFormData((prev) => {
+    const newVariations = [
       ...(prev.productVariations ?? []),
-      { typeName: "", price: 0, stock: 0 },
-    ],
-  }));
+      { typeName: "", price: null, stock: null },
+    ];
+
+    return {
+      ...prev,
+      productVariations: newVariations,
+      hasVariations: newVariations.length > 0,
+    };
+  });
 };
+
 
   const handleChange = (
-  index: number,
-  field: keyof Variation,
-  value: string
-) => {
-  const updated = [...(formData.productVariations ?? [])];
+    index: number,
+    field: keyof Variation,
+    value: string
+  ) => {
+    const updated = [...(formData.productVariations ?? [])];
 
-  updated[index] = {
-    ...updated[index],
-    [field]:
-      field === "price" || field === "stock"
-        ? Number(value)
-        : value,
+    updated[index] = {
+      ...updated[index],
+      [field]: field === "price" || field === "stock" ? Number(value) : value,
+    };
+
+    setFormData((prev) => ({
+      ...prev,
+      productVariations: updated,
+    }));
   };
-
-  setFormData((prev) => ({
-    ...prev,
-    productVariations: updated,
-  }));
-};
 
   const handleDelete = (index: number) => {
     const updated = [...(formData.productVariations ?? [])];
@@ -123,7 +125,7 @@ const ProductVariationsSection = ({ formData, setFormData }: props) => {
                     variant="standard"
                     type="number"
                     placeholder="Giá"
-                    value={variation.price}
+                    value={variation.price ?? ""}
                     onChange={(e) =>
                       handleChange(index, "price", e.target.value)
                     }
