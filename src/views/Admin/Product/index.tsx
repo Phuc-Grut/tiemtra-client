@@ -2,6 +2,7 @@ import { Box } from "@mui/material";
 import { useState } from "react";
 import PageHeader from "src/components/Layouts/Admin/PageHeader";
 import AddProductModal from "./components/modals/AddProductModal";
+import ProductTable from "./components/ProductTable";
 
 const Product = () => {
   const [isAddOpen, setIsAddOpen] = useState(false);
@@ -22,6 +23,17 @@ const Product = () => {
         pageUrl="/admin/product"
         onAddClick={() => setIsAddOpen(true)}
       />
+
+      <Box
+        sx={{
+          flexGrow: 1,
+          marginTop: 1,
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
+        <ProductTable />
+      </Box>
 
       <AddProductModal open={isAddOpen} onClose={() => setIsAddOpen(false)} />
     </Box>

@@ -46,9 +46,9 @@ const CategoryAttributesSection = ({
   const [attributeValues, setAttributeValues] = useState<string[]>([]);
 
   const handleCategoryChange = (e: SelectChangeEvent) => {
-    const value = Number(e.target.value); // ép từ string sang number
+    const value = Number(e.target.value);
     if (setSelectedCategory) {
-      setSelectedCategory(value); // value lúc này là number
+      setSelectedCategory(value);
     }
   };
 

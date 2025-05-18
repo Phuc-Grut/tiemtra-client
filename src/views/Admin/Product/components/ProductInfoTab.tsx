@@ -1,8 +1,8 @@
 import { Box } from "@mui/material";
 import { useEffect, useState } from "react";
-import ProductFormSection from "../ProductFormSection";
-import CategoryAttributesSection from "../CategoryAttributesSection";
-import ProductVariationsSection from "../ProductVariationsSection";
+import ProductFormSection from "./ProductFormSection";
+import CategoryAttributesSection from "./CategoryAttributesSection";
+import ProductVariationsSection from "./ProductVariationsSection";
 import { CreateProductRequest } from "src/Interfaces/IProduct";
 import productApi from "src/services/api/Products/indext";
 import categoryApi from "src/services/api/Category";
@@ -23,7 +23,8 @@ interface ProductInfoTabProps {
 
 const ProductInfoTab = ({ formData, setFormData, selectedCategoryID, setSelectedCategoryID }: ProductInfoTabProps) => {
   const [categories, setCategories] = useState<CategoryDropdown[]>([]);
-
+ 
+  // gợi ý product code
   useEffect(() => {
     const fetchProductCode = async () => {
       const res = await productApi.generateProductCode();
@@ -35,6 +36,7 @@ const ProductInfoTab = ({ formData, setFormData, selectedCategoryID, setSelected
     fetchProductCode();
   }, [setFormData]);
 
+  // lấy danh mục
   useEffect(() => {
     const getLeafCategoriesAsync = async () => {
       const res = await categoryApi.getLeafCategories();
@@ -49,6 +51,7 @@ const ProductInfoTab = ({ formData, setFormData, selectedCategoryID, setSelected
     getLeafCategoriesAsync();
   }, []);
 
+  //sét mã danh mục
   useEffect(() => {
     if (selectedCategoryID !== undefined) {
       setFormData((prev) => ({
@@ -58,6 +61,7 @@ const ProductInfoTab = ({ formData, setFormData, selectedCategoryID, setSelected
     }
   }, [selectedCategoryID, setFormData]);
 
+  // lấy thuộc tính theo danh mục đã chọn
   const { data: attributes } = useQuery({
     queryKey: ["get-attribute-by-categeryId", selectedCategoryID],
     queryFn: () =>

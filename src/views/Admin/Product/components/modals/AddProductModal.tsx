@@ -1,7 +1,7 @@
 import { Box, Tabs, Tab, Dialog, Button } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { useState } from "react";
-import ProductInfoTab from "./ProductInfoTab";
+import ProductInfoTab from "../ProductInfoTab";
 import DetailedImagesSection from "../DetailedImagesSection";
 import { CreateProductRequest } from "src/Interfaces/IProduct";
 import useToast from "src/components/Toast";
@@ -184,7 +184,7 @@ const AddProductModal = ({ open, onClose }: AddProductModalProps) => {
             pt: 2,
             textAlign: "right",
             bgcolor: "#fff",
-            flexShrink: 0, // 👈 NGĂN không bị co lại
+            flexShrink: 0,
           }}
         >
           <Button

@@ -29,3 +29,14 @@ export interface Brand {
   id?: number | null;
   name: string;
 }
+
+export interface IProduct {
+  productCode: string;
+  productName: string;
+  privewImageUrl: string
+  price?: number | null;
+  stock?: number | null;
+  origin?: string;
+  description?: string;
+  productImageUrls: string[];
+}
