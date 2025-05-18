@@ -99,6 +99,7 @@ const ProductInfoTab = ({ formData, setFormData, selectedCategoryID, setSelected
             setSelectedCategory={setSelectedCategoryID}
             attributes={attributes}
             setFormData={setFormData}
+            formData={formData}
           />
         </Box>
       </Box>

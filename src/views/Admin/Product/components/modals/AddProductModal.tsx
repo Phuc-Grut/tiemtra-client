@@ -4,6 +4,8 @@ import { useState } from "react";
 import ProductInfoTab from "./ProductInfoTab";
 import DetailedImagesSection from "../DetailedImagesSection";
 import { CreateProductRequest } from "src/Interfaces/IProduct";
+import useToast from "src/components/Toast";
+import productApi from "src/services/api/Products/indext";
 
 interface AddProductModalProps {
   open: boolean;
@@ -13,12 +15,13 @@ interface AddProductModalProps {
 const tabLabels = ["Thêm sản phẩm", "Ảnh chi tiết"];
 
 const AddProductModal = ({ open, onClose }: AddProductModalProps) => {
+  const { showSuccess, showError } = useToast();
   const [activeTab, setActiveTab] = useState(0);
 
-  const [formData, setFormData] = useState<CreateProductRequest>({
+  const initialFormData: CreateProductRequest = {
     productCode: "",
     productName: "",
-    privewImage: undefined,
+    privewImageUrl: "",
     price: null,
     stock: null,
     origin: "",
@@ -29,7 +32,10 @@ const AddProductModal = ({ open, onClose }: AddProductModalProps) => {
     productImageUrls: [],
     productAttributes: [],
     productVariations: [],
-  });
+  };
+
+  const [formData, setFormData] =
+    useState<CreateProductRequest>(initialFormData);
 
   const [selectedCategoryID, setSelectedCategoryID] = useState<
     number | undefined
@@ -38,7 +44,6 @@ const AddProductModal = ({ open, onClose }: AddProductModalProps) => {
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setActiveTab(newValue);
   };
-
 
   const renderContent = () => {
     switch (activeTab) {
@@ -63,8 +68,23 @@ const AddProductModal = ({ open, onClose }: AddProductModalProps) => {
     }
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     console.log("🚀 ~ AddProductModal ~ formData:", formData);
+
+    try {
+      const res = await productApi.createProduct(formData);
+
+      if (res.data.success) {
+        showSuccess("Thêm sản phẩm thành công");
+        setFormData(initialFormData);
+        onClose();
+      } else {
+        showError("Thêm sản phẩm thát bại");
+      }
+    } catch (error) {
+      console.error("Lỗi", error);
+      showError("Thêm sản phẩm thát bại");
+    }
   };
 
   return (

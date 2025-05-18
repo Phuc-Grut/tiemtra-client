@@ -27,9 +27,12 @@ export interface CategoryDropdown {
 interface CategoryAttributesSectionProps {
   categories?: CategoryDropdown[];
   selectedCategory?: number;
-  setSelectedCategory?: React.Dispatch<React.SetStateAction<number | undefined>>;
+  setSelectedCategory?: React.Dispatch<
+    React.SetStateAction<number | undefined>
+  >;
   attributes?: IAttribute[];
   setFormData?: React.Dispatch<React.SetStateAction<CreateProductRequest>>;
+  formData: CreateProductRequest;
 }
 
 const CategoryAttributesSection = ({
@@ -38,6 +41,7 @@ const CategoryAttributesSection = ({
   selectedCategory,
   attributes,
   setFormData,
+  formData,
 }: CategoryAttributesSectionProps) => {
   const [attributeValues, setAttributeValues] = useState<string[]>([]);
 
@@ -150,7 +154,11 @@ const CategoryAttributesSection = ({
                         size="small"
                         placeholder="Nhập thông tin..."
                         fullWidth
-                        value={attributeValues[index] || ""}
+                        value={
+                          formData.productAttributes?.find(
+                            (x) => x.attributeId === attr.attributeId
+                          )?.value || ""
+                        }
                         onChange={(e) =>
                           handleAttributeValueChange(index, e.target.value)
                         }

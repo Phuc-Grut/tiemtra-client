@@ -47,7 +47,7 @@ const ProductFormSection = ({
     if (!file) return;
 
     if (file.size > MAX_FILE_SIZE) {
-      alert("Ảnh quá lớn! Vui lòng chọn ảnh dưới 300 KB.");
+      showError(" Vui lòng chọn ảnh dưới 200 KB.");
       return;
     }
 
@@ -59,14 +59,16 @@ const ProductFormSection = ({
     try {
       const res = await productApi.uploadImage(file);
       const previewImageUrl = res.data.fileUrl;
+
       setFormData((prev) => ({
         ...prev,
-        privewImage: previewImageUrl,
+        privewImageUrl: previewImageUrl,
       }));
+
+      setPreviewFile(file);
       showSuccess("Upload ảnh thành công");
     } catch (err) {
-      console.error("Upload thất bại:", err);
-      showError("Upload thất bại:");
+      showError("Upload thất bại");
     }
   };
 
@@ -111,10 +113,10 @@ const ProductFormSection = ({
             onChange={handleFileChange}
             style={{ width: "100%", padding: "8px 0" }}
           />
-          {previewFile && (
+          {formData.privewImageUrl && (
             <Box sx={{ mt: 1 }}>
               <img
-                src={URL.createObjectURL(previewFile)}
+                src={formData.privewImageUrl}
                 alt="Preview"
                 style={{
                   width: "150px",
@@ -124,7 +126,7 @@ const ProductFormSection = ({
                 }}
               />
               <Typography variant="body2" sx={{ color: "#508815" }}>
-                Đã chọn: {previewFile.name}
+                Đã chọn: {previewFile?.name}
               </Typography>
             </Box>
           )}
