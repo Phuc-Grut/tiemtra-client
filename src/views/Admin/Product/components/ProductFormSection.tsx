@@ -8,8 +8,10 @@ import {
   FormControl,
   SelectChangeEvent,
 } from "@mui/material";
-import { ChangeEvent } from "react";
+import { ChangeEvent, useState } from "react";
+import useToast from "src/components/Toast";
 import { Brand, CreateProductRequest } from "src/Interfaces/IProduct";
+import productApi from "src/services/api/Products/indext";
 
 interface ProductFormSectionProps {
   formData: CreateProductRequest;
@@ -20,8 +22,10 @@ interface ProductFormSectionProps {
 const ProductFormSection = ({
   formData,
   setFormData,
-  brands
+  brands,
 }: ProductFormSectionProps) => {
+  const MAX_FILE_SIZE = 200 * 1024;
+  const { showSuccess, showError } = useToast();
 
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | { value: unknown }>
@@ -38,10 +42,35 @@ const ProductFormSection = ({
     }
   };
 
-  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0] || null;
-    setFormData((prev) => ({ ...prev, previewImage: file }));
+  const handleFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.size > MAX_FILE_SIZE) {
+      alert("Ảnh quá lớn! Vui lòng chọn ảnh dưới 300 KB.");
+      return;
+    }
+
+    setPreviewFile(file);
+
+    const formDataToSend = new FormData();
+    formDataToSend.append("file", file);
+
+    try {
+      const res = await productApi.uploadImage(file);
+      const previewImageUrl = res.data.fileUrl;
+      setFormData((prev) => ({
+        ...prev,
+        privewImage: previewImageUrl,
+      }));
+      showSuccess("Upload ảnh thành công");
+    } catch (err) {
+      console.error("Upload thất bại:", err);
+      showError("Upload thất bại:");
+    }
   };
+
+  const [previewFile, setPreviewFile] = useState<File | null>(null);
 
   return (
     <Box
@@ -82,10 +111,10 @@ const ProductFormSection = ({
             onChange={handleFileChange}
             style={{ width: "100%", padding: "8px 0" }}
           />
-          {formData?.privewImage && (
+          {previewFile && (
             <Box sx={{ mt: 1 }}>
               <img
-                src={URL.createObjectURL(formData.privewImage)}
+                src={URL.createObjectURL(previewFile)}
                 alt="Preview"
                 style={{
                   width: "150px",
@@ -95,7 +124,7 @@ const ProductFormSection = ({
                 }}
               />
               <Typography variant="body2" sx={{ color: "#508815" }}>
-                Đã chọn: {formData.privewImage.name}
+                Đã chọn: {previewFile.name}
               </Typography>
             </Box>
           )}

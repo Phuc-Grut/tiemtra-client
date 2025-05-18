@@ -62,5 +62,7 @@ export const ATTRIBUTE = {
 export const PRODUCT = {
     URL_API: {
         GENERATE_PRODUCT_CODE: `${URL_ADMIN}/product/generate-product-code`,
+        CREATE_PRODUCT: `${URL_ADMIN}/product/create-product`,
+        UP_PRODUCT_IMAGE: `${URL_ADMIN}/product/product-image`
     }
 }
