@@ -1,7 +1,7 @@
 export interface CreateProductRequest {
   productCode: string;
   productName: string;
-  privewImageUrl: string
+  privewImageUrl: string;
   price?: number | null;
   stock?: number | null;
   origin?: string;
@@ -33,10 +33,32 @@ export interface Brand {
 export interface IProduct {
   productCode: string;
   productName: string;
-  privewImageUrl: string
+  privewImageUrl: string;
   price?: number | null;
   stock?: number | null;
   origin?: string;
   description?: string;
-  productImageUrls: string[];
+  brandName?: string;
+  creatorName?: string;
+  updaterName?: string;
+  updateAt?: string | Date;
+  createAt?: string | Date;
+}
+
+export interface IProductFilter {
+  pageNumber?: number;
+  pageSize?: number;
+  keyword?: string;
+  productCode?: string
+  sortBy?: string;
+  categoryId?: number;
+  brandId?: number;
+  status?: ProductStatus
+}
+
+export enum ProductStatus {
+  Draft = 0, // nháp
+  Active = 1, // đang bán
+  Inactive = 2, // ẩn
+  OutOfStock = 3, // hết hàng
 }

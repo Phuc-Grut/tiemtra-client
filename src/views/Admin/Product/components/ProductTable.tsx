@@ -11,12 +11,49 @@ import {
 import DeleteIcon from "@mui/icons-material/Delete";
 import { CheckBox } from "@mui/icons-material";
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import productApi from "src/services/api/Products/indext";
+import { IProductFilter } from "src/Interfaces/IProduct";
 
 const ProductTable = () => {
+  // const [selected, setSelected] = useState<number[]>([]);
 
-  const [selected, setSelected] = useState<number[]>([]);
+  const buildCleanFilter = (filter: IProductFilter) => {
+    const cleaned: any = {
+      pageNumber: filter.pageNumber ?? 1,
+      pageSize: filter.pageSize ?? 10,
+    };
 
-//   const [product, setProducts]
+    if (filter.keyword?.trim()) cleaned.keyword = filter.keyword.trim();
+    if (filter.productCode?.trim())
+      cleaned.productCode = filter.productCode.trim();
+    if (filter.sortBy?.trim()) cleaned.sortBy = filter.sortBy.trim();
+    if (filter.status !== undefined) cleaned.status = filter.status;
+    if (filter.categoryId !== undefined) cleaned.categoryId = filter.categoryId;
+    if (filter.brandId !== undefined) cleaned.brandId = filter.brandId;
+
+    return cleaned;
+  };
+
+  const [filter, setFilter] = useState<IProductFilter>({
+    pageNumber: 1,
+    pageSize: 10,
+    keyword: "",
+    productCode: "",
+    sortBy: "",
+    status: undefined,
+  });
+
+  const { data: products } = useQuery({
+    queryKey: ["products", filter],
+    queryFn: async () => {
+      const cleanedFilter = buildCleanFilter(filter);
+      const response = await productApi.getPagingProduct(cleanedFilter);
+      return response.data.items;
+    },
+  });
+
+  console.log("🚀 ~ ProductTable2 ~ products:", products);
 
   return (
     <Box
