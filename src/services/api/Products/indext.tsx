@@ -1,6 +1,6 @@
 import { AxiosResponse } from "axios";
 import { PRODUCT } from "src/domain/constants";
-import { CreateProductRequest } from "src/Interfaces/IProduct";
+import { CreateProductRequest, IProductFilter } from "src/Interfaces/IProduct";
 import requester from "src/services/extended/axiosInstance";
 
 const productApi = {
@@ -20,6 +20,9 @@ const productApi = {
 
   createProduct: (data: CreateProductRequest): Promise<AxiosResponse<any>> =>
     requester.post(PRODUCT.URL_API.CREATE_PRODUCT, data),
+
+  getPagingProduct: (params : IProductFilter) => requester.get(PRODUCT.URL_API.GET_ALL_PRODUCT, {params} )
+  
 };
 
 export default productApi;
