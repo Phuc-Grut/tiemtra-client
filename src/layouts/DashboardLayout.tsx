@@ -1,4 +1,4 @@
-import { Box } from "@mui/material";
+import { Box, useMediaQuery, useTheme } from "@mui/material";
 import Sidebar from "../components/Layouts/Admin/Sidebar";
 import { Outlet } from "react-router-dom";
 import TopBar from "src/components/Layouts/Admin/Topbar";
@@ -7,6 +7,8 @@ import { useState } from "react";
 
 const AdminDashboard = () => {
   const [expanded, setExpanded] = useState(true);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   return (
     <Box
       sx={{
@@ -14,15 +16,16 @@ const AdminDashboard = () => {
         flexDirection: "column",
         minHeight: "100vh",
         backgroundColor: "#EEEEEE",
-        overflowX: "auto",
-        width: '100vw'
+        // overflowX: "auto",
+        width: "100vw",
       }}
     >
       <TopBar setExpanded={setExpanded} />
       {/* <TopBar setExpanded={setExpanded} /> */}
 
       <Box sx={{ display: "flex", flexGrow: 1 }}>
-      <Sidebar expanded={expanded} setExpanded={setExpanded} />
+        {!isMobile && <Sidebar expanded={expanded} setExpanded={setExpanded} />}
+        {isMobile && <Sidebar expanded={expanded} setExpanded={setExpanded} />}
 
         <Box sx={{ flexGrow: 1, display: "flex", flexDirection: "column" }}>
           <Box
@@ -31,6 +34,7 @@ const AdminDashboard = () => {
               marginTop: "10px",
               display: "flex",
               flexDirection: "column",
+              width: isMobile ? "100vw" : "auto",
             }}
           >
             <Outlet />
