@@ -31,18 +31,20 @@ export interface Brand {
 }
 
 export interface IProduct {
+  productId: string;
   productCode: string;
   productName: string;
   privewImageUrl: string;
   price?: number | null;
   stock?: number | null;
+  totalSold?: number | null;
   origin?: string;
   description?: string;
   brandName?: string;
   creatorName?: string;
   updaterName?: string;
-  updateAt?: string | Date;
-  createAt?: string | Date;
+  updatedAt: string;
+  createdAt: string;
 }
 
 export interface IProductFilter {
