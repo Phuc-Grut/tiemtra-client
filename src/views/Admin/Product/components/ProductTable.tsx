@@ -15,7 +15,7 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import productApi from "src/services/api/Products/indext";
 import { IProduct, IProductFilter } from "src/Interfaces/IProduct";
-import formatVietnamTime from "src/utils/formatVietnamTime";
+import getProductStatusText from "src/utils/getProductStatusText";
 
 const ProductTable = () => {
   // const [selected, setSelected] = useState<number[]>([]);
@@ -41,7 +41,7 @@ const ProductTable = () => {
 
   const [filter, setFilter] = useState<IProductFilter>({
     pageNumber: 1,
-    pageSize: 10,
+    pageSize: 8,
     keyword: "",
     productCode: "",
     sortBy: "",
@@ -197,10 +197,9 @@ const ProductTable = () => {
                 </TableCell>
                 <TableCell
                   sx={{
+                    ...Styles.tableCell,
                     fontWeight: "bold",
                     color: "black",
-                    borderRight: "1px solid rgb(240, 235, 235)",
-                    borderBlock: "1px solid rgb(240, 235, 235)",
                     height: "30px",
                     lineHeight: "28px",
                     padding: "4px 8px",
@@ -209,17 +208,28 @@ const ProductTable = () => {
                 >
                   Ảnh
                 </TableCell>
-                <TableCell sx={Styles.tableCell}>Mã sản phẩm</TableCell>
-                <TableCell sx={Styles.tableCell}>Tên sản phẩm</TableCell>
-                <TableCell sx={Styles.tableCell}>Giá bán</TableCell>
-                <TableCell sx={Styles.tableCell}>Tồn kho</TableCell>
-                <TableCell sx={Styles.tableCell}>Số lượng bán</TableCell>
-                <TableCell sx={Styles.tableCell}>Thương hiệu</TableCell>
-                <TableCell sx={Styles.tableCell}>Mô tả</TableCell>
-                <TableCell sx={Styles.tableCell}>Ngày cập nhật</TableCell>
-                <TableCell sx={Styles.tableCell}>
-                  Người người cập nhật
+                <TableCell sx={{ ...Styles.tableCell, width: 120 }}>
+                  Mã sản phẩm
                 </TableCell>
+                <TableCell sx={{ ...Styles.tableCell, width: 150 }}>
+                  Tên sản phẩm
+                </TableCell>
+                <TableCell sx={{ ...Styles.tableCell, width: 90 }}>
+                  Giá bán
+                </TableCell>
+                <TableCell sx={{ ...Styles.tableCell, width: 90 }}>
+                  Tồn kho
+                </TableCell>
+                <TableCell sx={{ ...Styles.tableCell, width: 90 }}>
+                  Đã bán
+                </TableCell>
+                <TableCell sx={{ ...Styles.tableCell, width: 120 }}>
+                  Thương hiệu
+                </TableCell>
+                <TableCell sx={{ ...Styles.tableCell, width: 120 }}>
+                  Trạng thái
+                </TableCell>
+                <TableCell sx={{ ...Styles.tableCell, width: 250 }}>Ghi chú</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -280,6 +290,7 @@ const ProductTable = () => {
                         display: "flex",
                         justifyContent: "center",
                         alignItems: "center",
+                        borderRight: "1px solid rgb(240, 235, 235)",
                       }}
                     >
                       <img
@@ -314,14 +325,9 @@ const ProductTable = () => {
                       {p.brandName}
                     </TableCell>
                     <TableCell sx={Styles.tableCellBody}>
-                      {p.description}
+                      {getProductStatusText(p.productStatus ?? -1)}
                     </TableCell>
-                    <TableCell sx={Styles.tableCellBody}>
-                      {formatVietnamTime(p?.createdAt || p?.updatedAt)}
-                    </TableCell>
-                    <TableCell sx={Styles.tableCellBody}>
-                      {p.creatorName || p.updaterName}
-                    </TableCell>
+                    <TableCell sx={Styles.tableCellBody}>{p.note}</TableCell>
                   </TableRow>
                 ))
               ) : (

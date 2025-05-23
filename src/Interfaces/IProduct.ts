@@ -40,6 +40,8 @@ export interface IProduct {
   totalSold?: number | null;
   origin?: string;
   description?: string;
+  note?: string
+  productStatus?: number
   brandName?: string;
   creatorName?: string;
   updaterName?: string;
