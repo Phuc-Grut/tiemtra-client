@@ -70,7 +70,7 @@ const ProductVariationsSection = ({ formData, setFormData }: props) => {
   };
 
   return (
-    <Box sx={{ mt: 4, width: "80%" }}>
+    <Box sx={{ mt: 4, width: "90%" }}>
       <TableContainer
         component={Paper}
         elevation={1}
@@ -156,7 +156,7 @@ const ProductVariationsSection = ({ formData, setFormData }: props) => {
               </TableRow>
             ))}
             <TableRow>
-              <TableCell align="left">
+              <TableCell align="left" colSpan={4}>
                 <Button onClick={handleAddVariation} size="small">
                   Thêm
                 </Button>

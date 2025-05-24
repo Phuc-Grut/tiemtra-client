@@ -12,6 +12,9 @@ export interface CreateProductRequest {
   productImageUrls: string[];
   productAttributes?: ProductAttribute[];
   productVariations?: ProductVariation[];
+  note?: string
+  totalSold?: number | null
+  productStatus?: ProductStatus
 }
 
 export interface ProductAttribute {

@@ -32,6 +32,10 @@ const AddProductModal = ({ open, onClose }: AddProductModalProps) => {
     productImageUrls: [],
     productAttributes: [],
     productVariations: [],
+    productStatus: undefined ,
+    note: "",
+    totalSold: null
+
   };
 
   const [formData, setFormData] =
@@ -99,14 +103,15 @@ const AddProductModal = ({ open, onClose }: AddProductModalProps) => {
           borderRadius: 2,
           boxShadow: "0 4px 20px rgba(0,0,0,0.1)",
           height: "95vh",
-          display: "flex",
-          flexDirection: "column",
           width: { xs: "90%", md: "80%", lg: "90%" },
           maxWidth: "none",
+          display: "flex",
+          flexDirection: "column",
         },
       }}
     >
       <Box sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
+        {/* Close Button */}
         <Button
           onClick={onClose}
           sx={{
@@ -133,9 +138,14 @@ const AddProductModal = ({ open, onClose }: AddProductModalProps) => {
           <CloseIcon sx={{ fontSize: 28 }} />
         </Button>
 
-        {/* Tabs tích hợp bên trong modal */}
+        {/* Tabs - Header */}
         <Box
-          sx={{ borderBottom: 1, borderColor: "divider", bgcolor: "#f5f5f5" }}
+          sx={{
+            borderBottom: 1,
+            borderColor: "divider",
+            bgcolor: "#f5f5f5",
+            flexShrink: 0,
+          }}
         >
           <Tabs
             value={activeTab}
@@ -174,9 +184,19 @@ const AddProductModal = ({ open, onClose }: AddProductModalProps) => {
           </Tabs>
         </Box>
 
-        {/* Nội dung bên trong modal */}
-        <Box sx={{ p: 4, flex: 1 }}>{renderContent()}</Box>
+        {/* Scrollable Content */}
+        <Box
+          sx={{
+            flex: 1,
+            overflowY: "auto",
+            p: 4,
+            bgcolor: "#fff",
+          }}
+        >
+          {renderContent()}
+        </Box>
 
+        {/* Footer - Fixed Save Button */}
         <Box
           sx={{
             px: 4,
@@ -185,6 +205,7 @@ const AddProductModal = ({ open, onClose }: AddProductModalProps) => {
             textAlign: "right",
             bgcolor: "#fff",
             flexShrink: 0,
+            borderTop: "1px solid #eee",
           }}
         >
           <Button
