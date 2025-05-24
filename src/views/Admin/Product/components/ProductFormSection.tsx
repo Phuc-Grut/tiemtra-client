@@ -44,8 +44,16 @@ const ProductFormSection = ({
 
   const handleSelectChange = (e: SelectChangeEvent<string>) => {
     const { name, value } = e.target;
-    if (name) {
-      setFormData((prev) => ({ ...prev, [name]: value }));
+    if (name === "productStatus") {
+      setFormData((prev) => ({
+        ...prev,
+        [name]: parseInt(value),
+      }));
+    } else {
+      setFormData((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
     }
   };
 
@@ -198,23 +206,17 @@ const ProductFormSection = ({
 
             <FormControl fullWidth size="small" sx={{ bgcolor: "#fff" }}>
               <InputLabel id="product-status-label">Trạng thái</InputLabel>
+
               <Select
                 labelId="product-status-label"
                 id="productStatus"
                 name="productStatus"
-                value={formData.productStatus ?? ""}
+                value={formData.productStatus?.toString() ?? ""}
                 label="Trạng thái"
-                onChange={(e) =>
-                  handleChange({
-                    target: {
-                      name: "productStatus",
-                      value: e.target.value,
-                    },
-                  } as ChangeEvent<HTMLInputElement>)
-                }
+                onChange={handleSelectChange}
               >
                 {productStatusOptions.map((status) => (
-                  <MenuItem key={status.value} value={status.value}>
+                  <MenuItem key={status.value} value={status.value.toString()}>
                     {status.label}
                   </MenuItem>
                 ))}
