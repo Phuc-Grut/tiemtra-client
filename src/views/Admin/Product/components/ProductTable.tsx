@@ -22,6 +22,8 @@ import CustomPagination from "src/components/CustomPagination";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import FilterAltOutlinedIcon from "@mui/icons-material/FilterAltOutlined";
+import { productContextMenuItems } from "../contextMenu";
+import GenericContextMenu from "src/components/GenericContextMenu";
 
 const ProductTable = () => {
   // const [selected, setSelected] = useState<number[]>([]);
@@ -71,7 +73,7 @@ const ProductTable = () => {
 
   const [selected, setSelected] = useState<string[]>([]);
   const [contextItem, setContextItem] = useState<IProduct | null>(null);
-  const [selectedProduct, setselectedProduct] = useState<IProduct | null>(null);
+  const [selectedProduct, setSelectedProduct] = useState<IProduct | null>(null);
 
   const [anchorEl, setAnchorEl] = useState<
     HTMLElement | { mouseX: number; mouseY: number } | null
@@ -102,6 +104,29 @@ const ProductTable = () => {
       };
     });
   };
+
+  const productMenuActions = productContextMenuItems.map((item) => ({
+    ...item,
+    onClick: (p: IProduct) => {
+      switch (item.id) {
+        case "VIEW":
+          console.log("xem chi tiết", p);
+          break;
+        case "EDIT":
+          console.log("Sửa mục:", p);
+          // setSelectedProduct(p);
+          // setEditModalOpen(true);
+          break;
+        case "DELETE":
+          console.log("delete mục:", p.productId);
+          // setSelected([p.productId]);
+          // setConfirmModalOpen(true);
+          break;
+        default:
+          console.log("Chọn menu:", item.id, p);
+      }
+    },
+  }));
 
   return (
     <Box
@@ -347,7 +372,7 @@ const ProductTable = () => {
                     e.preventDefault();
 
                     setContextItem(p);
-                    setselectedProduct(p);
+                    setSelectedProduct(p);
                     setAnchorEl({ mouseX: e.clientX, mouseY: e.clientY });
                   }}
                   //   onClick={() => {
@@ -476,6 +501,12 @@ const ProductTable = () => {
           </Box>
         </Box>
       </Box>
+      <GenericContextMenu
+        anchorEl={anchorEl}
+        onClose={() => setAnchorEl(null)}
+        items={productMenuActions}
+        contextItem={contextItem}
+      />
     </Box>
   );
 };
