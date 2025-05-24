@@ -50,6 +50,7 @@ export interface IProduct {
   updaterName?: string;
   updatedAt: string;
   createdAt: string;
+  productVariations?: ProductVariation
 }
 
 export interface IProductFilter {

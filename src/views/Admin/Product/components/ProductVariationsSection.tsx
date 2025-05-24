@@ -13,6 +13,7 @@ import {
 } from "@mui/material";
 import { Delete } from "@mui/icons-material";
 import { CreateProductRequest } from "src/Interfaces/IProduct";
+import { useEffect } from "react";
 
 interface Variation {
   typeName: string;
@@ -27,20 +28,19 @@ interface props {
 
 const ProductVariationsSection = ({ formData, setFormData }: props) => {
   const handleAddVariation = () => {
-  setFormData((prev) => {
-    const newVariations = [
-      ...(prev.productVariations ?? []),
-      { typeName: "", price: null, stock: null },
-    ];
+    setFormData((prev) => {
+      const newVariations = [
+        ...(prev.productVariations ?? []),
+        { typeName: "", price: null, stock: null },
+      ];
 
-    return {
-      ...prev,
-      productVariations: newVariations,
-      hasVariations: newVariations.length > 0,
-    };
-  });
-};
-
+      return {
+        ...prev,
+        productVariations: newVariations,
+        hasVariations: newVariations.length > 0,
+      };
+    });
+  };
 
   const handleChange = (
     index: number,
@@ -66,8 +66,31 @@ const ProductVariationsSection = ({ formData, setFormData }: props) => {
     setFormData((prev) => ({
       ...prev,
       productVariations: updated,
+      stock: null,
+      price: null
     }));
   };
+
+  useEffect(() => {
+    const variations = formData.productVariations ?? [];
+
+    if (variations.length === 0) {
+      return;
+    }
+
+    const stocks = variations
+      .map((v) => v.stock)
+      .filter((s): s is number => typeof s === "number" && !isNaN(s));
+
+    const totalStock =
+      stocks.length > 0 ? stocks.reduce((a, b) => a + b, 0) : null;
+
+    setFormData((prev) => ({
+      ...prev,
+      price: 0,
+      stock: totalStock,
+    }));
+  }, [formData.productVariations, setFormData]);
 
   return (
     <Box sx={{ mt: 4, width: "90%" }}>
@@ -180,7 +203,7 @@ const Styles = {
     height: "30px",
     lineHeight: "28px",
     padding: "4px 8px",
-    backgroundColor: "#fff", // để tránh bị mờ
+    backgroundColor: "#fff",
     position: "sticky",
     top: 0,
     zIndex: 2,
