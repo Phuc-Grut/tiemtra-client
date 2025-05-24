@@ -16,7 +16,11 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import productApi from "src/services/api/Products/indext";
-import { IProduct, IProductFilter } from "src/Interfaces/IProduct";
+import {
+  IProduct,
+  IProductFilter,
+  ProductVariation,
+} from "src/Interfaces/IProduct";
 import getProductStatusText from "src/utils/getProductStatusText";
 import CustomPagination from "src/components/CustomPagination";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
@@ -127,6 +131,29 @@ const ProductTable = () => {
       }
     },
   }));
+
+  const renderPrice = (p: IProduct): string => {
+    if (p.price && p.price > 0) {
+      return p.price.toLocaleString() + "đ";
+    }
+
+    const variations = Array.isArray(p.productVariations)
+      ? p.productVariations
+      : [];
+
+    const prices = variations
+      .map((v: ProductVariation) => v.price)
+      .filter((price): price is number => typeof price === "number");
+
+    if (prices.length === 0) return "—";
+
+    const min = Math.min(...prices);
+    const max = Math.max(...prices);
+
+    return min === max
+      ? `${min.toLocaleString()}đ`
+      : ` ${min.toLocaleString()}đ - ${max.toLocaleString()}đ`;
+  };
 
   return (
     <Box
@@ -259,7 +286,7 @@ const ProductTable = () => {
               <TableCell
                 sx={{
                   ...Styles.tableCell,
-                  width: 90,
+                  width: 150,
                   cursor: "pointer",
                   userSelect: "none",
                 }}
@@ -433,7 +460,9 @@ const ProductTable = () => {
                   <TableCell sx={Styles.tableCellBody}>
                     {p.productName}
                   </TableCell>
-                  <TableCell sx={Styles.tableCellBody}>{p.price}</TableCell>
+                  <TableCell sx={Styles.tableCellBody}>
+                    {renderPrice(p)}
+                  </TableCell>
                   <TableCell sx={Styles.tableCellBody}>{p.stock}</TableCell>
                   <TableCell sx={Styles.tableCellBody}>{p.totalSold}</TableCell>
                   <TableCell sx={Styles.tableCellBody}>{p.brandName}</TableCell>
@@ -501,6 +530,7 @@ const ProductTable = () => {
           </Box>
         </Box>
       </Box>
+
       <GenericContextMenu
         anchorEl={anchorEl}
         onClose={() => setAnchorEl(null)}

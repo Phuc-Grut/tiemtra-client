@@ -35,7 +35,6 @@ const AddProductModal = ({ open, onClose }: AddProductModalProps) => {
     productStatus: undefined ,
     note: "",
     totalSold: null
-
   };
 
   const [formData, setFormData] =
