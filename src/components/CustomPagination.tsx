@@ -1,7 +1,7 @@
 import { Pagination, PaginationItem } from "@mui/material";
 
 interface PaginationProps {
-  pageNumber: number;
+  pageNumber?: number;
   setPageNumber: (page: number) => void;
   totalPages: number;
 }
