@@ -19,6 +19,13 @@ interface ProductFormSectionProps {
   brands?: Brand[] | undefined;
 }
 
+const productStatusOptions = [
+  { label: "Nháp", value: 0 },
+  { label: "Đang bán", value: 1 },
+  { label: "Ẩn", value: 2 },
+  { label: "Hết hàng", value: 3 },
+];
+
 const ProductFormSection = ({
   formData,
   setFormData,
@@ -179,6 +186,44 @@ const ProductFormSection = ({
 
           <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 2 }}>
             <TextField
+              label="Đã bán"
+              name="totalSold"
+              type="number"
+              value={formData?.totalSold ?? 0}
+              variant="outlined"
+              size="small"
+              sx={{ bgcolor: "#f9f9f9" }}
+              InputProps={{ readOnly: true }}
+            />
+
+            <FormControl fullWidth size="small" sx={{ bgcolor: "#fff" }}>
+              <InputLabel id="product-status-label">Trạng thái</InputLabel>
+              <Select
+                labelId="product-status-label"
+                id="productStatus"
+                name="productStatus"
+                value={formData.productStatus ?? ""}
+                label="Trạng thái"
+                onChange={(e) =>
+                  handleChange({
+                    target: {
+                      name: "productStatus",
+                      value: e.target.value,
+                    },
+                  } as ChangeEvent<HTMLInputElement>)
+                }
+              >
+                {productStatusOptions.map((status) => (
+                  <MenuItem key={status.value} value={status.value}>
+                    {status.label}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Box>
+
+          <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 2 }}>
+            <TextField
               label="Xuất xứ"
               name="origin"
               value={formData.origin ?? ""}
@@ -207,11 +252,22 @@ const ProductFormSection = ({
               </Select>
             </FormControl>
           </Box>
-          <Box>
+          <Box sx={{ display: "flex", gap: 2 }}>
             <TextField
               label="Mô tả sản phẩm"
               name="description"
               value={formData.description}
+              onChange={handleChange}
+              fullWidth
+              multiline
+              rows={5}
+              variant="outlined"
+              sx={{ bgcolor: "#fff", height: "100%" }}
+            />
+            <TextField
+              label="Ghi chú"
+              name="note"
+              value={formData.note}
               onChange={handleChange}
               fullWidth
               multiline
