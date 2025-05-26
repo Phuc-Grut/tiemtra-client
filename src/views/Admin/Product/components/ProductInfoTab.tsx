@@ -17,49 +17,61 @@ interface ProductInfoTabProps {
   formData: CreateProductRequest;
   setFormData: React.Dispatch<React.SetStateAction<CreateProductRequest>>;
   selectedCategoryID: number | undefined;
-  setSelectedCategoryID: React.Dispatch<React.SetStateAction<number | undefined>>;
+  setSelectedCategoryID: React.Dispatch<
+    React.SetStateAction<number | undefined>
+  >;
+  mode?: string;
 }
 
-
-const ProductInfoTab = ({ formData, setFormData, selectedCategoryID, setSelectedCategoryID }: ProductInfoTabProps) => {
+const ProductInfoTab = ({
+  formData,
+  setFormData,
+  selectedCategoryID,
+  setSelectedCategoryID,
+  mode,
+}: ProductInfoTabProps) => {
   const [categories, setCategories] = useState<CategoryDropdown[]>([]);
- 
+
   // gợi ý product code
   useEffect(() => {
-    const fetchProductCode = async () => {
-      const res = await productApi.generateProductCode();
-      setFormData((prev) => ({
-        ...prev,
-        productCode: res.data,
-      }));
-    };
-    fetchProductCode();
-  }, [setFormData]);
+    if (mode !== "view") {
+      const fetchProductCode = async () => {
+        const res = await productApi.generateProductCode();
+        setFormData((prev) => ({
+          ...prev,
+          productCode: res.data,
+        }));
+      };
+      fetchProductCode();
+    }
+  }, [setFormData, mode]);
 
   // lấy danh mục
   useEffect(() => {
-    const getLeafCategoriesAsync = async () => {
-      const res = await categoryApi.getLeafCategories();
-      const dropdownData: CategoryDropdown[] = res.data.map((cat) => ({
-        categoryId: cat.categoryId,
-        categoryName: cat.categoryName,
-      }));
+    if (mode !== "view") {
+      const getLeafCategoriesAsync = async () => {
+        const res = await categoryApi.getLeafCategories();
+        const dropdownData: CategoryDropdown[] = res.data.map((cat) => ({
+          categoryId: cat.categoryId,
+          categoryName: cat.categoryName,
+        }));
 
-      setCategories(dropdownData);
-    };
+        setCategories(dropdownData);
+      };
 
-    getLeafCategoriesAsync();
-  }, []);
+      getLeafCategoriesAsync();
+    }
+  }, [mode]);
 
   //sét mã danh mục
   useEffect(() => {
-    if (selectedCategoryID !== undefined) {
+    if (selectedCategoryID !== undefined || mode !== "view") {
       setFormData((prev) => ({
         ...prev,
         categoryId: Number(selectedCategoryID),
       }));
     }
-  }, [selectedCategoryID, setFormData]);
+  }, [selectedCategoryID, setFormData, mode]);
 
   // lấy thuộc tính theo danh mục đã chọn
   const { data: attributes } = useQuery({
@@ -71,7 +83,7 @@ const ProductInfoTab = ({ formData, setFormData, selectedCategoryID, setSelected
     select: (res) => {
       return res.data.data.items;
     },
-    enabled: !!selectedCategoryID,
+    enabled: !!selectedCategoryID || mode !== "view",
   });
 
   return (
@@ -94,7 +106,10 @@ const ProductInfoTab = ({ formData, setFormData, selectedCategoryID, setSelected
       >
         <Box sx={{ flex: 2 }}>
           <ProductFormSection formData={formData} setFormData={setFormData} />
-          <ProductVariationsSection formData={formData} setFormData={setFormData} />
+          <ProductVariationsSection
+            formData={formData}
+            setFormData={setFormData}
+          />
         </Box>
         <Box sx={{ flex: 1 }}>
           <CategoryAttributesSection

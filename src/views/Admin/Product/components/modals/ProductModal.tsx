@@ -6,15 +6,23 @@ import DetailedImagesSection from "../DetailedImagesSection";
 import { CreateProductRequest } from "src/Interfaces/IProduct";
 import useToast from "src/components/Toast";
 import productApi from "src/services/api/Products/indext";
+import { useQuery } from "@tanstack/react-query";
 
 interface AddProductModalProps {
   open: boolean;
   onClose: () => void;
+  productId?: string;
+  mode: "create" | "edit" | "view";
 }
 
 const tabLabels = ["Thêm sản phẩm", "Ảnh chi tiết"];
 
-const AddProductModal = ({ open, onClose }: AddProductModalProps) => {
+const ProductModal = ({
+  open,
+  onClose,
+  productId,
+  mode,
+}: AddProductModalProps) => {
   const { showSuccess, showError } = useToast();
   const [activeTab, setActiveTab] = useState(0);
 
@@ -32,9 +40,9 @@ const AddProductModal = ({ open, onClose }: AddProductModalProps) => {
     productImageUrls: [],
     productAttributes: [],
     productVariations: [],
-    productStatus: undefined ,
+    productStatus: undefined,
     note: "",
-    totalSold: null
+    totalSold: null,
   };
 
   const [formData, setFormData] =
@@ -57,6 +65,7 @@ const AddProductModal = ({ open, onClose }: AddProductModalProps) => {
             setFormData={setFormData}
             selectedCategoryID={selectedCategoryID}
             setSelectedCategoryID={setSelectedCategoryID}
+            mode ={ mode}
           />
         );
       case 1:
@@ -89,6 +98,20 @@ const AddProductModal = ({ open, onClose }: AddProductModalProps) => {
       showError("Thêm sản phẩm thát bại");
     }
   };
+
+  const {
+    data: productDetail,
+  } = useQuery({
+    queryKey: ["productDetail", productId],
+    queryFn: async () => {
+      const response = await productApi.getByIdApi({ productId });
+      
+      console.log("🚀 ~ queryFn: ~ productDetail:", productDetail)
+      setFormData(productDetail)
+      return response.data;
+    },
+    enabled: !!productId && mode === "view",
+  });
 
   return (
     <Dialog
@@ -195,38 +218,39 @@ const AddProductModal = ({ open, onClose }: AddProductModalProps) => {
           {renderContent()}
         </Box>
 
-        {/* Footer - Fixed Save Button */}
-        <Box
-          sx={{
-            px: 4,
-            pb: 4,
-            pt: 2,
-            textAlign: "right",
-            bgcolor: "#fff",
-            flexShrink: 0,
-            borderTop: "1px solid #eee",
-          }}
-        >
-          <Button
-            onClick={handleSubmit}
-            variant="contained"
+        {mode !== "view" && (
+          <Box
             sx={{
-              bgcolor: "#508815",
-              color: "#fff",
-              textTransform: "none",
-              fontWeight: 500,
-              boxShadow: 2,
-              "&:hover": {
-                bgcolor: "#5e9b17",
-              },
+              px: 4,
+              pb: 4,
+              pt: 2,
+              textAlign: "right",
+              bgcolor: "#fff",
+              flexShrink: 0,
+              borderTop: "1px solid #eee",
             }}
           >
-            Lưu
-          </Button>
-        </Box>
+            <Button
+              onClick={handleSubmit}
+              variant="contained"
+              sx={{
+                bgcolor: "#508815",
+                color: "#fff",
+                textTransform: "none",
+                fontWeight: 500,
+                boxShadow: 2,
+                "&:hover": {
+                  bgcolor: "#5e9b17",
+                },
+              }}
+            >
+              Lưu
+            </Button>
+          </Box>
+        )}
       </Box>
     </Dialog>
   );
 };
 
-export default AddProductModal;
+export default ProductModal;
