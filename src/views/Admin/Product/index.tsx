@@ -1,8 +1,8 @@
 import { Box } from "@mui/material";
 import { useState } from "react";
 import PageHeader from "src/components/Layouts/Admin/PageHeader";
-import AddProductModal from "./components/modals/AddProductModal";
 import ProductTable from "./components/ProductTable";
+import ProductModal from "./components/modals/ProductModal";
 
 const Product = () => {
   const [isAddOpen, setIsAddOpen] = useState(false);
@@ -35,7 +35,7 @@ const Product = () => {
         <ProductTable />
       </Box>
 
-      <AddProductModal open={isAddOpen} onClose={() => setIsAddOpen(false)} />
+      <ProductModal open={isAddOpen} onClose={() => setIsAddOpen(false)} mode = "create"/>
     </Box>
   );
 };

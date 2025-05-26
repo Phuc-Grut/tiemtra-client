@@ -28,6 +28,7 @@ import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import FilterAltOutlinedIcon from "@mui/icons-material/FilterAltOutlined";
 import { productContextMenuItems } from "../contextMenu";
 import GenericContextMenu from "src/components/GenericContextMenu";
+import ProductModal from "./modals/ProductModal";
 
 const ProductTable = () => {
   // const [selected, setSelected] = useState<number[]>([]);
@@ -79,6 +80,9 @@ const ProductTable = () => {
   const [contextItem, setContextItem] = useState<IProduct | null>(null);
   const [selectedProduct, setSelectedProduct] = useState<IProduct | null>(null);
 
+  const [productId, setProductId] = useState("");
+  console.log("🚀 ~ ProductTable ~ productId:", productId);
+
   const [anchorEl, setAnchorEl] = useState<
     HTMLElement | { mouseX: number; mouseY: number } | null
   >(null);
@@ -109,12 +113,16 @@ const ProductTable = () => {
     });
   };
 
+  const [productModalOpen, setProductModalOpen] = useState(false);
+
   const productMenuActions = productContextMenuItems.map((item) => ({
     ...item,
     onClick: (p: IProduct) => {
       switch (item.id) {
         case "VIEW":
           console.log("xem chi tiết", p);
+          setProductModalOpen(true);
+          setProductId(p.productId);
           break;
         case "EDIT":
           console.log("Sửa mục:", p);
@@ -536,6 +544,16 @@ const ProductTable = () => {
         onClose={() => setAnchorEl(null)}
         items={productMenuActions}
         contextItem={contextItem}
+      />
+
+      <ProductModal
+        open={productModalOpen}
+        mode="view"
+        productId={productId}
+        onClose={() => {
+          setProductModalOpen(false);
+          setProductId("");
+        }}
       />
     </Box>
   );

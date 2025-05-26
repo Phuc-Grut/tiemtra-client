@@ -184,7 +184,6 @@ const CategoryTable = ({
     onClick: (category: ICategory) => {
       switch (item.id) {
         case "VIEW":
-          console.log("Xem chi tiết:", category);
           const nextPath = `/admin/category/${[
             ...pathIds,
             category.categoryId,
