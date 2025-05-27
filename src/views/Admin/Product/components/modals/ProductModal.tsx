@@ -1,6 +1,6 @@
 import { Box, Tabs, Tab, Dialog, Button } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ProductInfoTab from "../ProductInfoTab";
 import DetailedImagesSection from "../DetailedImagesSection";
 import { CreateProductRequest } from "src/Interfaces/IProduct";
@@ -8,14 +8,14 @@ import useToast from "src/components/Toast";
 import productApi from "src/services/api/Products/indext";
 import { useQuery } from "@tanstack/react-query";
 
+type Mode = "create" | "edit" | "view";
+
 interface AddProductModalProps {
   open: boolean;
   onClose: () => void;
   productId?: string;
-  mode: "create" | "edit" | "view";
+  mode: Mode;
 }
-
-const tabLabels = ["Thêm sản phẩm", "Ảnh chi tiết"];
 
 const ProductModal = ({
   open,
@@ -25,6 +25,14 @@ const ProductModal = ({
 }: AddProductModalProps) => {
   const { showSuccess, showError } = useToast();
   const [activeTab, setActiveTab] = useState(0);
+
+  const tabLabelsMap = {
+    create: ["Thêm sản phẩm", "Ảnh chi tiết"],
+    edit: ["Chỉnh sửa sản phẩm", "Ảnh chi tiết"],
+    view: ["Xem chi tiết", "Ảnh chi tiết"], 
+  } as const;
+
+  const tabLabels = tabLabelsMap[mode];
 
   const initialFormData: CreateProductRequest = {
     productCode: "",
@@ -65,7 +73,7 @@ const ProductModal = ({
             setFormData={setFormData}
             selectedCategoryID={selectedCategoryID}
             setSelectedCategoryID={setSelectedCategoryID}
-            mode ={ mode}
+            mode={mode}
           />
         );
       case 1:
@@ -73,6 +81,7 @@ const ProductModal = ({
           <DetailedImagesSection
             formData={formData}
             setFormData={setFormData}
+            mode={mode}
           />
         );
       default:
@@ -81,8 +90,6 @@ const ProductModal = ({
   };
 
   const handleSubmit = async () => {
-    console.log("🚀 ~ AddProductModal ~ formData:", formData);
-
     try {
       const res = await productApi.createProduct(formData);
 
@@ -99,19 +106,22 @@ const ProductModal = ({
     }
   };
 
-  const {
-    data: productDetail,
-  } = useQuery({
+  const { data: productDetail } = useQuery({
     queryKey: ["productDetail", productId],
     queryFn: async () => {
       const response = await productApi.getByIdApi({ productId });
-      
-      console.log("🚀 ~ queryFn: ~ productDetail:", productDetail)
-      setFormData(productDetail)
       return response.data;
     },
     enabled: !!productId && mode === "view",
   });
+
+  useEffect(() => {
+    if (productDetail) {
+      setFormData({
+        ...productDetail,
+      });
+    }
+  }, [productDetail]);
 
   return (
     <Dialog

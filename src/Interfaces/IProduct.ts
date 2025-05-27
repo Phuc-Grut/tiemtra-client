@@ -1,6 +1,7 @@
 export interface CreateProductRequest {
   productCode: string;
   productName: string;
+  categoryName?: string;
   privewImageUrl: string;
   price?: number | null;
   stock?: number | null;
@@ -15,6 +16,10 @@ export interface CreateProductRequest {
   note?: string
   totalSold?: number | null
   productStatus?: ProductStatus
+  creatorName?: string;
+  updaterName?: string;
+  updatedAt?: string;
+  createdAt?: string;
 }
 
 export interface ProductAttribute {

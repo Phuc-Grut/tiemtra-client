@@ -34,7 +34,7 @@ const ProductInfoTab = ({
 
   // gợi ý product code
   useEffect(() => {
-    if (mode !== "view") {
+    if (mode === "create" ) {
       const fetchProductCode = async () => {
         const res = await productApi.generateProductCode();
         setFormData((prev) => ({
@@ -48,30 +48,28 @@ const ProductInfoTab = ({
 
   // lấy danh mục
   useEffect(() => {
-    if (mode !== "view") {
-      const getLeafCategoriesAsync = async () => {
-        const res = await categoryApi.getLeafCategories();
-        const dropdownData: CategoryDropdown[] = res.data.map((cat) => ({
-          categoryId: cat.categoryId,
-          categoryName: cat.categoryName,
-        }));
+    const getLeafCategoriesAsync = async () => {
+      const res = await categoryApi.getLeafCategories();
+      const dropdownData: CategoryDropdown[] = res.data.map((cat) => ({
+        categoryId: cat.categoryId,
+        categoryName: cat.categoryName,
+      }));
 
-        setCategories(dropdownData);
-      };
+      setCategories(dropdownData);
+    };
 
-      getLeafCategoriesAsync();
-    }
-  }, [mode]);
+    getLeafCategoriesAsync();
+  }, []);
 
   //sét mã danh mục
   useEffect(() => {
-    if (selectedCategoryID !== undefined || mode !== "view") {
+    if (selectedCategoryID !== undefined) {
       setFormData((prev) => ({
         ...prev,
         categoryId: Number(selectedCategoryID),
       }));
     }
-  }, [selectedCategoryID, setFormData, mode]);
+  }, [selectedCategoryID, setFormData]);
 
   // lấy thuộc tính theo danh mục đã chọn
   const { data: attributes } = useQuery({
@@ -83,7 +81,7 @@ const ProductInfoTab = ({
     select: (res) => {
       return res.data.data.items;
     },
-    enabled: !!selectedCategoryID || mode !== "view",
+    enabled: !!selectedCategoryID
   });
 
   return (
@@ -92,6 +90,7 @@ const ProductInfoTab = ({
         height: "100%",
         display: "flex",
         flexDirection: "column",
+        marginTop: -1
       }}
     >
       <Box
@@ -99,16 +98,16 @@ const ProductInfoTab = ({
           display: "flex",
           flexDirection: { xs: "column", md: "row" },
           gap: 2,
-          p: 2,
           flex: 1,
           overflow: "auto",
         }}
       >
         <Box sx={{ flex: 2 }}>
-          <ProductFormSection formData={formData} setFormData={setFormData} />
+          <ProductFormSection formData={formData} setFormData={setFormData} mode = {mode}/>
           <ProductVariationsSection
             formData={formData}
             setFormData={setFormData}
+            mode= {mode}
           />
         </Box>
         <Box sx={{ flex: 1 }}>
@@ -119,6 +118,7 @@ const ProductInfoTab = ({
             attributes={attributes}
             setFormData={setFormData}
             formData={formData}
+            mode={mode}
           />
         </Box>
       </Box>

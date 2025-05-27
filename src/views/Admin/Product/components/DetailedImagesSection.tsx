@@ -8,9 +8,10 @@ import useToast from "src/components/Toast";
 interface Props {
   formData: CreateProductRequest;
   setFormData: React.Dispatch<React.SetStateAction<CreateProductRequest>>;
+  mode?: string;
 }
 
-const DetailedImagesSection = ({ formData, setFormData }: Props) => {
+const DetailedImagesSection = ({ formData, setFormData, mode }: Props) => {
   const MAX_FILE_SIZE = 300 * 1024;
 
   const { showSuccess, showError } = useToast();
@@ -69,14 +70,15 @@ const DetailedImagesSection = ({ formData, setFormData }: Props) => {
       <Typography variant="body2" sx={{ fontWeight: 500, color: "#333" }}>
         Ảnh chi tiết
       </Typography>
-
-      <input
-        type="file"
-        accept="image/*"
-        multiple
-        onChange={handleImageChange}
-        style={{ padding: "8px 0" }}
-      />
+      {mode !== "view" && (
+        <input
+          type="file"
+          accept="image/*"
+          multiple
+          onChange={handleImageChange}
+          style={{ padding: "8px 0" }}
+        />
+      )}
 
       <Grid container spacing={2}>
         {formData.productImageUrls.map((url, index) => (
@@ -103,19 +105,21 @@ const DetailedImagesSection = ({ formData, setFormData }: Props) => {
                   objectFit: "cover",
                 }}
               />
-              <IconButton
-                size="small"
-                onClick={() => handleRemoveImage(index)}
-                sx={{
-                  position: "absolute",
-                  top: 4,
-                  right: 4,
-                  backgroundColor: "#fff",
-                  "&:hover": { backgroundColor: "#eee" },
-                }}
-              >
-                <DeleteIcon fontSize="small" sx={{ color: "#d32f2f" }} />
-              </IconButton>
+              {mode !== "view" && (
+                <IconButton
+                  size="small"
+                  onClick={() => handleRemoveImage(index)}
+                  sx={{
+                    position: "absolute",
+                    top: 4,
+                    right: 4,
+                    backgroundColor: "#fff",
+                    "&:hover": { backgroundColor: "#eee" },
+                  }}
+                >
+                  <DeleteIcon fontSize="small" sx={{ color: "#d32f2f" }} />
+                </IconButton>
+              )}
             </Box>
           </Grid>
         ))}
