@@ -61,6 +61,14 @@ const ProductTable = () => {
     status: undefined,
   });
 
+  const [productModalOpen, setProductModalOpen] = useState(false);
+  const [productModalMode, setProductModalMode] = useState<"view" | "edit">("view");
+
+  const [selected, setSelected] = useState<string[]>([]);
+  const [contextItem, setContextItem] = useState<IProduct | null>(null);
+
+  const [productId, setProductId] = useState("");
+
   const {
     data: products,
     isLoading,
@@ -75,13 +83,6 @@ const ProductTable = () => {
       return response.data.items ?? [];
     },
   });
-
-  const [selected, setSelected] = useState<string[]>([]);
-  const [contextItem, setContextItem] = useState<IProduct | null>(null);
-  const [selectedProduct, setSelectedProduct] = useState<IProduct | null>(null);
-
-  const [productId, setProductId] = useState("");
-  console.log("🚀 ~ ProductTable ~ productId:", productId);
 
   const [anchorEl, setAnchorEl] = useState<
     HTMLElement | { mouseX: number; mouseY: number } | null
@@ -113,21 +114,19 @@ const ProductTable = () => {
     });
   };
 
-  const [productModalOpen, setProductModalOpen] = useState(false);
-
   const productMenuActions = productContextMenuItems.map((item) => ({
     ...item,
     onClick: (p: IProduct) => {
       switch (item.id) {
         case "VIEW":
-          console.log("xem chi tiết", p);
           setProductModalOpen(true);
           setProductId(p.productId);
+          setProductModalMode("view")
           break;
         case "EDIT":
-          console.log("Sửa mục:", p);
-          // setSelectedProduct(p);
-          // setEditModalOpen(true);
+          setProductModalOpen(true);
+          setProductId(p.productId);
+          setProductModalMode("edit")
           break;
         case "DELETE":
           console.log("delete mục:", p.productId);
@@ -223,7 +222,7 @@ const ProductTable = () => {
             }}
             // onClick={() => setConfirmModalOpen(true)}
           >
-            Xoá (1)
+            Xoá ({selected.length})
           </Button>
         )}
       </Box>
@@ -403,17 +402,18 @@ const ProductTable = () => {
                   key={p.productId}
                   hover
                   sx={{ cursor: "pointer" }}
+                  onClick={() => {
+                    setProductModalOpen(true)
+                    setProductId(p.productId)
+                    setProductModalMode("view")
+                  }}
                   onContextMenu={(e) => {
                     e.preventDefault();
 
                     setContextItem(p);
-                    setSelectedProduct(p);
                     setAnchorEl({ mouseX: e.clientX, mouseY: e.clientY });
                   }}
-                  //   onClick={() => {
-                  //     setSelectedAttribute(attr);
-                  //     setEditModalOpen(true);
-                  //   }}
+                  
                 >
                   <TableCell
                     sx={{
@@ -548,11 +548,12 @@ const ProductTable = () => {
 
       <ProductModal
         open={productModalOpen}
-        mode="view"
+        mode= {productModalMode}
         productId={productId}
         onClose={() => {
           setProductModalOpen(false);
           setProductId("");
+          setSelected([]);
         }}
       />
     </Box>

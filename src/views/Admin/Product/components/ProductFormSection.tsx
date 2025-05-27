@@ -12,11 +12,13 @@ import { ChangeEvent, useState } from "react";
 import useToast from "src/components/Toast";
 import { Brand, CreateProductRequest } from "src/Interfaces/IProduct";
 import productApi from "src/services/api/Products/indext";
+import formatVietnamTime from "src/utils/formatVietnamTime";
 
 interface ProductFormSectionProps {
   formData: CreateProductRequest;
   setFormData: React.Dispatch<React.SetStateAction<CreateProductRequest>>;
   brands?: Brand[] | undefined;
+  mode?: string;
 }
 
 const productStatusOptions = [
@@ -30,7 +32,9 @@ const ProductFormSection = ({
   formData,
   setFormData,
   brands,
+  mode,
 }: ProductFormSectionProps) => {
+  const isReadOnly = mode === "view";
   const MAX_FILE_SIZE = 200 * 1024;
   const { showSuccess, showError } = useToast();
 
@@ -122,20 +126,22 @@ const ProductFormSection = ({
           <Typography variant="body2" sx={{ mb: 1, color: "#666" }}>
             Ảnh xem trước
           </Typography>
-          <input
-            type="file"
-            accept="image/*"
-            onChange={handleFileChange}
-            style={{ width: "100%", padding: "8px 0" }}
-          />
-          {formData.privewImageUrl && (
+          {!isReadOnly && (
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleFileChange}
+              style={{ width: "100%", padding: "8px 0" }}
+            />
+          )}
+          {formData?.privewImageUrl && (
             <Box sx={{ mt: 1 }}>
               <img
-                src={formData.privewImageUrl}
+                src={formData?.privewImageUrl}
                 alt="Preview"
                 style={{
-                  width: "150px",
-                  height: "150px",
+                  width: "250px",
+                  height: "250px",
                   objectFit: "cover",
                   marginBottom: "8px",
                 }}
@@ -157,6 +163,7 @@ const ProductFormSection = ({
               variant="outlined"
               size="small"
               sx={{ bgcolor: "#fff" }}
+              InputProps={{ readOnly: mode === "view" || mode === "edit" }}
             />
             <TextField
               label="Tên sản phẩm"
@@ -166,6 +173,7 @@ const ProductFormSection = ({
               variant="outlined"
               size="small"
               sx={{ bgcolor: "#fff" }}
+              InputProps={{ readOnly: isReadOnly }}
             />
           </Box>
 
@@ -179,6 +187,7 @@ const ProductFormSection = ({
               variant="outlined"
               size="small"
               sx={{ bgcolor: "#fff" }}
+              InputProps={{ readOnly: isReadOnly }}
             />
             <TextField
               label="Số lượng tồn kho"
@@ -189,6 +198,7 @@ const ProductFormSection = ({
               variant="outlined"
               size="small"
               sx={{ bgcolor: "#fff" }}
+              InputProps={{ readOnly: isReadOnly }}
             />
           </Box>
 
@@ -201,7 +211,7 @@ const ProductFormSection = ({
               variant="outlined"
               size="small"
               sx={{ bgcolor: "#f9f9f9" }}
-              InputProps={{ readOnly: true }}
+              InputProps={{ readOnly: true && isReadOnly }}
             />
 
             <FormControl fullWidth size="small" sx={{ bgcolor: "#fff" }}>
@@ -214,6 +224,7 @@ const ProductFormSection = ({
                 value={formData.productStatus?.toString() ?? ""}
                 label="Trạng thái"
                 onChange={handleSelectChange}
+                disabled={isReadOnly}
               >
                 {productStatusOptions.map((status) => (
                   <MenuItem key={status.value} value={status.value.toString()}>
@@ -233,6 +244,7 @@ const ProductFormSection = ({
               variant="outlined"
               size="small"
               sx={{ bgcolor: "#fff" }}
+              InputProps={{ readOnly: isReadOnly }}
             />
             <FormControl fullWidth variant="outlined" size="small">
               <InputLabel>Thương hiệu</InputLabel>
@@ -242,29 +254,60 @@ const ProductFormSection = ({
                 value={(formData.brandId ?? "").toString()}
                 onChange={handleSelectChange}
                 sx={{ bgcolor: "#fff" }}
+                disabled={isReadOnly}
               >
                 <MenuItem value="">
                   <em>Chọn thương hiệu</em>
                 </MenuItem>
                 {brands?.map((brand: Brand) => (
                   <MenuItem key={brand.id} value={brand.id ?? ""}>
-                    {brand.name}
+                    {brand.name ?? ""}
                   </MenuItem>
                 ))}
               </Select>
             </FormControl>
           </Box>
+
+          {isReadOnly && (
+            <Box
+              sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 2 }}
+            >
+              <TextField
+                label="Ngày cập nhật"
+                name="updateAt"
+                type="string"
+                value={formatVietnamTime(formData?.updatedAt ?? formData?.createdAt ?? "")}
+                variant="outlined"
+                size="small"
+                sx={{ bgcolor: "#fff" }}
+                InputProps={{ readOnly: isReadOnly }}
+              />
+
+              <TextField
+                label="Người cập nhật"
+                name="updateBy"
+                type="string"
+                value={formData.updaterName ?? formData.creatorName ?? ""}
+                variant="outlined"
+                size="small"
+                sx={{ bgcolor: "#fff" }}
+                InputProps={{ readOnly: isReadOnly }}
+              />
+            </Box>
+          )}
+
           <Box sx={{ display: "flex", gap: 2 }}>
             <TextField
               label="Mô tả sản phẩm"
               name="description"
-              value={formData.description}
+              value={formData.description ?? ""}
               onChange={handleChange}
               fullWidth
               multiline
               rows={5}
               variant="outlined"
               sx={{ bgcolor: "#fff", height: "100%" }}
+              InputProps={{ readOnly: isReadOnly }}
             />
             <TextField
               label="Ghi chú"
@@ -276,6 +319,7 @@ const ProductFormSection = ({
               rows={5}
               variant="outlined"
               sx={{ bgcolor: "#fff", height: "100%" }}
+              InputProps={{ readOnly: isReadOnly }}
             />
           </Box>
         </Box>

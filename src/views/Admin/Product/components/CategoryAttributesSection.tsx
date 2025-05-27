@@ -14,8 +14,10 @@ import {
   TableRow,
   Paper,
   TextField,
+  Dialog,
+  Button,
 } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { IAttribute } from "src/Interfaces/IAttribute";
 import { CreateProductRequest } from "src/Interfaces/IProduct";
 
@@ -33,6 +35,7 @@ interface CategoryAttributesSectionProps {
   attributes?: IAttribute[];
   setFormData?: React.Dispatch<React.SetStateAction<CreateProductRequest>>;
   formData: CreateProductRequest;
+  mode?: string;
 }
 
 const CategoryAttributesSection = ({
@@ -42,8 +45,29 @@ const CategoryAttributesSection = ({
   attributes,
   setFormData,
   formData,
+  mode,
 }: CategoryAttributesSectionProps) => {
+  
   const [attributeValues, setAttributeValues] = useState<string[]>([]);
+  const isReadOnly = mode === "view";
+
+  useEffect(() => {
+    if (formData?.productAttributes && attributes) {
+      const values = attributes.map((attr) => {
+        const match = formData.productAttributes?.find(
+          (x) => x.attributeId === attr.attributeId
+        );
+        return match?.value || "";
+      });
+      setAttributeValues(values);
+    }
+  }, [formData, attributes]);
+
+  useEffect(() => {
+    if (formData?.categoryId && setSelectedCategory) {
+      setSelectedCategory(formData.categoryId);
+    }
+  }, [formData, setSelectedCategory]);
 
   const handleCategoryChange = (e: SelectChangeEvent) => {
     const value = Number(e.target.value);
@@ -70,6 +94,12 @@ const CategoryAttributesSection = ({
     }
   };
 
+  const [editingAttr, setEditingAttr] = useState<{
+    index: number;
+    value: string;
+    name: string;
+  } | null>(null);
+
   return (
     <Box
       sx={{
@@ -94,6 +124,7 @@ const CategoryAttributesSection = ({
             value={selectedCategory?.toString() ?? ""}
             onChange={handleCategoryChange}
             sx={{ bgcolor: "#fff" }}
+            disabled={isReadOnly}
           >
             <MenuItem value="">
               <em>Chọn danh mục</em>
@@ -152,16 +183,17 @@ const CategoryAttributesSection = ({
                       <TextField
                         variant="standard"
                         size="small"
-                        placeholder="Nhập thông tin..."
+                        placeholder={isReadOnly ? " " : "Nhập thông tin..."}
                         fullWidth
-                        value={
-                          formData.productAttributes?.find(
-                            (x) => x.attributeId === attr.attributeId
-                          )?.value || ""
+                        value={attributeValues[index] || ""}
+                        onClick={() =>
+                          setEditingAttr({
+                            index,
+                            value: attributeValues[index],
+                            name: attr.name,
+                          })
                         }
-                        onChange={(e) =>
-                          handleAttributeValueChange(index, e.target.value)
-                        }
+                        // disabled={isReadOnly}
                         InputProps={{
                           disableUnderline: true,
                           sx: {
@@ -177,6 +209,52 @@ const CategoryAttributesSection = ({
               </TableBody>
             </Table>
           </TableContainer>
+
+          <Dialog
+            open={!!editingAttr}
+            onClose={() => setEditingAttr(null)}
+            maxWidth="sm"
+            fullWidth
+          >
+            <Box p={3}>
+              <Typography variant="h6" gutterBottom>
+                {editingAttr?.name}
+              </Typography>
+              <TextField
+                multiline
+                rows={4}
+                fullWidth
+                autoFocus
+                value={editingAttr?.value ?? ""}
+                InputProps={{ readOnly: isReadOnly }}
+                onChange={(e) =>
+                  setEditingAttr((prev) =>
+                    prev ? { ...prev, value: e.target.value } : prev
+                  )
+                }
+              />
+              <Box mt={2} textAlign="right">
+                <Button onClick={() => setEditingAttr(null)} sx={{ mr: 1 }}>
+                  Hủy
+                </Button>
+                <Button
+                  variant="contained"
+                  onClick={() => {
+                    if (editingAttr) {
+                      handleAttributeValueChange(
+                        editingAttr.index,
+                        editingAttr.value
+                      );
+                      setEditingAttr(null);
+                    }
+                  }}
+                  disabled={isReadOnly}
+                >
+                  Lưu
+                </Button>
+              </Box>
+            </Box>
+          </Dialog>
         </Box>
       )}
     </Box>

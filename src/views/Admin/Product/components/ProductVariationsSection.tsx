@@ -24,9 +24,11 @@ interface Variation {
 interface props {
   formData: CreateProductRequest;
   setFormData: React.Dispatch<React.SetStateAction<CreateProductRequest>>;
+  mode?: string;
 }
 
-const ProductVariationsSection = ({ formData, setFormData }: props) => {
+const ProductVariationsSection = ({ formData, setFormData, mode }: props) => {
+  const isReadOnly = mode === "view";
   const handleAddVariation = () => {
     setFormData((prev) => {
       const newVariations = [
@@ -67,7 +69,7 @@ const ProductVariationsSection = ({ formData, setFormData }: props) => {
       ...prev,
       productVariations: updated,
       stock: null,
-      price: null
+      price: null,
     }));
   };
 
@@ -140,6 +142,7 @@ const ProductVariationsSection = ({ formData, setFormData }: props) => {
                     }
                     InputProps={{
                       disableUnderline: true,
+                      readOnly: isReadOnly,
                     }}
                   />
                 </TableCell>
@@ -154,6 +157,7 @@ const ProductVariationsSection = ({ formData, setFormData }: props) => {
                     }
                     InputProps={{
                       disableUnderline: true,
+                      readOnly: isReadOnly,
                     }}
                   />
                 </TableCell>
@@ -168,23 +172,30 @@ const ProductVariationsSection = ({ formData, setFormData }: props) => {
                     }
                     InputProps={{
                       disableUnderline: true,
+                      readOnly: isReadOnly,
                     }}
                   />
                 </TableCell>
                 <TableCell align="center" sx={Styles.tableCellBody}>
-                  <IconButton onClick={() => handleDelete(index)}>
+                  <IconButton
+                    onClick={() => handleDelete(index)}
+                    disabled={isReadOnly}
+                    color="error"
+                  >
                     <Delete />
                   </IconButton>
                 </TableCell>
               </TableRow>
             ))}
-            <TableRow>
-              <TableCell align="left" colSpan={4}>
-                <Button onClick={handleAddVariation} size="small">
-                  Thêm
-                </Button>
-              </TableCell>
-            </TableRow>
+            {!isReadOnly && (
+              <TableRow>
+                <TableCell align="left" colSpan={4}>
+                  <Button onClick={handleAddVariation} size="small">
+                    Thêm
+                  </Button>
+                </TableCell>
+              </TableRow>
+            )}
           </TableBody>
         </Table>
       </TableContainer>
