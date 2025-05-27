@@ -482,8 +482,8 @@ const ProductTable = () => {
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={6} align="center">
-                  Không có dữ liệu
+                <TableCell colSpan={10} sx={{ padding: "10px" }}>
+                  Danh sách trống!!
                 </TableCell>
               </TableRow>
             )}
