@@ -100,13 +100,19 @@ const Header = () => {
           >
             <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
               {!isSmallScreen && (
-                <Typography variant="h6" sx={{ fontWeight: "bold" }}>
-                  LOGO
-                </Typography>
+                <Button
+                  size="small"
+                  onClick={() => (window.location.href = "/")}
+                  sx={{ p: 0, minWidth: 0 }}
+                >
+                  <img
+                    src="/image/logo/logoDestop-removebg-preview.png"
+                    alt="Logo"
+                    style={{ height: 40, objectFit: "contain" }}
+                  />
+                </Button>
               )}
-              <Button size="small">
-                Trang chủ
-              </Button>
+              <Button size="small">Trang chủ</Button>
               <Button size="small">Sản phẩm</Button>
               <Button size="small">Giới thiệu</Button>
             </Box>
