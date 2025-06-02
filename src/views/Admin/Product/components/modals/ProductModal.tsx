@@ -29,7 +29,7 @@ const ProductModal = ({
   const tabLabelsMap = {
     create: ["Thêm sản phẩm", "Ảnh chi tiết"],
     edit: ["Chỉnh sửa sản phẩm", "Ảnh chi tiết"],
-    view: ["Xem chi tiết", "Ảnh chi tiết"], 
+    view: ["Xem chi tiết", "Ảnh chi tiết"],
   } as const;
 
   const tabLabels = tabLabelsMap[mode];
@@ -89,7 +89,7 @@ const ProductModal = ({
     }
   };
 
-  const handleSubmit = async () => {
+  const handleCreateSubmit = async () => {
     try {
       const res = await productApi.createProduct(formData);
 
@@ -106,13 +106,17 @@ const ProductModal = ({
     }
   };
 
+  const handleUpdateSubmit = async () => {
+    console.log("🚀 ~ handleCreateSubmit ~ formData:", formData);
+  };
+
   const { data: productDetail } = useQuery({
     queryKey: ["productDetail", productId],
     queryFn: async () => {
       const response = await productApi.getByIdApi({ productId });
       return response.data;
     },
-    enabled: !!productId && mode === "view",
+    enabled: !!productId && (mode === "edit" || mode === "view"),
   });
 
   useEffect(() => {
@@ -241,7 +245,7 @@ const ProductModal = ({
             }}
           >
             <Button
-              onClick={handleSubmit}
+              onClick={mode === "create" ? handleCreateSubmit : handleUpdateSubmit}
               variant="contained"
               sx={{
                 bgcolor: "#508815",

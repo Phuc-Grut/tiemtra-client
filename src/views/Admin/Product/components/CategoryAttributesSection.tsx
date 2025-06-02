@@ -47,10 +47,10 @@ const CategoryAttributesSection = ({
   formData,
   mode,
 }: CategoryAttributesSectionProps) => {
-  
   const [attributeValues, setAttributeValues] = useState<string[]>([]);
   const isReadOnly = mode === "view";
 
+  //  đồng bộ attributeValues với formData.productAttributes
   useEffect(() => {
     if (formData?.productAttributes && attributes) {
       const values = attributes.map((attr) => {
@@ -62,6 +62,27 @@ const CategoryAttributesSection = ({
       setAttributeValues(values);
     }
   }, [formData, attributes]);
+
+
+  // cập nhật formData.productAttributes khi danh mục thay đổi
+  useEffect(() => {
+    const isCategoryChanged =
+      selectedCategory && selectedCategory !== formData?.categoryId;
+
+    if (attributes && setFormData && isCategoryChanged) {
+      const newProductAttributes = attributes.map((attr) => ({
+        attributeId: attr.attributeId,
+        value: "",
+      }));
+
+      setFormData((prev) => ({
+        ...prev,
+        productAttributes: newProductAttributes,
+      }));
+
+      setAttributeValues(attributes.map(() => ""));
+    }
+  }, [attributes, selectedCategory, formData?.categoryId, setFormData]);
 
   useEffect(() => {
     if (formData?.categoryId && setSelectedCategory) {
