@@ -68,7 +68,7 @@ const Header = () => {
                 display: "flex",
                 justifyContent: "flex-start",
                 alignItems: "center",
-                color: "#ffffff",
+                color: "#FFFFFF",
                 fontSize: 14,
                 px: { xs: 2, sm: 3 },
               }}
@@ -87,7 +87,7 @@ const Header = () => {
       <AppBar
         position="static"
         color="default"
-        sx={{ height: 50, justifyContent: "center", boxShadow: "none" }}
+        sx={{ height: 50, justifyContent: "center", boxShadow: "none", backgroundColor: "#FFFFFF" }}
       >
         <Container maxWidth="lg">
           <Toolbar
