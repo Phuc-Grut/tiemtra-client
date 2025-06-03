@@ -74,7 +74,7 @@ const ProductTable = () => {
     isLoading,
     error,
   } = useQuery({
-    queryKey: ["products", filter],
+    queryKey: ["get-paging-product", filter],
     queryFn: async () => {
       const cleanedFilter = buildCleanFilter(filter);
       const response = await productApi.getPagingProduct(cleanedFilter);

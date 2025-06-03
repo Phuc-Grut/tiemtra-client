@@ -6,7 +6,7 @@ import DetailedImagesSection from "../DetailedImagesSection";
 import { CreateProductRequest } from "src/Interfaces/IProduct";
 import useToast from "src/components/Toast";
 import productApi from "src/services/api/Products/indext";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 type Mode = "create" | "edit" | "view";
 
@@ -25,6 +25,7 @@ const ProductModal = ({
 }: AddProductModalProps) => {
   const { showSuccess, showError } = useToast();
   const [activeTab, setActiveTab] = useState(0);
+  const queryClient = useQueryClient();
 
   const tabLabelsMap = {
     create: ["Thêm sản phẩm", "Ảnh chi tiết"],
@@ -94,20 +95,42 @@ const ProductModal = ({
       const res = await productApi.createProduct(formData);
 
       if (res.data.success) {
-        showSuccess("Thêm sản phẩm thành công");
+        showSuccess("Thêm thành công");
         setFormData(initialFormData);
+        queryClient.invalidateQueries({
+          queryKey: ["get-paging-product"],
+        });
         onClose();
       } else {
-        showError("Thêm sản phẩm thát bại");
+        showError("Thêm thất bại");
       }
     } catch (error) {
       console.error("Lỗi", error);
-      showError("Thêm sản phẩm thát bại");
+      showError("Thêm thất bại");
     }
   };
 
   const handleUpdateSubmit = async () => {
-    console.log("🚀 ~ handleCreateSubmit ~ formData:", formData);
+    // console.log("🚀 ~ handleCreateSubmit ~ formData:", formData);
+    try {
+      const res = await productApi.updateProduct(productId ?? "", formData);
+
+      if (res.data.success) {
+        showSuccess("Sửa thành công");
+        setFormData(initialFormData);
+
+        queryClient.invalidateQueries({
+          queryKey: ["get-paging-product"],
+        });
+
+        onClose();
+      } else {
+        showError("Sửa thất bại");
+      }
+    } catch (error) {
+      console.error("Lỗi", error);
+      showError("Sửa thất bại");
+    }
   };
 
   const { data: productDetail } = useQuery({
@@ -245,7 +268,9 @@ const ProductModal = ({
             }}
           >
             <Button
-              onClick={mode === "create" ? handleCreateSubmit : handleUpdateSubmit}
+              onClick={
+                mode === "create" ? handleCreateSubmit : handleUpdateSubmit
+              }
               variant="contained"
               sx={{
                 bgcolor: "#508815",

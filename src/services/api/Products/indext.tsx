@@ -27,8 +27,10 @@ const productApi = {
 
   getPagingProduct: (params : IProductFilter) => requester.get(PRODUCT.URL_API.GET_ALL_PRODUCT, {params} ),
 
-  getByIdApi : (params : ProductRequest) => requester.get(PRODUCT.URL_API.GET_BY_ID, {params})
-  
+  getByIdApi : (params : ProductRequest) => requester.get(PRODUCT.URL_API.GET_BY_ID, {params}),
+
+  updateProduct: (id: string, data: CreateProductRequest): Promise<AxiosResponse<any>> =>
+    requester.put(PRODUCT.URL_API.UPDATE_PRODUCT(id), data),
 };
 
 export default productApi;

@@ -16,7 +16,7 @@ const IntroVideoSection = () => {
         <Box
           sx={{
             position: "relative",
-            paddingBottom: "56.25%", // Tỷ lệ 16:9
+            paddingBottom: "56.25%", // 16:9
             height: 0,
             overflow: "hidden",
             borderRadius: "12px",
