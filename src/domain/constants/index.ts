@@ -63,6 +63,7 @@ export const PRODUCT = {
     URL_API: {
         GENERATE_PRODUCT_CODE: `${URL_ADMIN}/product/generate-product-code`,
         CREATE_PRODUCT: `${URL_ADMIN}/product/create-product`,
+        UPDATE_PRODUCT: (id: string) => `${URL_ADMIN}/product/update-product/${id}`,
         UP_PRODUCT_IMAGE: `${URL_ADMIN}/product/product-image`,
         GET_ALL_PRODUCT: `${URL_ADMIN}/product/get-paging-products`,
         GET_BY_ID: `${URL_ADMIN}/product/get-by-id`

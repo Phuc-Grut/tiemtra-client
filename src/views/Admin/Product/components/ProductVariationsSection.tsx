@@ -77,6 +77,10 @@ const ProductVariationsSection = ({ formData, setFormData, mode }: props) => {
     const variations = formData.productVariations ?? [];
 
     if (variations.length === 0) {
+      setFormData((prev) => ({
+        ...prev,
+        hasVariations: false
+      }))
       return;
     }
 
