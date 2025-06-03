@@ -88,7 +88,7 @@ const BannerSlideshowSection = () => {
         width: "100%",
         height: dynamicHeight,
         overflow: "hidden",
-        bgcolor: "#00CC33",
+        bgcolor: "#f9f9f9",
         position: "relative",
         pb: isMobile ? 4 : 0,
       }}

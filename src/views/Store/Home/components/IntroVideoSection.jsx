@@ -1,5 +1,5 @@
 import React from "react";
-import { Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 
 const IntroVideoSection = () => {
   return (
@@ -13,6 +13,36 @@ const IntroVideoSection = () => {
       }}
     >
       <Box sx={{ maxWidth: "960px", margin: "0 auto" }}>
+        {/* Phần tiêu đề và mô tả */}
+        <Typography
+          variant="h4"
+          sx={{
+            textAlign: "center",
+            color: "#4c7940",
+            fontFamily: "'Zhi Mang Xing', cursive",
+            mb: 2,
+          }}
+        >
+          Tĩnh Trà Giữa Lòng Phồn Hoa
+        </Typography>
+
+        <Typography
+          variant="subtitle1"
+          sx={{
+            textAlign: "center",
+            color: "#333",
+            fontFamily: "'Dancing Script', cursive",
+            fontSize: { xs: "16px", sm: "18px", md: "20px" },
+            maxWidth: 700,
+            mx: "auto",
+            mb: 4,
+          }}
+        >
+          Một khoảng lặng giữa những bộn bề – mời bạn cùng thưởng thức không
+          gian trà đạo, nơi tâm an, lòng tĩnh.
+        </Typography>
+
+        {/* Phần video */}
         <Box
           sx={{
             position: "relative",
