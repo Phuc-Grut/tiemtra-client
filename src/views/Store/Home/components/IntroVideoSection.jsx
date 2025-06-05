@@ -19,7 +19,8 @@ const IntroVideoSection = () => {
           sx={{
             textAlign: "center",
             color: "#4c7940",
-            fontFamily: "'Zhi Mang Xing', cursive",
+            fontFamily: "'Dancing Script', cursive",
+            fontWeight: 600,
             mb: 2,
           }}
         >
@@ -32,7 +33,7 @@ const IntroVideoSection = () => {
             textAlign: "center",
             color: "#333",
             fontFamily: "'Dancing Script', cursive",
-            fontSize: { xs: "16px", sm: "18px", md: "20px" },
+            fontSize: { xs: "16px", sm: "12px", md: "26px" },
             maxWidth: 700,
             mx: "auto",
             mb: 4,

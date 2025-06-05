@@ -1,15 +1,7 @@
 import {
   Box,
   Button,
-  Checkbox,
   MenuItem,
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
   TextField,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -23,12 +15,19 @@ import {
 } from "src/Interfaces/IProduct";
 import getProductStatusText from "src/utils/getProductStatusText";
 import CustomPagination from "src/components/CustomPagination";
-import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
-import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
-import FilterAltOutlinedIcon from "@mui/icons-material/FilterAltOutlined";
 import { productContextMenuItems } from "../contextMenu";
 import GenericContextMenu from "src/components/GenericContextMenu";
 import ProductModal from "./modals/ProductModal";
+import DataTableContainer from "src/components/DataTableContainer";
+
+interface ColumnConfig<T> {
+  key: string;
+  label: string;
+  width?: number;
+  sortable?: boolean;
+  render?: (item: T) => React.ReactNode;
+  align?: "left" | "center" | "right";
+}
 
 const ProductTable = () => {
   // const [selected, setSelected] = useState<number[]>([]);
@@ -62,9 +61,12 @@ const ProductTable = () => {
   });
 
   const [productModalOpen, setProductModalOpen] = useState(false);
-  const [productModalMode, setProductModalMode] = useState<"view" | "edit">("view");
+  const [productModalMode, setProductModalMode] = useState<"view" | "edit">(
+    "view"
+  );
 
-  const [selected, setSelected] = useState<string[]>([]);
+  const [selected, setSelected] = useState<(string | number)[]>([]);
+
   const [contextItem, setContextItem] = useState<IProduct | null>(null);
 
   const [productId, setProductId] = useState("");
@@ -88,11 +90,11 @@ const ProductTable = () => {
     HTMLElement | { mouseX: number; mouseY: number } | null
   >(null);
 
-  const handleSelect = (id: string) => {
-    setSelected((prev) =>
-      prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
-    );
-  };
+  // const handleSelect = (id: string) => {
+  //   setSelected((prev) =>
+  //     prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
+  //   );
+  // };
 
   const toggleSort = (field: string) => {
     setFilter((prev) => {
@@ -121,12 +123,12 @@ const ProductTable = () => {
         case "VIEW":
           setProductModalOpen(true);
           setProductId(p.productId);
-          setProductModalMode("view")
+          setProductModalMode("view");
           break;
         case "EDIT":
           setProductModalOpen(true);
           setProductId(p.productId);
-          setProductModalMode("edit")
+          setProductModalMode("edit");
           break;
         case "DELETE":
           console.log("delete mục:", p.productId);
@@ -161,6 +163,64 @@ const ProductTable = () => {
       ? `${min.toLocaleString()}đ`
       : ` ${min.toLocaleString()}đ - ${max.toLocaleString()}đ`;
   };
+
+  const columns: ColumnConfig<IProduct>[] = [
+    {
+      key: "image",
+      label: "Ảnh",
+      width: 150,
+      render: (p: IProduct) => (
+        <div
+          style={{
+            width: "95%",
+            height: 85,
+            backgroundColor: "#f9f9f9",
+            border: "1px solid #eee",
+            borderRadius: 2,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            boxShadow: "0 0 3px rgba(0, 0, 0, 0.1)",
+            overflow: "hidden",
+          }}
+        >
+          <img
+            src={p.privewImageUrl || ""}
+            alt="Ảnh sản phẩm"
+            style={{
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+            }}
+            // onError={(e) => {
+            //   e.currentTarget.src =
+            //     "https://via.placeholder.com/80x80?text=No+Image";
+            // }}
+          />
+        </div>
+      ),
+    },
+
+    { key: "productCode", label: "Mã sản phẩm", width: 120 },
+    { key: "productName", label: "Tên sản phẩm", width: 150 },
+    {
+      key: "price",
+      label: "Giá bán",
+      width: 150,
+      sortable: true,
+      render: (p) => renderPrice(p),
+    },
+    { key: "stock", label: "Tồn kho", width: 90, sortable: true },
+    { key: "totalSold", label: "Đã bán", width: 90, sortable: true },
+    { key: "brandName", label: "Thương hiệu", width: 120 },
+    {
+      key: "productStatus",
+      label: "Trạng thái",
+      width: 120,
+      render: (p) => getProductStatusText(p.productStatus ?? -1),
+    },
+    { key: "note", label: "Ghi chú", width: 250 },
+  ];
 
   return (
     <Box
@@ -227,7 +287,7 @@ const ProductTable = () => {
         )}
       </Box>
 
-      <TableContainer component={Paper} sx={{ overflowX: "auto", flexGrow: 1 }}>
+      {/* <TableContainer component={Paper} sx={{ overflowX: "auto", flexGrow: 1 }}>
         <Table stickyHeader>
           <TableHead>
             <TableRow sx={{ height: 36 }}>
@@ -403,9 +463,9 @@ const ProductTable = () => {
                   hover
                   sx={{ cursor: "pointer" }}
                   onClick={() => {
-                    setProductModalOpen(true)
-                    setProductId(p.productId)
-                    setProductModalMode("view")
+                    setProductModalOpen(true);
+                    setProductId(p.productId);
+                    setProductModalMode("view");
                   }}
                   onContextMenu={(e) => {
                     e.preventDefault();
@@ -413,7 +473,6 @@ const ProductTable = () => {
                     setContextItem(p);
                     setAnchorEl({ mouseX: e.clientX, mouseY: e.clientY });
                   }}
-                  
                 >
                   <TableCell
                     sx={{
@@ -489,7 +548,28 @@ const ProductTable = () => {
             )}
           </TableBody>
         </Table>
-      </TableContainer>
+      </TableContainer> */}
+
+      <DataTableContainer<IProduct>
+        data={products}
+        selected={selected}
+        setSelected={setSelected}
+        columns={columns}
+        isLoading={isLoading}
+        error={!!error}
+        sortBy={filter.sortBy}
+        toggleSort={toggleSort}
+        getRowId={(p) => p.productId}
+        onRowClick={(p) => {
+          setProductModalOpen(true);
+          setProductId(p.productId);
+          setProductModalMode("view");
+        }}
+        onContextMenu={(e, p) => {
+          setContextItem(p);
+          setAnchorEl({ mouseX: e.clientX, mouseY: e.clientY });
+        }}
+      />
 
       <Box
         mt={0}
@@ -548,7 +628,7 @@ const ProductTable = () => {
 
       <ProductModal
         open={productModalOpen}
-        mode= {productModalMode}
+        mode={productModalMode}
         productId={productId}
         onClose={() => {
           setProductModalOpen(false);
@@ -562,17 +642,17 @@ const ProductTable = () => {
 
 export default ProductTable;
 
-const Styles = {
-  tableCell: {
-    fontWeight: "bold",
-    color: "black",
-    borderRight: "1px solid rgb(240, 235, 235)",
-    borderBlock: "1px solid rgb(240, 235, 235)",
-    height: "30px",
-    lineHeight: "28px",
-    padding: "4px 8px",
-  },
-  tableCellBody: {
-    borderRight: "1px solid rgb(236, 234, 234)",
-  },
-};
+// const Styles = {
+//   tableCell: {
+//     fontWeight: "bold",
+//     color: "black",
+//     borderRight: "1px solid rgb(240, 235, 235)",
+//     borderBlock: "1px solid rgb(240, 235, 235)",
+//     height: "30px",
+//     lineHeight: "28px",
+//     padding: "4px 8px",
+//   },
+//   tableCellBody: {
+//     borderRight: "1px solid rgb(236, 234, 234)",
+//   },
+// };

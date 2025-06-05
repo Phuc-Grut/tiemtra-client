@@ -10,11 +10,10 @@ import {
   useTheme,
 } from "@mui/material";
 import { ArrowBackIos, ArrowForwardIos } from "@mui/icons-material";
-import { Swiper, SwiperSlide } from 'swiper/react';
-import 'swiper/css';
-import 'swiper/css/pagination';
-import { Pagination } from 'swiper/modules';
-
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/css";
+import "swiper/css/pagination";
+import { Pagination } from "swiper/modules";
 
 const ProductSlider = ({ products }) => {
   const theme = useTheme();
@@ -49,16 +48,21 @@ const ProductSlider = ({ products }) => {
         display: "flex",
         justifyContent: "center",
         px: 2,
-        borderTop: `1px solid ${theme.palette.divider}`
+        borderTop: `1px solid ${theme.palette.divider}`,
       }}
     >
       <Box sx={{ maxWidth: 1200, width: "100%", textAlign: "center" }}>
         <Typography
           variant="h3"
-          sx={{ fontFamily: "'Zhi Mang Xing', cursive", color: "#4c7940" }}
+          sx={{
+            fontFamily: "'Dancing Script', cursive",
+            color: "#4c7940",
+            fontWeight: 600,
+          }}
         >
           Tiệm Trà
         </Typography>
+
         <Typography
           variant="subtitle1"
           sx={{
@@ -235,8 +239,6 @@ const ProductSlider = ({ products }) => {
             </IconButton>
           )}
         </Box>
-
-        
       </Box>
     </Box>
   );
