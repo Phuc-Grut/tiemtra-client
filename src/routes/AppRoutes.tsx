@@ -8,13 +8,21 @@ import Category from "src/views/Admin/Category";
 import Attribute from "src/views/Admin/Attribute";
 import StoreLayout from "src/layouts/StoreLayout";
 import Product from "src/views/Admin/Product";
+import ProtectedRoute from "src/components/ProtectedRoute";
 const AppRoutes = () => {
   return (
     <Routes>
       <Route element={<StoreLayout />}>
         <Route path="/" element={<HomePage />} />
       </Route>
-      <Route path="/admin" element={<AdminDashboard />}>
+      <Route
+        path="/admin"
+        element={
+          <ProtectedRoute requiredRole="Admin">
+            <AdminDashboard />
+          </ProtectedRoute>
+        }
+      >
         <Route path="dashboard" element={<Dashboard />} />
         <Route path="product" element={<Product />} />
         <Route path="category" element={<Category />} />

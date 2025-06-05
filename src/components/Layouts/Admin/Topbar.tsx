@@ -7,6 +7,8 @@ import {
   Avatar,
   useTheme,
   useMediaQuery,
+  Menu,
+  MenuItem,
 } from "@mui/material";
 import {
   Notifications,
@@ -14,15 +16,44 @@ import {
   Call,
   NetworkWifi3Bar,
 } from "@mui/icons-material";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 type TopBarProps = {
   setExpanded: (value: boolean) => void;
 };
 
-
-const TopBar = ({ setExpanded } : TopBarProps) => {
+const TopBar = ({ setExpanded }: TopBarProps) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const navigate = useNavigate();
+  const [user, setUser] = useState<any>(null);
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+  }, []);
+
+  const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("refresh_token");
+    setUser(null);
+    handleMenuClose();
+    navigate("/");
+  };
 
   return (
     <AppBar
@@ -32,7 +63,7 @@ const TopBar = ({ setExpanded } : TopBarProps) => {
         color: "#333",
         boxShadow: "0px 2px 5px rgba(0, 0, 0, 0.1)",
         height: "56px",
-        justifyContent: "center"
+        justifyContent: "center",
       }}
     >
       <Toolbar>
@@ -49,8 +80,7 @@ const TopBar = ({ setExpanded } : TopBarProps) => {
         <Typography
           variant="h6"
           sx={{ flexGrow: 1, color: "#333", fontWeight: "bold" }}
-        >
-        </Typography>
+        ></Typography>
 
         <IconButton sx={{ marginRight: 2 }}>
           <Badge badgeContent={3} color="error">
@@ -66,11 +96,36 @@ const TopBar = ({ setExpanded } : TopBarProps) => {
           <NetworkWifi3Bar />
         </IconButton>
 
-        <Typography variant="body1" sx={{ marginRight: 2, fontWeight: "bold" }}>
-          PhucNh
-        </Typography>
+        <IconButton onClick={handleMenuOpen}>
+          <Avatar
+            alt="User Avatar"
+            src={user?.avatar || "https://source.unsplash.com/random/50x50"}
+          />
+        </IconButton>
 
-        <Avatar alt="User Avatar" src="https://source.unsplash.com/random/50x50" />
+        <Menu
+          anchorEl={anchorEl}
+          open={Boolean(anchorEl)}
+          onClose={handleMenuClose}
+        >
+          {!user ? (
+            <MenuItem onClick={() => navigate("/login")}>Đăng nhập</MenuItem>
+          ) : (
+            <>
+              <MenuItem disabled>{user.fullName}</MenuItem>
+              <MenuItem onClick={() => alert("Xem thông tin tài khoản")}>
+                Thông tin tài khoản
+              </MenuItem>
+              <MenuItem onClick={handleLogout}>Đăng xuất</MenuItem>
+            </>
+          )}
+        </Menu>
+
+        {user && (
+          <Typography variant="body2" sx={{ fontWeight: 500 }}>
+            Xin chào, {user.fullName}
+          </Typography>
+        )}
       </Toolbar>
     </AppBar>
   );

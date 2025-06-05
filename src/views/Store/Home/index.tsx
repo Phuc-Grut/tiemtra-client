@@ -30,35 +30,35 @@ const HomePage = () => {
     {
       image:
         "https://flieweb.blob.core.windows.net/image-tiemtra/products/Chanh Leo Cam Dứa2 %282%29.jpg",
-      title: "Trà Thư Giãn",
+      title: "Trà Thư Giãn1",
       price: "129.000₫ – 250.000₫",
       variant: "15 gói",
     },
     {
       image:
         "https://flieweb.blob.core.windows.net/image-tiemtra/products/Chanh Leo Cam Dứa2 %282%29.jpg",
-      title: "Trà Thư Giãn",
+      title: "Trà Thư Giãn2",
       price: "129.000₫ – 250.000₫",
       variant: "15 gói",
     },
     {
       image:
         "https://flieweb.blob.core.windows.net/image-tiemtra/products/Chanh Leo Cam Dứa2 %282%29.jpg",
-      title: "Trà Thư Giãn",
+      title: "Trà Thư Giãn3",
       price: "129.000₫ – 250.000₫",
       variant: "15 gói",
     },
     {
       image:
         "https://flieweb.blob.core.windows.net/image-tiemtra/products/Chanh Leo Cam Dứa2 %282%29.jpg",
-      title: "Trà Thư Giãn",
+      title: "Trà Thư Giãn4",
       price: "129.000₫ – 250.000₫",
       variant: "15 gói",
     },
     {
       image:
         "https://flieweb.blob.core.windows.net/image-tiemtra/products/Chanh Leo Cam Dứa2 %282%29.jpg",
-      title: "Trà Thư Giãn",
+      title: "Trà Thư Giãn5",
       price: "129.000₫ – 250.000₫",
       variant: "15 gói",
     },

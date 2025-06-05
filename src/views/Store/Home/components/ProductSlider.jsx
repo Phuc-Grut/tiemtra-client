@@ -10,6 +10,11 @@ import {
   useTheme,
 } from "@mui/material";
 import { ArrowBackIos, ArrowForwardIos } from "@mui/icons-material";
+import { Swiper, SwiperSlide } from 'swiper/react';
+import 'swiper/css';
+import 'swiper/css/pagination';
+import { Pagination } from 'swiper/modules';
+
 
 const ProductSlider = ({ products }) => {
   const theme = useTheme();
@@ -17,9 +22,6 @@ const ProductSlider = ({ products }) => {
   const visibleCount = isMobile ? 2 : 3;
 
   const [startIndex, setStartIndex] = useState(0);
-
-  const totalPages = Math.ceil(products.length / visibleCount);
-  const currentPage = Math.floor(startIndex / visibleCount);
 
   const handlePrev = () => {
     setStartIndex((prev) => Math.max(prev - visibleCount, 0));
@@ -39,7 +41,7 @@ const ProductSlider = ({ products }) => {
   return (
     <Box
       sx={{
-        py: 6,
+        py: 3,
         backgroundColor: "#ffffff",
         backgroundImage: 'url("/image/banner/home-2background-img-2.jpg")',
         backgroundSize: "cover",
@@ -47,6 +49,7 @@ const ProductSlider = ({ products }) => {
         display: "flex",
         justifyContent: "center",
         px: 2,
+        borderTop: `1px solid ${theme.palette.divider}`
       }}
     >
       <Box sx={{ maxWidth: 1200, width: "100%", textAlign: "center" }}>
@@ -87,89 +90,144 @@ const ProductSlider = ({ products }) => {
               onClick={handlePrev}
               sx={{
                 position: "absolute",
-                left: 150, // điều chỉnh khoảng cách với nội dung
+                left: 150,
                 top: "50%",
                 transform: "translateY(-50%)",
                 backgroundColor: "#4c7940",
-                color: "white",
                 "&:hover": { backgroundColor: "#3a5f2c" },
-                opacity: startIndex === 0 ? 0.3 : 1,
+                color: "white",
                 zIndex: 1,
               }}
             >
               <ArrowBackIos />
             </IconButton>
           )}
-
-          <Box
-            sx={{
-              display: "flex",
-              gap: 2,
-              overflow: "hidden",
-              flexWrap: "nowrap",
-              width: "100%",
-              justifyContent: "center",
-            }}
-          >
-            {visibleProducts.map((product, idx) => (
-              <Card
-                key={idx}
-                sx={{
-                  width: { xs: 160, sm: 200, md: 240 },
-                  borderRadius: 3,
-                  boxShadow: 2,
-                  border: "2px solid #009900",
-                  flexShrink: 0,
-                }}
-              >
-                <CardMedia
-                  component="img"
-                  image={product.image}
-                  alt={product.title}
+          {isMobile ? (
+            <Swiper
+              modules={[Pagination]}
+              pagination={{ clickable: true }}
+              spaceBetween={6}
+              slidesPerView={isMobile ? 2 : 3}
+              style={{ paddingBottom: "32px" }}
+            >
+              {products.map((product, idx) => (
+                <SwiperSlide key={idx}>
+                  <Card
+                    sx={{
+                      width: { xs: 160, sm: 200, md: 240 },
+                      maxWidth: 240,
+                      margin: "0 auto",
+                      borderRadius: 3,
+                      boxShadow: 2,
+                      border: "2px solid #009900",
+                    }}
+                  >
+                    <CardMedia
+                      component="img"
+                      image={product.image}
+                      alt={product.title}
+                      sx={{
+                        height: { xs: 140, sm: 180, md: 210 },
+                        objectFit: "cover",
+                      }}
+                    />
+                    <CardContent>
+                      <Typography
+                        variant="subtitle2"
+                        fontWeight="bold"
+                        sx={{ whiteSpace: "normal", fontSize: "14px" }}
+                      >
+                        {product.title}
+                      </Typography>
+                      <Typography
+                        variant="body2"
+                        color="green"
+                        sx={{ fontWeight: 500 }}
+                      >
+                        {product.price}
+                      </Typography>
+                      <Typography
+                        variant="caption"
+                        color="text.secondary"
+                        sx={{ fontSize: "12px" }}
+                      >
+                        {product.variant}
+                      </Typography>
+                    </CardContent>
+                  </Card>
+                </SwiperSlide>
+              ))}
+            </Swiper>
+          ) : (
+            <Box
+              sx={{
+                display: "flex",
+                gap: 2,
+                overflow: "hidden",
+                flexWrap: "nowrap",
+                width: "100%",
+                justifyContent: "center",
+              }}
+            >
+              {visibleProducts.map((product, idx) => (
+                <Card
+                  key={idx}
                   sx={{
-                    height: { xs: 140, sm: 180, md: 210 },
-                    objectFit: "cover",
+                    width: { xs: 160, sm: 200, md: 240 },
+                    borderRadius: 3,
+                    boxShadow: 2,
+                    border: "2px solid #009900",
+                    flexShrink: 0,
                   }}
-                />
-                <CardContent>
-                  <Typography
-                    variant="subtitle2"
-                    fontWeight="bold"
-                    sx={{ whiteSpace: "normal", fontSize: "14px" }}
-                  >
-                    {product.title}
-                  </Typography>
-                  <Typography
-                    variant="body2"
-                    color="green"
-                    sx={{ fontWeight: 500 }}
-                  >
-                    {product.price}
-                  </Typography>
-                  <Typography
-                    variant="caption"
-                    color="text.secondary"
-                    sx={{ fontSize: "12px" }}
-                  >
-                    {product.variant}
-                  </Typography>
-                </CardContent>
-              </Card>
-            ))}
-          </Box>
+                >
+                  <CardMedia
+                    component="img"
+                    image={product.image}
+                    alt={product.title}
+                    sx={{
+                      height: { xs: 140, sm: 180, md: 210 },
+                      objectFit: "cover",
+                    }}
+                  />
+                  <CardContent>
+                    <Typography
+                      variant="subtitle2"
+                      fontWeight="bold"
+                      sx={{ whiteSpace: "normal", fontSize: "14px" }}
+                    >
+                      {product.title}
+                    </Typography>
+                    <Typography
+                      variant="body2"
+                      color="green"
+                      sx={{ fontWeight: 500 }}
+                    >
+                      {product.price}
+                    </Typography>
+                    <Typography
+                      variant="caption"
+                      color="text.secondary"
+                      sx={{ fontSize: "12px" }}
+                    >
+                      {product.variant}
+                    </Typography>
+                  </CardContent>
+                </Card>
+              ))}
+            </Box>
+          )}
 
           {!isMobile && (
             <IconButton
               onClick={handleNext}
               sx={{
                 position: "absolute",
-                right: 150, // điều chỉnh khoảng cách với nội dung
+                right: 150,
                 top: "50%",
                 transform: "translateY(-50%)",
                 backgroundColor: "#4c7940",
                 color: "white",
                 "&:hover": { backgroundColor: "#3a5f2c" },
-                opacity: startIndex === 0 ? 0.3 : 1,
                 zIndex: 1,
               }}
             >
@@ -178,23 +236,7 @@ const ProductSlider = ({ products }) => {
           )}
         </Box>
 
-        {isMobile && (
-          <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
-            {Array.from({ length: totalPages }).map((_, index) => (
-              <Box
-                key={index}
-                sx={{
-                  width: 8,
-                  height: 8,
-                  mx: 0.5,
-                  borderRadius: "50%",
-                  backgroundColor: currentPage === index ? "#4c7940" : "#ccc",
-                  transition: "background-color 0.3s",
-                }}
-              />
-            ))}
-          </Box>
-        )}
+        
       </Box>
     </Box>
   );
