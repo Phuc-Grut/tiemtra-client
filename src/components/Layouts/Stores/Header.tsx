@@ -193,8 +193,16 @@ const Header = () => {
               </IconButton>
 
               {user && !isSmallScreen && (
-                <Typography variant="body2" sx={{ fontWeight: 500 }}>
-                  Xin chào, {user.fullName}
+                <Typography
+                  variant="body2"
+                  sx={{
+                    fontWeight: 600,
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                  }}
+                >
+                  Xin chào, {user.fullName.split(" ").pop()}
                 </Typography>
               )}
 
