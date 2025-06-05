@@ -9,14 +9,49 @@ import {
   Avatar,
   Container,
   useMediaQuery,
+  Menu,
+  MenuItem,
 } from "@mui/material";
 import { ShoppingCart } from "@mui/icons-material";
 import EmailIcon from "@mui/icons-material/Email";
 import PhoneIcon from "@mui/icons-material/Phone";
 import SearchIcon from "@mui/icons-material/Search";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Header = () => {
+  const navigate = useNavigate();
   const isSmallScreen = useMediaQuery("(max-width:850px)");
+  const [user, setUser] = useState<any>(null);
+
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+  }, []);
+
+  const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+
+  // const handleLogin = () => {
+  //   navigate("/login");
+  // };
+
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("refresh_token");
+    setUser(null);
+    handleMenuClose();
+  };
 
   return (
     <Box>
@@ -87,7 +122,12 @@ const Header = () => {
       <AppBar
         position="static"
         color="default"
-        sx={{ height: 50, justifyContent: "center", boxShadow: "none", backgroundColor: "#FFFFFF" }}
+        sx={{
+          height: 50,
+          justifyContent: "center",
+          boxShadow: "none",
+          backgroundColor: "#FFFFFF",
+        }}
       >
         <Container maxWidth="lg">
           <Toolbar
@@ -145,12 +185,51 @@ const Header = () => {
                   <ShoppingCart />
                 </IconButton>
               )}
-              <IconButton>
+              <IconButton onClick={handleMenuOpen}>
                 <Avatar
                   sx={{ width: 30, height: 30 }}
-                  src="/default-avatar.jpg"
+                  src={user?.avatar || "/default-avatar.jpg"}
                 />
               </IconButton>
+
+              {user && !isSmallScreen && (
+                <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                  Xin chào, {user.fullName}
+                </Typography>
+              )}
+
+              <Menu
+                anchorEl={anchorEl}
+                open={Boolean(anchorEl)}
+                onClose={handleMenuClose}
+              >
+                {!user ? (
+                  <>
+                    <MenuItem onClick={() => navigate("/login")}>
+                      Đăng nhập
+                    </MenuItem>
+                    <MenuItem onClick={() => alert("đăng ký")}>
+                      Đăng ký
+                    </MenuItem>
+                  </>
+                ) : (
+                  <>
+                    <MenuItem disabled>{user.fullName}</MenuItem>
+
+                    {user.roles?.includes("Admin") && (
+                      <MenuItem onClick={() => navigate("/admin/dashboard")}>
+                        Admin Dashboard
+                      </MenuItem>
+                    )}
+
+                    <MenuItem onClick={() => alert("Xem thông tin tài khoản")}>
+                      Thông tin tài khoản
+                    </MenuItem>
+
+                    <MenuItem onClick={handleLogout}>Đăng xuất</MenuItem>
+                  </>
+                )}
+              </Menu>
             </Box>
           </Toolbar>
         </Container>
