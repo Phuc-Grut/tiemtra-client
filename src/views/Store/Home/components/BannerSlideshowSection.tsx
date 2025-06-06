@@ -7,7 +7,10 @@ import "slick-carousel/slick/slick-theme.css";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 
-// Arrow styles
+interface ArrowProps {
+  onClick?: () => void;
+}
+
 const arrowBaseStyle = {
   position: "absolute",
   top: "50%",
@@ -25,7 +28,7 @@ const arrowBaseStyle = {
   backgroundColor: "transparent",
 };
 
-const PrevArrow = ({ onClick }) => (
+const PrevArrow: React.FC<ArrowProps> = ({ onClick }) => (
   <Box
     onClick={onClick}
     sx={{
@@ -40,7 +43,7 @@ const PrevArrow = ({ onClick }) => (
   </Box>
 );
 
-const NextArrow = ({ onClick }) => (
+const NextArrow: React.FC<ArrowProps> = ({ onClick }) => (
   <Box
     onClick={onClick}
     sx={{
@@ -55,11 +58,11 @@ const NextArrow = ({ onClick }) => (
   </Box>
 );
 
-const BannerSlideshowSection = () => {
+const BannerSlideshowSection: React.FC = () => {
   const isMobile = useMediaQuery("(max-width:768px)");
   const isTablet = useMediaQuery("(max-width:1024px)");
 
-  const images = [
+  const images: string[] = [
     "/image/banner/banner1.jpg",
     "/image/banner/banner2.jpg",
     "/image/banner/banner3.jpg",
@@ -82,6 +85,8 @@ const BannerSlideshowSection = () => {
     nextArrow: !isMobile ? <NextArrow /> : undefined,
   };
 
+  const SlickSlider = Slider as unknown as React.ComponentType<any>;
+
   return (
     <Box
       sx={{
@@ -93,7 +98,8 @@ const BannerSlideshowSection = () => {
         pb: isMobile ? 4 : 0,
       }}
     >
-      <Slider {...settings}>
+      <SlickSlider {...settings}>
+
         {images.map((img, index) => (
           <Box key={index} sx={{ outline: "none" }}>
             <Box
@@ -113,7 +119,7 @@ const BannerSlideshowSection = () => {
             />
           </Box>
         ))}
-      </Slider>
+      </SlickSlider>
 
       {/* Custom styles for slick dots */}
       <style>{`

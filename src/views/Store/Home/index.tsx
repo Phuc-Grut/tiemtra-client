@@ -1,68 +1,80 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import IntroVideoSection from "./components/IntroVideoSection";
 import BannerSlideshowSection from "./components/BannerSlideshowSection";
 import { Box } from "@mui/material";
 import ProductSlider from "./components/ProductSlider";
+import { IProduct, IProductFilter } from "src/Interfaces/IProduct";
+import { useInfiniteQuery } from "@tanstack/react-query";
+import productApi from "src/services/api/Products/indext";
 
 const HomePage = () => {
-  const sampleProducts = [
-    {
-      image:
-        "https://flieweb.blob.core.windows.net/image-tiemtra/products/Chanh Leo Cam Dứa2 %282%29.jpg",
-      title: "Trà sáng C tối A đẹp da",
-      price: "360.000₫ – 700.000₫",
-      variant: "combo 2 hộp",
-    },
-    {
-      image:
-        "https://flieweb.blob.core.windows.net/image-tiemtra/products/Chanh Leo Cam Dứa2 %282%29.jpg",
-      title: "Trà Dưỡng Nhan An Nhiên",
-      price: "159.000₫ – 300.000₫",
-      variant: "15 gói, 30 gói",
-    },
-    {
-      image:
-        "https://flieweb.blob.core.windows.net/image-tiemtra/products/Chanh Leo Cam Dứa2 %282%29.jpg",
-      title: "Trà Gạo Lứt Thảo Mộc",
-      price: "159.000₫ – 300.000₫",
-      variant: "15 gói, 30 gói",
-    },
-    {
-      image:
-        "https://flieweb.blob.core.windows.net/image-tiemtra/products/Chanh Leo Cam Dứa2 %282%29.jpg",
-      title: "Trà Thư Giãn1",
-      price: "129.000₫ – 250.000₫",
-      variant: "15 gói",
-    },
-    {
-      image:
-        "https://flieweb.blob.core.windows.net/image-tiemtra/products/Chanh Leo Cam Dứa2 %282%29.jpg",
-      title: "Trà Thư Giãn2",
-      price: "129.000₫ – 250.000₫",
-      variant: "15 gói",
-    },
-    {
-      image:
-        "https://flieweb.blob.core.windows.net/image-tiemtra/products/Chanh Leo Cam Dứa2 %282%29.jpg",
-      title: "Trà Thư Giãn3",
-      price: "129.000₫ – 250.000₫",
-      variant: "15 gói",
-    },
-    {
-      image:
-        "https://flieweb.blob.core.windows.net/image-tiemtra/products/Chanh Leo Cam Dứa2 %282%29.jpg",
-      title: "Trà Thư Giãn4",
-      price: "129.000₫ – 250.000₫",
-      variant: "15 gói",
-    },
-    {
-      image:
-        "https://flieweb.blob.core.windows.net/image-tiemtra/products/Chanh Leo Cam Dứa2 %282%29.jpg",
-      title: "Trà Thư Giãn5",
-      price: "129.000₫ – 250.000₫",
-      variant: "15 gói",
-    },
-  ];
+  const buildCleanFilter = (filter: IProductFilter) => {
+    const cleaned: any = {
+      pageNumber: filter.pageNumber ?? 1,
+      pageSize: filter.pageSize ?? 5,
+    };
+
+    if (filter.keyword?.trim()) cleaned.keyword = filter.keyword.trim();
+    if (filter.productCode?.trim())
+      cleaned.productCode = filter.productCode.trim();
+    if (filter.sortBy?.trim()) cleaned.sortBy = filter.sortBy.trim();
+    if (filter.status !== undefined) cleaned.status = filter.status;
+    if (filter.categoryId !== undefined) cleaned.categoryId = filter.categoryId;
+    if (filter.brandId !== undefined) cleaned.brandId = filter.brandId;
+
+    return cleaned;
+  };
+
+  const [filter, setFilter] = useState<IProductFilter>({
+    pageNumber: 1,
+    pageSize: 5,
+    keyword: "",
+    productCode: "",
+    sortBy: "",
+    status: undefined,
+  });
+
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
+    useInfiniteQuery({
+      queryKey: ["store-get-paging-product"],
+      queryFn: async ({ pageParam = 1 }) => {
+        const cleaned = buildCleanFilter({ ...filter, pageNumber: pageParam });
+        const res = await productApi.storeGetAllProduct(cleaned);
+        return {
+          items: res.data.items ?? [],
+          nextPage: pageParam + 1,
+          isLastPage: pageParam >= (res.data.totalPages ?? 1),
+        };
+      },
+      initialPageParam: 1,
+      getNextPageParam: (lastPage) =>
+        lastPage.isLastPage ? undefined : lastPage.nextPage,
+    });
+
+  const products: IProduct[] = data?.pages.flatMap((page) => page.items) ?? [];
+
+  const loadMoreRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && hasNextPage && !isFetchingNextPage) {
+          fetchNextPage();
+        }
+      },
+      { threshold: 1.0 }
+    );
+
+    if (loadMoreRef.current) {
+      observer.observe(loadMoreRef.current);
+    }
+
+    return () => {
+      if (loadMoreRef.current) {
+        observer.unobserve(loadMoreRef.current);
+      }
+    };
+  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   // Trong HomePage.jsx:
 
@@ -77,7 +89,8 @@ const HomePage = () => {
       <BannerSlideshowSection />
       <IntroVideoSection />
 
-      <ProductSlider products={sampleProducts} />
+      <ProductSlider products={products} />
+      <Box ref={loadMoreRef} sx={{ height: 1 }} />
     </Box>
   );
 };
