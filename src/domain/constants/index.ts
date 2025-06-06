@@ -2,6 +2,7 @@ export const BASE_URL = process.env.REACT_APP_API_URL;
 
 const URL_ADMIN = `${BASE_URL}/api/admin`
 const URL_AUTH = `${BASE_URL}/api`
+const URL_STORE = `${BASE_URL}/api/store`
 
 export const AUTHENTICATION = {
     ACTION_TYPES: {
@@ -59,7 +60,7 @@ export const ATTRIBUTE = {
     }
 }
 
-export const PRODUCT = {
+export const ADMIN_PRODUCT = {
     URL_API: {
         GENERATE_PRODUCT_CODE: `${URL_ADMIN}/product/generate-product-code`,
         CREATE_PRODUCT: `${URL_ADMIN}/product/create-product`,
@@ -67,5 +68,11 @@ export const PRODUCT = {
         UP_PRODUCT_IMAGE: `${URL_ADMIN}/product/product-image`,
         GET_ALL_PRODUCT: `${URL_ADMIN}/product/get-paging-products`,
         GET_BY_ID: `${URL_ADMIN}/product/get-by-id`
+    }
+}
+
+export const STORE_PPRODUCT = {
+    URL_API: {
+        GET_ALL_PRODUCT: `${URL_STORE}/product/get-paging-products`,
     }
 }

@@ -55,7 +55,8 @@ export interface IProduct {
   updaterName?: string;
   updatedAt: string;
   createdAt: string;
-  productVariations?: ProductVariation
+  productVariations?: ProductVariation[]
+  productImageUrls: string[];
 }
 
 export interface IProductFilter {
