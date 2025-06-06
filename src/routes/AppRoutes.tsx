@@ -9,11 +9,13 @@ import Attribute from "src/views/Admin/Attribute";
 import StoreLayout from "src/layouts/StoreLayout";
 import Product from "src/views/Admin/Product";
 import ProtectedRoute from "src/components/ProtectedRoute";
+import ProductDetail from "src/views/Store/ProductDetail";
 const AppRoutes = () => {
   return (
     <Routes>
       <Route element={<StoreLayout />}>
         <Route path="/" element={<HomePage />} />
+        <Route path="san-pham/:code/:slug" element={<ProductDetail />} />
       </Route>
       <Route
         path="/admin"
