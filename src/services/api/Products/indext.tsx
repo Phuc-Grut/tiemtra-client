@@ -1,6 +1,6 @@
 import { AxiosResponse } from "axios";
 import { ADMIN_PRODUCT, STORE_PPRODUCT } from "src/domain/constants";
-import { CreateProductRequest, IProductFilter } from "src/Interfaces/IProduct";
+import { CreateProductRequest, IProduct, IProductFilter } from "src/Interfaces/IProduct";
 import requester from "src/services/extended/axiosInstance";
 
 interface ProductRequest {
@@ -35,7 +35,10 @@ const productApi = {
 
   // Stroe 
 
-  storeGetAllProduct: (params : IProductFilter) => requester.get(STORE_PPRODUCT.URL_API.GET_ALL_PRODUCT, {params})
+  storeGetAllProduct: (params : IProductFilter) => requester.get(STORE_PPRODUCT.URL_API.GET_ALL_PRODUCT, {params}),
+
+  storeGetProductByCode: (productCode: string) => requester.get(STORE_PPRODUCT.URL_API.GET_PRODUCT_BY_CODE(productCode))
+
 };
 
 export default productApi;
