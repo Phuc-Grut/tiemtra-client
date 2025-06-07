@@ -74,5 +74,6 @@ export const ADMIN_PRODUCT = {
 export const STORE_PPRODUCT = {
     URL_API: {
         GET_ALL_PRODUCT: `${URL_STORE}/product/get-paging-products`,
+        GET_PRODUCT_BY_CODE: (productCode: string) => `${URL_STORE}/product/get-product-by-code/${productCode}`
     }
 }

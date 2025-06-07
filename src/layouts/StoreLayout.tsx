@@ -13,12 +13,12 @@ const StoreLayout = () => {
         flexDirection: "column",
       }}
     >
-      <Header /> {/* Gốc, nằm ở đầu trang và sẽ bị cuộn đi */}
+      <Header />
       <HideOnScroll>
         <Box
           sx={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 1200 }}
         >
-          <Header /> {/* Sticky header sẽ trượt xuống */}
+          <Header />
         </Box>
       </HideOnScroll>
       <Box sx={{ flexGrow: 1 }}>
