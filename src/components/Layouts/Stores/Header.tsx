@@ -131,6 +131,7 @@ const Header = () => {
             justifyContent: "center",
             boxShadow: "none",
             backgroundColor: "#FFFFFF",
+            borderBottom: "1.7px solid #e0e0e0",
           }}
         >
           <Container maxWidth="lg">
@@ -140,6 +141,7 @@ const Header = () => {
                 display: "flex",
                 justifyContent: "space-between",
                 gap: 2,
+                px: { xs: 1, sm: 3 },
               }}
             >
               <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
