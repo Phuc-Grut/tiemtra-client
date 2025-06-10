@@ -28,6 +28,7 @@ export interface ProductAttribute {
 }
 
 export interface ProductVariation {
+  productVariationId?: string
   typeName: string;
   price: number | null;
   stock: number | null;

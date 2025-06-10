@@ -11,6 +11,7 @@ const StoreLayout = () => {
         minHeight: "100vh",
         display: "flex",
         flexDirection: "column",
+        backgroundColor: "#fff"
       }}
     >
       <Header />

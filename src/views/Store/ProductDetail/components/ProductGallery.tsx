@@ -59,6 +59,7 @@ const ProductGallery = ({ previewImageUrl, images }: ProductGalleryProps) => {
         display: "flex",
         flexDirection: isMobile ? "column" : "row-reverse",
         gap: 1,
+        backgroundColor: "#fff"
       }}
     >
       {/* Ảnh chính */}
@@ -70,7 +71,7 @@ const ProductGallery = ({ previewImageUrl, images }: ProductGalleryProps) => {
             setSelectedIndex(swiper.activeIndex)
           }
           initialSlide={selectedIndex}
-          style={{ width: "100%", height: "350px" }}
+          style={{ width: "100%", height: "300px" }}
         >
           {uniqueImages.map((img, index) => (
             <SwiperSlide key={index}>
@@ -102,7 +103,7 @@ const ProductGallery = ({ previewImageUrl, images }: ProductGalleryProps) => {
             onMouseMove={handleMouseMove}
             sx={{
               width: "100%",
-              height: "100%",
+              height: "90%",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",

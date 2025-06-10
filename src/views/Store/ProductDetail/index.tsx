@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import productApi from "src/services/api/Products/indext";
 import ProductGallery from "./components/ProductGallery";
+import ProductInfoSection from "./components/ProductInfoSection";
 
 const ProductDetail = () => {
   const { code: productCode } = useParams<{ code: string }>();
@@ -24,7 +25,7 @@ const ProductDetail = () => {
   if (error) return <div>Đã có lỗi xảy ra!</div>;
 
   return (
-    <Container maxWidth="lg" sx={{ py: { xs: 2, md: 4 } }}>
+    <Container maxWidth="lg" sx={{ py: { xs: 2, md: 4, backgroundColor: "#fff" } }}>
       <Grid container spacing={4}>
         {/* Cột trái: Hình ảnh */}
         <Grid item xs={12} md={6}>
@@ -36,17 +37,7 @@ const ProductDetail = () => {
 
         {/* Cột phải: Thông tin sản phẩm */}
         <Grid item xs={12} md={6}>
-          <Box sx={{ textAlign: { xs: "center", md: "left" } }}>
-            <Typography variant="h4" fontWeight="bold" mb={2}>
-              {productDetail.productName}
-            </Typography>
-            <Typography color="text.secondary" mb={1}>
-              Danh mục: {productDetail.categoryName}
-            </Typography>
-            <Typography color="success.main" fontSize={20} mb={3}>
-              Giá: {productDetail.price?.toLocaleString()}₫
-            </Typography>
-          </Box>
+          <ProductInfoSection product={productDetail} />
         </Grid>
       </Grid>
     </Container>
