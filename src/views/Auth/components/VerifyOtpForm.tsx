@@ -10,7 +10,7 @@ import {
   CircularProgress,
 } from "@mui/material";
 import { useNavigate, useLocation } from "react-router-dom";
-import { useAuth } from "../hook"; // hoặc bạn tách useVerifyOtp cũng được
+import { useAuth } from "../hook";
 
 const VerifyOtpForm = () => {
   const [otp, setOtp] = useState("");
@@ -27,11 +27,6 @@ const VerifyOtpForm = () => {
     e.preventDefault();
 
     setError("");
-
-    if (!email) {
-      setError("Thiếu địa chỉ email để xác minh.");
-      return;
-    }
 
     setLoading(true);
     const result = await verifyOtp({ email, otp });
@@ -50,8 +45,6 @@ const VerifyOtpForm = () => {
         <Typography variant="h5" gutterBottom>
           Xác thực OTP
         </Typography>
-
-        
 
         <Box
           component="form"
