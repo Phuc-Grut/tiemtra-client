@@ -60,7 +60,12 @@ export const loginApi = createAsyncThunk(
 export const registerApi = createAsyncThunk(
   "auth/register",
   async (
-    params: { fullName: string; email: string; password: string; phoneNumber: string },
+    params: {
+      fullName: string;
+      email: string;
+      password: string;
+      phoneNumber: string;
+    },
     thunkAPI
   ) => {
     try {
@@ -94,12 +99,11 @@ export const verifyOtpApi = createAsyncThunk(
       return data;
     } catch (error: any) {
       return thunkAPI.rejectWithValue(
-        error.response?.data?.message || "Xác minh OTP thất bại"
+        error.response?.data?.message
       );
     }
   }
 );
-
 
 const authSlice = createSlice({
   name: "auth",
@@ -120,7 +124,7 @@ const authSlice = createSlice({
       })
       .addCase(loginApi.fulfilled, (state, action) => {
         state.loading = false;
-        state.user = action.payload.data; // <-- chính xác
+        state.user = action.payload.data;
       })
       .addCase(loginApi.rejected, (state, action) => {
         state.loading = false;
@@ -138,9 +142,20 @@ const authSlice = createSlice({
       .addCase(registerApi.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
+      })
+
+      // xác thực otp
+      .addCase(verifyOtpApi.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(verifyOtpApi.fulfilled, (state, action) => {
+        state.loading = false;
+      })
+      .addCase(verifyOtpApi.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
       });
-
-
   },
 });
 

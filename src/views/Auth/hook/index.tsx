@@ -47,7 +47,15 @@ export const useAuth = () => {
       const result = await dispatch(verifyOtpApi(params)).unwrap();
       return { success: true, data: result };
     } catch (error: any) {
-      return { success: false, message: error?.message || "Xác minh thất bại" };
+      const message =
+        typeof error === "string"
+          ? error
+          : error?.response?.data?.message || "Xác minh OTP thất bại";
+
+      return {
+        success: false,
+        message,
+      };
     }
   };
 
@@ -60,6 +68,6 @@ export const useAuth = () => {
     login,
     register,
     logout: logoutUser,
-    verifyOtp
+    verifyOtp,
   };
 };
