@@ -23,6 +23,14 @@ const initialState: {
   error: null,
 };
 
+// export const register = createAsyncThunk (
+//   "auth/register",
+//   async (userData) => {
+//     const res = await authApi.register(userData)
+//     return res.data
+//   }
+// )
+
 export const loginApi = createAsyncThunk(
   "auth/login",
   async (params: { email: string; password: string }, thunkAPI) => {

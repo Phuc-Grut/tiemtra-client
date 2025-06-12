@@ -222,7 +222,7 @@ const Header = () => {
                       <MenuItem onClick={() => navigate("/login")}>
                         Đăng nhập
                       </MenuItem>
-                      <MenuItem onClick={() => alert("đăng ký")}>
+                      <MenuItem onClick={() => navigate("/register")}>
                         Đăng ký
                       </MenuItem>
                     </>
