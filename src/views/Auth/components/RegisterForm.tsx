@@ -13,6 +13,7 @@ import {
   IconButton,
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
+import useToast from "src/components/Toast";
 
 const RegisterForm = () => {
   type RegisterError = {
@@ -40,6 +41,7 @@ const RegisterForm = () => {
 
   const { register } = useAuth();
   const navigate = useNavigate();
+  const { showSuccess } = useToast();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -94,7 +96,7 @@ const RegisterForm = () => {
       setErrors((prev) => ({ ...prev, email: message }));
       return;
     }
-
+    showSuccess("Đăng ký thành công")
     navigate("/verify-otp", { state: { email: formData.email } });
     setFormData(formData);
   };
