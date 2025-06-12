@@ -11,16 +11,18 @@ import {
 } from "@mui/material";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../hook";
+import useToast from "src/components/Toast";
 
 const VerifyOtpForm = () => {
   const [otp, setOtp] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const { showSuccess } = useToast();
 
   const navigate = useNavigate();
   const location = useLocation();
 
-  const { verifyOtp } = useAuth(); 
+  const { verifyOtp } = useAuth();
   const email = location.state?.email;
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -33,6 +35,7 @@ const VerifyOtpForm = () => {
     setLoading(false);
 
     if (result.success) {
+      showSuccess("Xác thực thành công")
       navigate("/login");
     } else {
       setError(result.message);
@@ -45,7 +48,9 @@ const VerifyOtpForm = () => {
         <Typography variant="h5" gutterBottom>
           Xác thực OTP
         </Typography>
-
+        <Typography sx={{ fontSize: 13, color: "green" }} gutterBottom>
+          Đăng ký thành công! Vui lòng kiểm tra email để xác thực tài khoản.
+        </Typography>
         <Box
           component="form"
           onSubmit={handleSubmit}
