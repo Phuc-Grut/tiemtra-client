@@ -15,6 +15,8 @@ const authApi = {
   refreshToken: (params: { refreshToken: string }) => requester.post(AUTHENTICATION.URL_API.REFRESH_TOKEN_API, params),
   register: (params: { fullName: string; email: string; password: string; phoneNumber: string }) =>
     requester.post(AUTHENTICATION.URL_API.REGISTER_API, params),
+
+  verifyOtp: (params: {email: string, otp: string}) => requester.post(AUTHENTICATION.URL_API.VERIFY_OTP, params)
 };
 export const verifyOtp = (email: string, otp: string) => {
   return requester.post("/auth/verify-otp", {
