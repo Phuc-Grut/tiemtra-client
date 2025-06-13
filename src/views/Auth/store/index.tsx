@@ -57,6 +57,54 @@ export const loginApi = createAsyncThunk(
   }
 );
 
+export const registerApi = createAsyncThunk(
+  "auth/register",
+  async (
+    params: {
+      fullName: string;
+      email: string;
+      password: string;
+      phoneNumber: string;
+    },
+    thunkAPI
+  ) => {
+    try {
+      const response = await authApi.register(params);
+      const data = response.data;
+
+      if (!data?.success) {
+        return thunkAPI.rejectWithValue(data.message || "Đăng ký thất bại");
+      }
+
+      return data;
+    } catch (error: any) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.message || "Lỗi khi đăng ký"
+      );
+    }
+  }
+);
+
+export const verifyOtpApi = createAsyncThunk(
+  "auth/verifyOtp",
+  async (params: { email: string; otp: string }, thunkAPI) => {
+    try {
+      const response = await authApi.verifyOtp(params);
+      const data = response.data;
+
+      if (!data?.success || !data.token) {
+        return thunkAPI.rejectWithValue(data.message || "Mã OTP không đúng");
+      }
+
+      return data;
+    } catch (error: any) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.message
+      );
+    }
+  }
+);
+
 const authSlice = createSlice({
   name: "auth",
   initialState,
@@ -76,9 +124,35 @@ const authSlice = createSlice({
       })
       .addCase(loginApi.fulfilled, (state, action) => {
         state.loading = false;
-        state.user = action.payload.data; // <-- chính xác
+        state.user = action.payload.data;
       })
       .addCase(loginApi.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+
+      // đăng ký
+      .addCase(registerApi.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(registerApi.fulfilled, (state, action) => {
+        state.loading = false;
+      })
+      .addCase(registerApi.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+
+      // xác thực otp
+      .addCase(verifyOtpApi.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(verifyOtpApi.fulfilled, (state, action) => {
+        state.loading = false;
+      })
+      .addCase(verifyOtpApi.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       });

@@ -9,6 +9,7 @@ import {
   SelectChangeEvent,
 } from "@mui/material";
 import { ChangeEvent, useState } from "react";
+import CKEditorDialog from "src/ckeditor/CKEditorDialog";
 import useToast from "src/components/Toast";
 import { Brand, CreateProductRequest } from "src/Interfaces/IProduct";
 import productApi from "src/services/api/Products/indext";
@@ -34,6 +35,7 @@ const ProductFormSection = ({
   brands,
   mode,
 }: ProductFormSectionProps) => {
+  
   const isReadOnly = mode === "view";
   const MAX_FILE_SIZE = 200 * 1024;
   const { showSuccess, showError } = useToast();
@@ -92,6 +94,7 @@ const ProductFormSection = ({
   };
 
   const [previewFile, setPreviewFile] = useState<File | null>(null);
+  const [openEditor, setOpenEditor] = useState(false);
 
   return (
     <Box
@@ -276,7 +279,9 @@ const ProductFormSection = ({
                 label="Ngày cập nhật"
                 name="updateAt"
                 type="string"
-                value={formatVietnamTime(formData?.updatedAt ?? formData?.createdAt ?? "")}
+                value={formatVietnamTime(
+                  formData?.updatedAt ?? formData?.createdAt ?? ""
+                )}
                 variant="outlined"
                 size="small"
                 sx={{ bgcolor: "#fff" }}
@@ -301,13 +306,13 @@ const ProductFormSection = ({
               label="Mô tả sản phẩm"
               name="description"
               value={formData.description ?? ""}
-              onChange={handleChange}
+              onClick={() => setOpenEditor(true)}
               fullWidth
               multiline
               rows={5}
               variant="outlined"
-              sx={{ bgcolor: "#fff", height: "100%" }}
-              InputProps={{ readOnly: isReadOnly }}
+              sx={{ bgcolor: "#fff", height: "100%", cursor: "pointer" }}
+              InputProps={{ readOnly: true }}
             />
             <TextField
               label="Ghi chú"
@@ -322,6 +327,17 @@ const ProductFormSection = ({
               InputProps={{ readOnly: isReadOnly }}
             />
           </Box>
+          <CKEditorDialog
+            open={openEditor}
+            onClose={() => setOpenEditor(false)}
+            initialData={formData.description ?? ""}
+            onSave={(html) => {
+              setFormData((prev) => ({ ...prev, description: html }));
+              setOpenEditor(false);
+            }}
+
+            readOnly={mode === "view"}
+          />
         </Box>
       </Box>
     </Box>

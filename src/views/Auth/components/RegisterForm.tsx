@@ -1,31 +1,104 @@
 import { useState } from "react";
+import { useAuth } from "../hook";
+import { useNavigate } from "react-router-dom";
 import {
-  TextField,
-  Button,
   Box,
-  Typography,
+  Button,
   Container,
   Paper,
+  TextField,
+  Typography,
+  CircularProgress,
+  InputAdornment,
+  IconButton,
 } from "@mui/material";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
+import useToast from "src/components/Toast";
 
-interface RegisterFormProps {
-  onSubmit: (
-    name: string,
-    email: string,
-    password: string,
-    phone: string
-  ) => void;
-}
+const RegisterForm = () => {
+  type RegisterError = {
+    fullName: string;
+    email: string;
+    phoneNumber: string;
+    password: string;
+  };
 
-const RegisterForm = ({ onSubmit }: RegisterFormProps) => {
-  const [name, setName] = useState<string>("");
-  const [email, setEmail] = useState<string>("");
-  const [phone, setPhone] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
+  const [formData, setFormData] = useState({
+    fullName: "",
+    email: "",
+    password: "",
+    phoneNumber: "",
+  });
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const [errors, setErrors] = useState<RegisterError>({
+    fullName: "",
+    email: "",
+    phoneNumber: "",
+    password: "",
+  });
+
+  const [loading, setLoading] = useState(false);
+
+  const { register } = useAuth();
+  const navigate = useNavigate();
+  const { showSuccess } = useToast();
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const [showPassword, setShowPassword] = useState(false);
+
+  const togglePasswordVisibility = () => {
+    setShowPassword((prev) => !prev);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit(name, email, password, phone);
+
+    const newErrors = {
+      fullName: formData.fullName.trim() ? "" : "Họ tên không được để trống",
+      email: "",
+      phoneNumber: "",
+      password: "",
+    };
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!formData.email.trim()) {
+      newErrors.email = "Email không được để trống";
+    } else if (!emailRegex.test(formData.email)) {
+      newErrors.email = "Email không đúng định dạng";
+    }
+
+    const phoneRegex = /^0\d{9}$/;
+    if (!formData.phoneNumber.trim()) {
+      newErrors.phoneNumber = "Số điện thoại không được để trống";
+    } else if (!phoneRegex.test(formData.phoneNumber)) {
+      newErrors.phoneNumber = "Số điện thoại không hợp lệ";
+    }
+
+    if (!formData.password.trim()) {
+      newErrors.password = "Mật khẩu không được để trống";
+    } else if (formData.password.length < 6) {
+      newErrors.password = "Mật khẩu phải có ít nhất 6 ký tự";
+    }
+
+    setErrors(newErrors);
+
+    if (Object.values(newErrors).some((msg) => msg !== "")) return;
+
+    setLoading(true);
+    const result = await register(formData);
+    setLoading(false);
+
+    if (!result || result.success === false) {
+      const message = result?.message || "Đăng ký thất bại";
+      setErrors((prev) => ({ ...prev, email: message }));
+      return;
+    }
+    showSuccess("Đăng ký thành công")
+    navigate("/verify-otp", { state: { email: formData.email } });
+    setFormData(formData);
   };
 
   return (
@@ -40,46 +113,68 @@ const RegisterForm = ({ onSubmit }: RegisterFormProps) => {
           sx={{ display: "flex", flexDirection: "column", gap: 2 }}
         >
           <TextField
+            name="fullName"
             label="Họ và tên"
             variant="outlined"
-            value={name}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              setName(e.target.value)
-            }
-            required
+            type="text"
+            value={formData.fullName}
+            onChange={handleChange}
+            error={!!errors.fullName}
+            helperText={errors.fullName}
           />
           <TextField
+            name="email"
             label="Email"
-            type="email"
+            type="text"
             variant="outlined"
-            value={email}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              setEmail(e.target.value)
-            }
-            required
+            value={formData.email}
+            onChange={handleChange}
+            error={!!errors.email}
+            helperText={errors.email}
           />
           <TextField
+            name="phoneNumber"
             label="Số điện thoại"
-            type="tel"
+            type="text"
             variant="outlined"
-            value={phone}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              setPhone(e.target.value)
-            }
-            required
+            value={formData.phoneNumber}
+            onChange={handleChange}
+            error={!!errors.phoneNumber}
+            helperText={errors.phoneNumber}
           />
+          
           <TextField
+            name="password"
             label="Mật khẩu"
-            type="password"
+            type={showPassword ? "text" : "password"}
             variant="outlined"
-            value={password}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              setPassword(e.target.value)
-            }
-            required
+            value={formData.password}
+            onChange={handleChange}
+            error={!!errors.password}
+            helperText={errors.password}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    onClick={togglePasswordVisibility}
+                    edge="end"
+                    aria-label="toggle password visibility"
+                  >
+                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
           />
-          <Button type="submit" variant="contained" color="primary">
-            Đăng ký
+
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            disabled={loading}
+            startIcon={loading ? <CircularProgress size={18} /> : null}
+          >
+            {loading ? "Đang đăng ký..." : "Đăng ký"}
           </Button>
         </Box>
       </Paper>
