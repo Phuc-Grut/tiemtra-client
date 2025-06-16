@@ -1,9 +1,12 @@
-import { Box, Container, Grid, Typography } from "@mui/material";
+import { Container, Grid } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import productApi from "src/services/api/Products/indext";
 import ProductGallery from "./components/ProductGallery";
 import ProductInfoSection from "./components/ProductInfoSection";
+import ProductDescription from "./components/ProductDescription";
+import ProductExtraInfo from "./components/ProductExtraInfo";
+import GlobalPromotion from "./components/GlobalPromotion";
 
 const ProductDetail = () => {
   const { code: productCode } = useParams<{ code: string }>();
@@ -25,9 +28,11 @@ const ProductDetail = () => {
   if (error) return <div>Đã có lỗi xảy ra!</div>;
 
   return (
-    <Container maxWidth="lg" sx={{ py: { xs: 2, md: 4, backgroundColor: "#fff" } }}>
+    <Container
+      maxWidth="lg"
+      sx={{ py: { xs: 2, md: 4, backgroundColor: "#fff" } }}
+    >
       <Grid container spacing={4}>
-        {/* Cột trái: Hình ảnh */}
         <Grid item xs={12} md={6}>
           <ProductGallery
             previewImageUrl={productDetail.privewImageUrl}
@@ -35,10 +40,15 @@ const ProductDetail = () => {
           />
         </Grid>
 
-        {/* Cột phải: Thông tin sản phẩm */}
         <Grid item xs={12} md={6}>
           <ProductInfoSection product={productDetail} />
+          <ProductExtraInfo product={productDetail} />
+          <GlobalPromotion />
         </Grid>
+      </Grid>
+
+      <Grid item xs={12}>
+        <ProductDescription description={productDetail.description} />
       </Grid>
     </Container>
   );

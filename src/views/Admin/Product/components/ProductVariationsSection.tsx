@@ -29,6 +29,7 @@ interface props {
 
 const ProductVariationsSection = ({ formData, setFormData, mode }: props) => {
   const isReadOnly = mode === "view";
+
   const handleAddVariation = () => {
     setFormData((prev) => {
       const newVariations = [
@@ -72,6 +73,8 @@ const ProductVariationsSection = ({ formData, setFormData, mode }: props) => {
       price: null,
     }));
   };
+  
+  console.log("🚀 ~ setFormData ~ hasVariations:", formData.hasVariations)
 
   useEffect(() => {
     const variations = formData.productVariations ?? [];
@@ -79,7 +82,7 @@ const ProductVariationsSection = ({ formData, setFormData, mode }: props) => {
     if (variations.length === 0) {
       setFormData((prev) => ({
         ...prev,
-        hasVariations: false
+        hasVariations: true
       }))
       return;
     }
@@ -95,6 +98,7 @@ const ProductVariationsSection = ({ formData, setFormData, mode }: props) => {
       ...prev,
       price: 0,
       stock: totalStock,
+      hasVariations: true
     }));
   }, [formData.productVariations, setFormData]);
 

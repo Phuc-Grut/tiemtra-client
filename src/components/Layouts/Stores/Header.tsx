@@ -56,7 +56,7 @@ const Header = () => {
   return (
       <Box
         sx={{
-          backgroundColor: "#fff",
+          backgroundColor: "#3c9447",
         }}
       >
         {isSmallScreen ? (

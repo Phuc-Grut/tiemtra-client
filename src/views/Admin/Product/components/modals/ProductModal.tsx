@@ -111,7 +111,6 @@ const ProductModal = ({
   };
 
   const handleUpdateSubmit = async () => {
-    console.log("🚀 ~ handleCreateSubmit ~ formData:", formData);
     try {
       const res = await productApi.updateProduct(productId ?? "", formData);
 
@@ -146,6 +145,7 @@ const ProductModal = ({
     if (productDetail) {
       setFormData({
         ...productDetail,
+        productVariations: productDetail.productVariations ?? [],
       });
     }
   }, [productDetail]);
