@@ -25,6 +25,7 @@ export interface CreateProductRequest {
 export interface ProductAttribute {
   attributeId: number;
   value: string;
+  attributeName?: string;
 }
 
 export interface ProductVariation {
@@ -58,6 +59,7 @@ export interface IProduct {
   createdAt: string;
   productVariations?: ProductVariation[]
   productImageUrls: string[];
+  productAttributes?: ProductAttribute[]
 }
 
 export interface IProductFilter {

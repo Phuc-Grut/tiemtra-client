@@ -3,7 +3,7 @@ import { Box, Typography, Link } from "@mui/material";
 
 const Footer = () => {
   return (
-    <Box sx={{ backgroundColor: "#4c7940", color: "white", py: 4, mt: 0 }}>
+    <Box sx={{ backgroundColor: "#3c9447", color: "white", py: 4, mt: 0 }}>
       <Box sx={{ maxWidth: 1200, mx: "auto", px: 2, textAlign: "center" }}>
         <Typography variant="h6" sx={{ mb: 1 }}>
           Công ty TNHH Luân Hồi Điện
