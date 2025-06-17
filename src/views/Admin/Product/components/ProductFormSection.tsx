@@ -190,7 +190,7 @@ const ProductFormSection = ({
               variant="outlined"
               size="small"
               sx={{ bgcolor: "#fff" }}
-              InputProps={{ readOnly: isReadOnly || formData.hasVariations }}
+              InputProps={{ readOnly: isReadOnly || formData.hasVariations===true }}
             />
             <TextField
               label="Số lượng tồn kho"
@@ -201,7 +201,7 @@ const ProductFormSection = ({
               variant="outlined"
               size="small"
               sx={{ bgcolor: "#fff" }}
-              InputProps={{ readOnly: isReadOnly || formData.hasVariations }}
+              InputProps={{ readOnly: isReadOnly || formData.hasVariations===true }}
             />
           </Box>
 
