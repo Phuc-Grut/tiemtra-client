@@ -1,20 +1,13 @@
 import React from "react";
-import {
-  Grid,
-  IconButton,
-  Typography,
-  Box,
-  TextField,
-} from "@mui/material";
+import { Grid, IconButton, Typography, Box, TextField } from "@mui/material";
 import RemoveIcon from "@mui/icons-material/Remove";
 import AddIcon from "@mui/icons-material/Add";
 import CloseIcon from "@mui/icons-material/Close";
 
-// ✅ Định nghĩa thêm "variation"
 type CartItemType = {
   id: string;
   name: string;
-  variation: string; // Hộp 15 gói, Hộp 10 gói, v.v.
+  variation: string;
   price: number;
   quantity: number;
   image: string;
@@ -26,40 +19,53 @@ type CartItemProps = {
   onRemove: (id: string) => void;
 };
 
-const CartItem: React.FC<CartItemProps> = ({ item, onQuantityChange, onRemove }) => {
+const CartItem = ({ item, onQuantityChange, onRemove }: CartItemProps) => {
   return (
     <Grid container alignItems="center" spacing={2} mb={2}>
-      <Grid item>
+      <Grid item xs={1}>
         <IconButton onClick={() => onRemove(item.id)}>
           <CloseIcon />
         </IconButton>
       </Grid>
-      <Grid item>
-        <img
-          src={item.image}
-          alt={item.name}
-          style={{ width: 80, height: "auto", borderRadius: 4 }}
-        />
+
+      <Grid item xs={5}>
+        <Box display="flex" alignItems="center" gap={2}>
+          <img
+            src={item.image}
+            alt={item.name}
+            style={{ width: 60, height: "auto", borderRadius: 4 }}
+          />
+          <Box>
+            <Typography fontWeight="bold">{item.name}</Typography>
+            <Typography fontSize={14} color="text.secondary">
+              {item.variation}
+            </Typography>
+          </Box>
+        </Box>
       </Grid>
-      <Grid item xs>
-        <Typography fontWeight="bold">{item.name}</Typography>
-        <Typography fontSize={14} color="text.secondary">
-          {item.variation}
-        </Typography>
-      </Grid>
-      <Grid item>
+
+      <Grid item xs={2}>
         <Typography fontWeight="bold" color="green">
           {item.price.toLocaleString()}₫
         </Typography>
       </Grid>
-      <Grid item>
-        <Box display="flex" alignItems="center" border="1px solid #ccc" borderRadius={1}>
-          <IconButton size="small" onClick={() => onQuantityChange(item.id, -1)}>
+
+      <Grid item xs={2}>
+        <Box
+          display="flex"
+          alignItems="center"
+          border="1px solid #ccc"
+          borderRadius={1}
+        >
+          <IconButton
+            size="small"
+            onClick={() => onQuantityChange(item.id, -1)}
+          >
             <RemoveIcon fontSize="small" />
           </IconButton>
           <TextField
             value={item.quantity}
-            inputProps={{ style: { textAlign: "center", width: 40 } }}
+            inputProps={{ style: { textAlign: "center", width: 30 } }}
             variant="standard"
             disabled
           />
@@ -68,7 +74,8 @@ const CartItem: React.FC<CartItemProps> = ({ item, onQuantityChange, onRemove })
           </IconButton>
         </Box>
       </Grid>
-      <Grid item>
+
+      <Grid item xs={2}>
         <Typography fontWeight="bold" color="green">
           {(item.price * item.quantity).toLocaleString()}₫
         </Typography>

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Box, Grid, Button } from "@mui/material";
+import { Box, Grid, Button, Container } from "@mui/material";
 import CartItem from "./components/CartItem";
 import CartSummary from "./components/CartSummary";
 
@@ -14,7 +14,7 @@ const fakeCart = [
       "https://www.tiemtraannhien.vn/wp-content/uploads/2023/03/duong-nhan-768x768.jpg",
   },
 
-   {
+  {
     id: "sp01-15222",
     name: "Trà hahashashsadad",
     variation: "Hộp 159 gói",
@@ -23,7 +23,6 @@ const fakeCart = [
     image:
       "https://www.tiemtraannhien.vn/wp-content/uploads/2023/03/duong-nhan-768x768.jpg",
   },
-
 ];
 
 const CartPage = () => {
@@ -49,9 +48,42 @@ const CartPage = () => {
   );
 
   return (
-    <Box p={4}>
+    <Container
+      maxWidth="lg"
+      sx={{ py: { xs: 2, md: 4, backgroundColor: "#fff" } }}
+    >
       <Grid container spacing={4}>
         <Grid item xs={12} md={8}>
+          <Box
+            sx={{
+              borderBottom: "2px solid #4C7940",
+              mb: 1,
+              pb: 1,
+              display: { xs: "none", sm: "block" },
+            }}
+          >
+            <Grid
+              container
+              spacing={2}
+              alignItems="center"
+              sx={{ fontWeight: "bold", color: "#4C7940" }}
+            >
+              <Grid item xs={1}></Grid> {/* Cột nút X */}
+              <Grid item xs={5}>
+                Sản Phẩm
+              </Grid>
+              <Grid item xs={2}>
+                Đơn Giá
+              </Grid>
+              <Grid item xs={2}>
+                Số Lượng
+              </Grid>
+              <Grid item xs={2}>
+                Tổng Tiền
+              </Grid>
+            </Grid>
+          </Box>
+
           {cartItems.map((item) => (
             <CartItem
               key={item.id}
@@ -70,7 +102,7 @@ const CartPage = () => {
           <CartSummary subtotal={subtotal} />
         </Grid>
       </Grid>
-    </Box>
+    </Container>
   );
 };
 
