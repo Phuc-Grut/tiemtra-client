@@ -76,7 +76,6 @@ const HomePage = () => {
     };
   }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
-  // Trong HomePage.jsx:
 
   return (
     <Box
