@@ -90,7 +90,7 @@ const Header = () => {
                     }}
                   />
                 </Box>
-                <IconButton>
+                <IconButton onClick={() => navigate("/cart")}>
                   <ShoppingCart />
                 </IconButton>
               </Box>
@@ -187,7 +187,7 @@ const Header = () => {
 
               <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                 {!isSmallScreen && (
-                  <IconButton>
+                  <IconButton onClick={() => navigate("/cart")}>
                     <ShoppingCart />
                   </IconButton>
                 )}

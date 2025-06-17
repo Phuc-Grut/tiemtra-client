@@ -73,8 +73,6 @@ const ProductVariationsSection = ({ formData, setFormData, mode }: props) => {
       price: null,
     }));
   };
-  
-  console.log("🚀 ~ setFormData ~ hasVariations:", formData.hasVariations)
 
   useEffect(() => {
     const variations = formData.productVariations ?? [];
@@ -82,7 +80,7 @@ const ProductVariationsSection = ({ formData, setFormData, mode }: props) => {
     if (variations.length === 0) {
       setFormData((prev) => ({
         ...prev,
-        hasVariations: true
+        hasVariations: false
       }))
       return;
     }
