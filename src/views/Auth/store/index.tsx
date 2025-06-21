@@ -92,14 +92,35 @@ export const verifyOtpApi = createAsyncThunk(
       const response = await authApi.verifyOtp(params);
       const data = response.data;
 
-      if (!data?.success || !data.token) {
+      // ✅ Chỉ cần success là đủ
+      if (!data?.success) {
         return thunkAPI.rejectWithValue(data.message || "Mã OTP không đúng");
       }
 
       return data;
     } catch (error: any) {
       return thunkAPI.rejectWithValue(
-        error.response?.data?.message
+        error.response?.data?.message || "Lỗi xác minh OTP"
+      );
+    }
+  }
+);
+
+export const resendOtpApi = createAsyncThunk(
+  "auth/resendOtp",
+  async (params: { email: string }, thunkAPI) => {
+    try {
+      const response = await authApi.resendOtp(params);
+      const data = response.data;
+
+      if (!data?.success) {
+        return thunkAPI.rejectWithValue(data.message || "Gửi lại OTP thất bại");
+      }
+
+      return data;
+    } catch (error: any) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.message || "Lỗi khi gửi lại OTP"
       );
     }
   }
@@ -155,7 +176,20 @@ const authSlice = createSlice({
       .addCase(verifyOtpApi.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
+      })
+            // gửi lại otp
+      .addCase(resendOtpApi.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(resendOtpApi.fulfilled, (state) => {
+        state.loading = false;
+      })
+      .addCase(resendOtpApi.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
       });
+
   },
 });
 

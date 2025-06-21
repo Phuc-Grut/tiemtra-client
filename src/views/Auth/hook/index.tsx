@@ -6,7 +6,9 @@ import {
   logout,
   registerApi,
   verifyOtpApi,
+  resendOtpApi
 } from "../store";
+import authApi from "src/services/api/Authentication";
 
 export const useAuth = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -59,6 +61,18 @@ export const useAuth = () => {
     }
   };
 
+const resendOtp = async (params: { email: string }) => {
+  try {
+    const result = await dispatch(resendOtpApi(params)).unwrap();
+    return { success: true, message: result.message };
+  } catch (error: any) {
+    return {
+      success: false,
+      message: error?.message || "Gửi lại OTP thất bại",
+    };
+  }
+};
+  // đăng xuất
   const logoutUser = () => dispatch(logout());
 
   return {
@@ -69,5 +83,6 @@ export const useAuth = () => {
     register,
     logout: logoutUser,
     verifyOtp,
+    resendOtp
   };
 };
