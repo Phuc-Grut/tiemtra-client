@@ -77,3 +77,9 @@ export const STORE_PPRODUCT = {
         GET_PRODUCT_BY_CODE: (productCode: string) => `${URL_STORE}/product/get-product-by-code/${productCode}`
     }
 }
+
+export const STORE_CART = {
+    URL_API: {
+        VIEW_CART: `${URL_STORE}/cart/view-cart`
+    }
+}
