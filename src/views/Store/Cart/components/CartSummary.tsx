@@ -8,23 +8,23 @@ const CartSummary = ({ subtotal }: { subtotal: number }) => {
   return (
     <Box borderLeft="1px solid #ddd" pl={3}>
       <Typography variant="h6" fontWeight="bold" gutterBottom>
-        CART TOTALS
+        Tổng giỏ hàng
       </Typography>
       <Box display="flex" justifyContent="space-between">
-        <Typography>Subtotal</Typography>
+        <Typography>Tiền hàng</Typography>
         <Typography fontWeight="bold" color="green">
           {subtotal.toLocaleString()}₫
         </Typography>
       </Box>
       <Box display="flex" justifyContent="space-between" mt={1}>
-        <Typography>Đồng giá:</Typography>
+        <Typography>Phí vận chuyển:</Typography>
         <Typography fontWeight="bold" color="gray">
           {shipping.toLocaleString()}₫
         </Typography>
       </Box>
       <Divider sx={{ my: 2 }} />
       <Box display="flex" justifyContent="space-between">
-        <Typography fontWeight="bold">Total</Typography>
+        <Typography fontWeight="bold">Tổng Tiền</Typography>
         <Typography fontWeight="bold" color="green">
           {total.toLocaleString()}₫
         </Typography>

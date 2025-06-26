@@ -1,63 +1,107 @@
-import React, { useState } from "react";
-import { Box, Grid, Button } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import {
+  Box,
+  Grid,
+  Button,
+  CircularProgress,
+  Typography,
+  Container,
+} from "@mui/material";
+import { useQuery } from "@tanstack/react-query";
 import CartItem from "./components/CartItem";
 import CartSummary from "./components/CartSummary";
-
-const fakeCart = [
-  {
-    id: "sp01-15",
-    name: "Trà Dưỡng Nhan An Nhiên",
-    variation: "Hộp 15 gói",
-    price: 159000,
-    quantity: 1,
-    image:
-      "https://www.tiemtraannhien.vn/wp-content/uploads/2023/03/duong-nhan-768x768.jpg",
-  },
-
-   {
-    id: "sp01-15222",
-    name: "Trà hahashashsadad",
-    variation: "Hộp 159 gói",
-    price: 15000,
-    quantity: 10,
-    image:
-      "https://www.tiemtraannhien.vn/wp-content/uploads/2023/03/duong-nhan-768x768.jpg",
-  },
-
-];
+import cartApi from "src/services/api/Cart";
+import { ICartItem } from "src/Interfaces/ICart";
 
 const CartPage = () => {
-  const [cartItems, setCartItems] = useState(fakeCart);
+  const [cartItems, setCartItems] = useState<ICartItem[]>([]);
 
-  const updateQuantity = (id: string, delta: number) => {
-    setCartItems((prev) =>
-      prev.map((item) =>
-        item.id === id
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ["cart"],
+    queryFn: () => cartApi.viewCart().then((res) => res.data),
+  });
+
+  useEffect(() => {
+    if (data?.items) {
+      setCartItems(data.items);
+    }
+  }, [data]);
+
+  const subtotal = cartItems.reduce(
+    (sum: number, item: any) => sum + item.price * item.quantity,
+    0
+  );
+
+  if (isLoading) {
+    return (
+      <Box p={4} display="flex" justifyContent="center">
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  if (isError) {
+    return (
+      <Box p={4}>
+        <Typography color="error">Đã xảy ra lỗi khi tải giỏ hàng.</Typography>
+      </Box>
+    );
+  }
+
+  if (cartItems.length === 0) {
+    return (
+      <Box p={4}>
+        <Typography>Giỏ hàng của bạn đang trống.</Typography>
+      </Box>
+    );
+  }
+
+  const handleQuantityChange = (cartItemId: string, delta: number) => {
+    setCartItems((prevItems) =>
+      prevItems.map((item) =>
+        item.cartItemId === cartItemId
           ? { ...item, quantity: Math.max(1, item.quantity + delta) }
           : item
       )
     );
   };
 
-  const removeItem = (id: string) => {
-    setCartItems((prev) => prev.filter((item) => item.id !== id));
-  };
-
-  const subtotal = cartItems.reduce(
-    (sum, item) => sum + item.price * item.quantity,
-    0
-  );
-
   return (
-    <Box p={4}>
+    <Container
+      maxWidth="lg"
+      sx={{ py: { xs: 2, md: 4, backgroundColor: "#fff" } }}
+    >
       <Grid container spacing={4}>
         <Grid item xs={12} md={8}>
-          {cartItems.map((item) => (
+          <Grid container alignItems="center" spacing={2} mb={1}>
+            <Grid item xs={6}>
+              <Typography fontWeight="bold" fontSize="18px" marginLeft={6}>
+                Sản Phẩm
+              </Typography>
+            </Grid>
+            <Grid item xs={2}>
+              <Typography fontSize="18px" fontWeight="bold">
+                Đơn Giá
+              </Typography>
+            </Grid>
+            <Grid item xs={2}>
+              <Typography fontWeight="bold" fontSize="18px" marginLeft={0}>
+                Số Lượng
+              </Typography>
+            </Grid>
+            <Grid item xs={2}>
+              <Typography fontSize="18px" fontWeight="bold">
+                Tổng Tiền
+              </Typography>
+            </Grid>
+          </Grid>
+
+          {cartItems.map((item: ICartItem) => (
             <CartItem
-              key={item.id}
+              key={item.cartItemId}
               item={item}
-              onQuantityChange={updateQuantity}
-              onRemove={removeItem}
+              onQuantityChange={handleQuantityChange}
+              onRemove={() => {}}
             />
           ))}
           <Box mt={3}>
@@ -70,7 +114,10 @@ const CartPage = () => {
           <CartSummary subtotal={subtotal} />
         </Grid>
       </Grid>
-    </Box>
+      
+    </Container>
+
+    
   );
 };
 
