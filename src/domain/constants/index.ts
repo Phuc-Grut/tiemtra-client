@@ -65,7 +65,7 @@ export const ADMIN_PRODUCT = {
         GENERATE_PRODUCT_CODE: `${URL_ADMIN}/product/generate-product-code`,
         CREATE_PRODUCT: `${URL_ADMIN}/product/create-product`,
         UPDATE_PRODUCT: (id: string) => `${URL_ADMIN}/product/update-product/${id}`,
-        UP_PRODUCT_IMAGE: `${URL_ADMIN}/product/product-image`,
+        UP_PRODUCT_IMAGE: `${URL_ADMIN}/product/add-product-image`,
         GET_ALL_PRODUCT: `${URL_ADMIN}/product/get-paging-products`,
         GET_BY_ID: `${URL_ADMIN}/product/get-by-id`
     }
@@ -80,6 +80,11 @@ export const STORE_PPRODUCT = {
 
 export const STORE_CART = {
     URL_API: {
-        VIEW_CART: `${URL_STORE}/cart/view-cart`
+        VIEW_CART: `${URL_STORE}/cart/view-cart`,
+        ADD_PRODUCT_TO_CART: `${URL_STORE}/cart/add-product-to-cart`,
+        UPDATE_QUANTITY: `${URL_STORE}/cart/update-cart-item-quantity`,
+        REMOVE_CART_ITEM: `${URL_STORE}/cart/remove-cart-item`,
+
+        GET_TOTAL_QUANTITY: `${URL_STORE}/cart/get-total-quantity`,
     }
 }

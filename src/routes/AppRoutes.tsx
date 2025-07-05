@@ -12,6 +12,7 @@ import ProtectedRoute from "src/components/ProtectedRoute";
 import ProductDetail from "src/views/Store/ProductDetail";
 import VerifyOtp from "src/views/Auth/pages/VerifyOtp";
 import CartPage from "src/views/Store/Cart";
+import ProductList from "src/views/Store/ProductList";
 const AppRoutes = () => {
   return (
     <Routes>
@@ -22,6 +23,7 @@ const AppRoutes = () => {
         <Route path="/" element={<HomePage />} />
         <Route path="san-pham/:code/:slug" element={<ProductDetail />} />
         <Route path="/cart" element={<CartPage />} />
+        <Route path="/san-pham" element={<ProductList />} />
       </Route>
       <Route
         path="/admin"

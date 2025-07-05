@@ -9,33 +9,117 @@ import {
   useTheme,
   useMediaQuery,
 } from "@mui/material";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import CartItem from "./components/CartItem";
 import CartSummary from "./components/CartSummary";
 import cartApi from "src/services/api/Cart";
-import { ICartItem } from "src/Interfaces/ICart";
+import { ICart, ICartItem } from "src/Interfaces/ICart";
+import useToast from "src/components/Toast";
+import { useCurrentUser } from "src/hook/useCurrentUser";
 
 const CartPage = () => {
-  const [cartItems, setCartItems] = useState<ICartItem[]>([]);
+  const user = useCurrentUser();
+  const { showError, showSuccess } = useToast();
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const [loading, setLoading] = useState(false);
 
-  const { data, isLoading, isError } = useQuery({
+  const queryClient = useQueryClient();
+
+  const [cartItems, setCartItems] = useState<ICartItem[]>([]);
+  const [cart, setCart] = useState<ICart | undefined>();
+
+  // 1. Lấy giỏ từ local nếu chưa đăng nhập
+  const raw = localStorage.getItem("cart");
+  const localCart = raw
+    ? JSON.parse(raw)
+    : { items: [], totalQuantity: 0, totalPrice: 0 };
+
+  // 2. Gọi API nếu đã login
+  const {
+    data: serverCart,
+    isLoading,
+    isError,
+  } = useQuery({
     queryKey: ["cart"],
     queryFn: () => cartApi.viewCart().then((res) => res.data),
+    enabled: !!user,
   });
 
   useEffect(() => {
-    if (data?.items) {
-      setCartItems(data.items);
-    }
-  }, [data]);
+  if (serverCart) {
+    setCart(serverCart);
+    setCartItems(serverCart.items ?? []);
+  } else if (!user) {
+    setCart(localCart);
+    setCartItems(localCart.items ?? []);
+  }
+// eslint-disable-next-line react-hooks/exhaustive-deps
+}, [serverCart, user]);
 
-  const subtotal = cartItems.reduce(
-    (sum: number, item: any) => sum + item.price * item.quantity,
-    0
-  );
+
+  const handleQuantityChange = async (cartItemId: string, delta: number) => {
+    const item = cartItems.find((i) => i.cartItemId === cartItemId);
+    if (!item) return;
+
+    const newQuantity = Math.max(1, item.quantity + delta);
+    setLoading(true);
+
+    try {
+      await cartApi.updateQuantity({
+        productId: item.productId,
+        productVariationId: item.productVariationId,
+        quantity: newQuantity,
+      });
+
+      queryClient.invalidateQueries({ queryKey: ["cart"] });
+      queryClient.invalidateQueries({ queryKey: ["cart-total-quantity"] });
+
+      showSuccess("Cập nhật số lượng thành công");
+      setLoading(false);
+    } catch (err) {
+      showError("Cập nhật số lượng thất bại");
+      setLoading(false);
+    }
+  };
+
+  const handleRemoveCartItem = async (cartItemId: string) => {
+    try {
+      await cartApi.removeCartItem(cartItemId);
+      setCartItems((prev) =>
+        prev.filter((item) => item.cartItemId !== cartItemId)
+      );
+      queryClient.invalidateQueries({ queryKey: ["cart-total-quantity"] });
+      showSuccess("Đã xóa sản phẩm khỏi giỏ hàng!");
+    } catch (err: any) {
+      showError(err.response?.data ?? "Xóa sản phẩm thất bại");
+    }
+  };
+
+  if (cartItems.length === 0) {
+    return (
+      <Box
+        display="flex"
+        flexDirection="column"
+        alignItems="center"
+        justifyContent="center"
+        height="60vh"
+        textAlign="center"
+      >
+        <Typography fontSize={18} fontWeight="medium" mb={2}>
+          Giỏ hàng của bạn đang trống.
+        </Typography>
+        <Button
+          variant="outlined"
+          color="success"
+          onClick={() => (window.location.href = "/san-pham")}
+        >
+          ← TIẾP TỤC MUA SẮM
+        </Button>
+      </Box>
+    );
+  }
 
   if (isLoading) {
     return (
@@ -53,29 +137,28 @@ const CartPage = () => {
     );
   }
 
-  if (cartItems.length === 0) {
-    return (
-      <Box p={4}>
-        <Typography>Giỏ hàng của bạn đang trống.</Typography>
-      </Box>
-    );
-  }
-
-  const handleQuantityChange = (cartItemId: string, delta: number) => {
-    setCartItems((prevItems) =>
-      prevItems.map((item) =>
-        item.cartItemId === cartItemId
-          ? { ...item, quantity: Math.max(1, item.quantity + delta) }
-          : item
-      )
-    );
-  };
-
   return (
     <Container
       maxWidth="lg"
       sx={{ py: { xs: 2, md: 4, backgroundColor: "#fff" } }}
     >
+      {loading && (
+        <Box
+          position="fixed"
+          top={0}
+          left={0}
+          width="100vw"
+          height="100vh"
+          bgcolor="rgba(255,255,255,0.6)"
+          zIndex={9999}
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+        >
+          <CircularProgress />
+        </Box>
+      )}
+
       <Grid container spacing={4}>
         <Grid item xs={12} md={8}>
           {isMobile ? (
@@ -85,7 +168,6 @@ const CartPage = () => {
               </Typography>
             </Box>
           ) : (
-            
             <Grid container alignItems="center" spacing={2} mb={1}>
               <Grid item xs={6}>
                 <Typography fontWeight="bold" fontSize="18px" marginLeft={6}>
@@ -115,17 +197,23 @@ const CartPage = () => {
               key={item.cartItemId}
               item={item}
               onQuantityChange={handleQuantityChange}
-              onRemove={() => {}}
+              onRemove={() => {
+                handleRemoveCartItem(item.cartItemId);
+              }}
             />
           ))}
           <Box mt={3}>
-            <Button variant="outlined" color="success">
-              ← CONTINUE SHOPPING
+            <Button
+              variant="outlined"
+              color="success"
+              onClick={() => (window.location.href = "/san-pham")}
+            >
+              ← TIẾP TỤC MUA SẮM
             </Button>
           </Box>
         </Grid>
         <Grid item xs={12} md={4}>
-          <CartSummary subtotal={subtotal} />
+          <CartSummary subtotal={cart?.totalPrice} />
         </Grid>
       </Grid>
     </Container>

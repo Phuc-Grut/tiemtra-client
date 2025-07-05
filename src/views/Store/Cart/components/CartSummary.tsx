@@ -1,9 +1,9 @@
 import React from "react";
 import { Box, Typography, Divider, Button } from "@mui/material";
 
-const CartSummary = ({ subtotal }: { subtotal: number }) => {
+const CartSummary = ({ subtotal }: { subtotal?: number }) => {
   const shipping = 30000;
-  const total = subtotal + shipping;
+  const total = subtotal || 0 + shipping;
 
   return (
     <Box borderLeft="1px solid #ddd" pl={3}>
@@ -13,7 +13,7 @@ const CartSummary = ({ subtotal }: { subtotal: number }) => {
       <Box display="flex" justifyContent="space-between">
         <Typography>Tiền hàng</Typography>
         <Typography fontWeight="bold" color="green">
-          {subtotal.toLocaleString()}₫
+          {subtotal?.toLocaleString()}₫
         </Typography>
       </Box>
       <Box display="flex" justifyContent="space-between" mt={1}>

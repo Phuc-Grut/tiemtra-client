@@ -14,6 +14,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import { ICartItem } from "src/Interfaces/ICart";
 import { useNavigate } from "react-router-dom";
 import { slugify } from "src/utils/slugify";
+import QuantityInput from "./QuantityInput";
 
 type CartItemProps = {
   item: ICartItem;
@@ -86,22 +87,11 @@ const CartItem: React.FC<CartItemProps> = ({
           <IconButton
             size="small"
             onClick={() => onQuantityChange(item.cartItemId, -1)}
+            disabled={item.quantity === 1}
           >
             <RemoveIcon fontSize="small" />
           </IconButton>
-          <TextField
-            value={item.quantity}
-            inputProps={{
-              style: {
-                textAlign: "center",
-                width: 20,
-                fontSize: 13,
-              },
-              readOnly: true,
-            }}
-            variant="standard"
-            disabled
-          />
+          <QuantityInput item={item} onQuantityChange={onQuantityChange} />
           <IconButton
             size="small"
             onClick={() => onQuantityChange(item.cartItemId, 1)}
@@ -149,18 +139,11 @@ const CartItem: React.FC<CartItemProps> = ({
           <IconButton
             size="small"
             onClick={() => onQuantityChange(item.cartItemId, -1)}
+            disabled={item.quantity === 1}
           >
             <RemoveIcon fontSize="small" />
           </IconButton>
-          <TextField
-            value={item.quantity}
-            inputProps={{
-              style: { textAlign: "center", width: 40 },
-              readOnly: true,
-            }}
-            variant="standard"
-            disabled
-          />
+          <QuantityInput item={item} onQuantityChange={onQuantityChange} />
           <IconButton
             size="small"
             onClick={() => onQuantityChange(item.cartItemId, 1)}
