@@ -48,16 +48,15 @@ const CartPage = () => {
   });
 
   useEffect(() => {
-  if (serverCart) {
-    setCart(serverCart);
-    setCartItems(serverCart.items ?? []);
-  } else if (!user) {
-    setCart(localCart);
-    setCartItems(localCart.items ?? []);
-  }
-// eslint-disable-next-line react-hooks/exhaustive-deps
-}, [serverCart, user]);
-
+    if (serverCart) {
+      setCart(serverCart);
+      setCartItems(serverCart.items ?? []);
+    } else if (!user) {
+      setCart(localCart);
+      setCartItems(localCart.items ?? []);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [serverCart, user]);
 
   const handleQuantityChange = async (cartItemId: string, delta: number) => {
     const item = cartItems.find((i) => i.cartItemId === cartItemId);
@@ -65,6 +64,40 @@ const CartPage = () => {
 
     const newQuantity = Math.max(1, item.quantity + delta);
     setLoading(true);
+
+    if (!user) {
+      try {
+        const raw = localStorage.getItem("cart");
+        const cart = raw ? JSON.parse(raw) : null;
+
+        if (!cart) return;
+
+        const updatedItems = cart.items.map((i: any) =>
+          i.cartItemId === cartItemId ? { ...i, quantity: newQuantity } : i
+        );
+
+        cart.items = updatedItems;
+        cart.totalQuantity = updatedItems.reduce(
+          (sum: number, i: any) => sum + i.quantity,
+          0
+        );
+        cart.totalPrice = updatedItems.reduce(
+          (sum: number, i: any) => sum + i.quantity * i.price,
+          0
+        );
+
+        localStorage.setItem("cart", JSON.stringify(cart));
+        setCartItems(updatedItems);
+        setCart(cart);
+        window.dispatchEvent(new Event("local-cart-updated"));
+        showSuccess("Cập nhật số lượng thành công");
+      } catch {
+        showError("Lỗi cập nhật số lượng ");
+      } finally {
+        setLoading(false);
+      }
+      return;
+    }
 
     try {
       await cartApi.updateQuantity({
@@ -75,16 +108,46 @@ const CartPage = () => {
 
       queryClient.invalidateQueries({ queryKey: ["cart"] });
       queryClient.invalidateQueries({ queryKey: ["cart-total-quantity"] });
-
       showSuccess("Cập nhật số lượng thành công");
-      setLoading(false);
     } catch (err) {
       showError("Cập nhật số lượng thất bại");
+    } finally {
       setLoading(false);
     }
   };
 
   const handleRemoveCartItem = async (cartItemId: string) => {
+    if (!user) {
+      try {
+        const raw = localStorage.getItem("cart");
+        const cart = raw ? JSON.parse(raw) : null;
+
+        if (!cart) return;
+
+        const updatedItems = cart.items.filter(
+          (i: any) => i.cartItemId !== cartItemId
+        );
+        cart.items = updatedItems;
+        cart.totalQuantity = updatedItems.reduce(
+          (sum: number, i: any) => sum + i.quantity,
+          0
+        );
+        cart.totalPrice = updatedItems.reduce(
+          (sum: number, i: any) => sum + i.quantity * i.price,
+          0
+        );
+
+        localStorage.setItem("cart", JSON.stringify(cart));
+        setCartItems(updatedItems);
+        setCart(cart);
+        window.dispatchEvent(new Event("local-cart-updated"));
+        showSuccess("Đã xóa sản phẩm khỏi giỏ hàng!");
+      } catch {
+        showError("Lỗi khi xóa sản phẩm");
+      }
+      return;
+    }
+
     try {
       await cartApi.removeCartItem(cartItemId);
       setCartItems((prev) =>

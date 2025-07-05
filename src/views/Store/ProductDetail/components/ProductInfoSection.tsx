@@ -98,6 +98,7 @@ const ProductInfoSection = ({ product }: ProductInfoSectionProps) => {
         );
 
         localStorage.setItem("cart", JSON.stringify(cart));
+        window.dispatchEvent(new Event("local-cart-updated"));
         showSuccess("Đã thêm vào giỏ hàng");
       } catch (err) {
         showError("Lỗi khi thêm vào giỏ hàng tạm");

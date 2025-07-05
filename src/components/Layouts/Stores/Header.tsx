@@ -17,7 +17,7 @@ import { ShoppingCart } from "@mui/icons-material";
 import EmailIcon from "@mui/icons-material/Email";
 import PhoneIcon from "@mui/icons-material/Phone";
 import SearchIcon from "@mui/icons-material/Search";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import cartApi from "src/services/api/Cart";
@@ -26,15 +26,33 @@ import { useCurrentUser } from "src/hook/useCurrentUser";
 const Header = () => {
   const navigate = useNavigate();
   const isSmallScreen = useMediaQuery("(max-width:850px)");
-  const user = useCurrentUser();
-
-  const localCart = JSON.parse(localStorage.getItem("cartItems") || "[]");
-  const localTotal = localCart.reduce(
-    (sum: any, item: { quantity: any }) => sum + item.quantity,
-    0
-  );
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+
+  const user = useCurrentUser();
+
+  const [localTotal, setLocalTotal] = useState(0);
+
+  useEffect(() => {
+    const updateLocalCart = () => {
+      const raw = localStorage.getItem("cart");
+      const cart = raw ? JSON.parse(raw) : { items: [] };
+      const items = cart.items ?? [];
+      const total = items.reduce(
+        (sum: number, item: { quantity: number }) => sum + item.quantity,
+        0
+      );
+      setLocalTotal(total);
+    };
+
+    window.addEventListener("local-cart-updated", updateLocalCart);
+
+    updateLocalCart();
+
+    return () => {
+      window.removeEventListener("local-cart-updated", updateLocalCart);
+    };
+  }, []);
 
   const { data: serverTotal = 0 } = useQuery({
     queryKey: ["cart-total-quantity"],
