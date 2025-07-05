@@ -16,8 +16,9 @@ import {
   Call,
   NetworkWifi3Bar,
 } from "@mui/icons-material";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useCurrentUser } from "src/hook/useCurrentUser";
 
 type TopBarProps = {
   setExpanded: (value: boolean) => void;
@@ -29,14 +30,7 @@ const TopBar = ({ setExpanded }: TopBarProps) => {
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const navigate = useNavigate();
-  const [user, setUser] = useState<any>(null);
-
-  useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    }
-  }, []);
+  const user = useCurrentUser();
 
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -50,7 +44,7 @@ const TopBar = ({ setExpanded }: TopBarProps) => {
     localStorage.removeItem("user");
     localStorage.removeItem("access_token");
     localStorage.removeItem("refresh_token");
-    setUser(null);
+    window.dispatchEvent(new Event("userChanged"));
     handleMenuClose();
     navigate("/");
   };

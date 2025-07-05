@@ -12,6 +12,10 @@ import RemoveIcon from "@mui/icons-material/Remove";
 import { useState } from "react";
 import { IProduct, ProductVariation } from "src/Interfaces/IProduct";
 import ProductRenderPrice from "src/components/ProductRenderPrice";
+import { AddProductToCart } from "src/Interfaces/ICart";
+import cartApi from "src/services/api/Cart";
+import useToast from "src/components/Toast";
+import { useCurrentUser } from "src/hook/useCurrentUser";
 
 interface ProductInfoSectionProps {
   product: IProduct;
@@ -20,6 +24,9 @@ interface ProductInfoSectionProps {
 const ProductInfoSection = ({ product }: ProductInfoSectionProps) => {
   const [variant, setVariant] = useState("");
   const [quantity, setQuantity] = useState(1);
+
+  const { showSuccess, showError } = useToast();
+  const user = useCurrentUser();
 
   const handleVariantChange = (
     event: React.MouseEvent<HTMLElement>,
@@ -34,13 +41,79 @@ const ProductInfoSection = ({ product }: ProductInfoSectionProps) => {
     setQuantity((prev) => Math.max(1, prev + change));
   };
 
-  const handleAddToCart = () => {
-    console.log("Add to cart:", {
-      product,
-      quantity,
-      variant,
-    });
-    // TODO: Thêm hàm addToCart() hoặc dispatch Redux
+  const selectedVariationId =
+    product.productVariations?.find((v) => v.typeName === variant)
+      ?.productVariationId ?? null;
+
+  const handleAddToCart = async (data: AddProductToCart) => {
+
+    // check biến thể
+    const hasVariations = data.product?.productVariations?.length;
+    const selectedVariation = data.product?.productVariations?.find(
+      (v) => v.productVariationId === data.productVariationId
+    );
+
+    if (hasVariations && !selectedVariation) {
+      showError("Vui lòng chọn loại sản phẩm.");
+      return;
+    }
+
+    // add local
+    if (!user) {
+      try {
+        const raw = localStorage.getItem("cart");
+        const cart = raw
+          ? JSON.parse(raw)
+          : { items: [], totalQuantity: 0, totalPrice: 0 };
+
+        const existing = cart.items.find(
+          (item: any) =>
+            item.productId === data.productId &&
+            item.productVariationId === data.productVariationId
+        );
+
+        if (existing) {
+          existing.quantity += data.quantity;
+        } else {
+          cart.items.push({
+            cartItemId: crypto.randomUUID?.() || Date.now().toString(),
+            productId: data.productId,
+            productVariationId: data.productVariationId,
+            productCode: data.product?.productCode,
+            productName: data.product?.productName || "",
+            productVariationName: selectedVariation?.typeName || "",
+            previewImage: data.product?.privewImageUrl || "",
+            price: selectedVariation?.price || data.product?.price || 0,
+            quantity: data.quantity,
+          });
+        }
+
+        cart.totalQuantity = cart.items.reduce(
+          (sum: number, item: any) => sum + item.quantity,
+          0
+        );
+        cart.totalPrice = cart.items.reduce(
+          (sum: number, item: any) => sum + item.quantity * item.price,
+          0
+        );
+
+        localStorage.setItem("cart", JSON.stringify(cart));
+        window.dispatchEvent(new Event("local-cart-updated"));
+        showSuccess("Đã thêm vào giỏ hàng");
+      } catch (err) {
+        showError("Lỗi khi thêm vào giỏ hàng tạm");
+      }
+
+      return;
+    }
+
+    // add api
+    try {
+      const res = await cartApi.addProductToCart(data);
+      showSuccess(res.data.message);
+    } catch (err: any) {
+      showError(err.response?.data ?? "Thêm sản phẩm thất bại");
+    }
   };
 
   const handleBuyNow = () => {
@@ -127,7 +200,18 @@ const ProductInfoSection = ({ product }: ProductInfoSectionProps) => {
       </Box>
 
       <Stack direction="row" spacing={2}>
-        <Button variant="contained" color="success" onClick={handleAddToCart}>
+        <Button
+          variant="contained"
+          color="success"
+          onClick={() =>
+            handleAddToCart({
+              productId: product.productId,
+              productVariationId: selectedVariationId,
+              quantity: quantity,
+              product: product,
+            })
+          }
+        >
           THÊM VÀO GIỎ HÀNG
         </Button>
         <Button variant="contained" color="success" onClick={handleBuyNow}>
