@@ -31,7 +31,7 @@ const CartSummary = ({ subtotal }: { subtotal?: number }) => {
       </Box>
       <Box mt={3}>
         <Button fullWidth variant="contained" color="success">
-          PROCEED TO CHECKOUT
+          THANH TOÁN
         </Button>
       </Box>
     </Box>
