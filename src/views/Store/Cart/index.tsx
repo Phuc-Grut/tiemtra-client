@@ -6,6 +6,8 @@ import {
   CircularProgress,
   Typography,
   Container,
+  useTheme,
+  useMediaQuery,
 } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import CartItem from "./components/CartItem";
@@ -15,6 +17,9 @@ import { ICartItem } from "src/Interfaces/ICart";
 
 const CartPage = () => {
   const [cartItems, setCartItems] = useState<ICartItem[]>([]);
+
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ["cart"],
@@ -73,28 +78,37 @@ const CartPage = () => {
     >
       <Grid container spacing={4}>
         <Grid item xs={12} md={8}>
-          <Grid container alignItems="center" spacing={2} mb={1}>
-            <Grid item xs={6}>
-              <Typography fontWeight="bold" fontSize="18px" marginLeft={6}>
+          {isMobile ? (
+            <Box mb={1} px={1}>
+              <Typography fontWeight="bold" fontSize="16px">
                 Sản Phẩm
               </Typography>
+            </Box>
+          ) : (
+            
+            <Grid container alignItems="center" spacing={2} mb={1}>
+              <Grid item xs={6}>
+                <Typography fontWeight="bold" fontSize="18px" marginLeft={6}>
+                  Sản Phẩm
+                </Typography>
+              </Grid>
+              <Grid item xs={2}>
+                <Typography fontSize="18px" fontWeight="bold">
+                  Đơn Giá
+                </Typography>
+              </Grid>
+              <Grid item xs={2}>
+                <Typography fontWeight="bold" fontSize="18px">
+                  Số Lượng
+                </Typography>
+              </Grid>
+              <Grid item xs={2}>
+                <Typography fontSize="18px" fontWeight="bold">
+                  Tổng Tiền
+                </Typography>
+              </Grid>
             </Grid>
-            <Grid item xs={2}>
-              <Typography fontSize="18px" fontWeight="bold">
-                Đơn Giá
-              </Typography>
-            </Grid>
-            <Grid item xs={2}>
-              <Typography fontWeight="bold" fontSize="18px" marginLeft={0}>
-                Số Lượng
-              </Typography>
-            </Grid>
-            <Grid item xs={2}>
-              <Typography fontSize="18px" fontWeight="bold">
-                Tổng Tiền
-              </Typography>
-            </Grid>
-          </Grid>
+          )}
 
           {cartItems.map((item: ICartItem) => (
             <CartItem
@@ -114,10 +128,7 @@ const CartPage = () => {
           <CartSummary subtotal={subtotal} />
         </Grid>
       </Grid>
-      
     </Container>
-
-    
   );
 };
 

@@ -1,7 +1,8 @@
 export interface ICartItem {
   cartItemId: string;
   productId: string;
-  productName?: string;
+  productCode: string
+  productName: string;
   productVariationName?: string;
   previewImage?: string;
   price: number;
