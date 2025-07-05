@@ -48,6 +48,8 @@ export const loginApi = createAsyncThunk(
       localStorage.setItem("refresh_token", data.refreshToken || "");
       localStorage.setItem("user", JSON.stringify(data.data));
 
+      localStorage.removeItem("cart")
+
       return data;
     } catch (error: any) {
       return thunkAPI.rejectWithValue(

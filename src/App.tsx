@@ -8,10 +8,11 @@ import theme from "./assets/styles/theme";
 import { CssBaseline } from "@mui/material";
 import { SnackbarProvider } from "notistack";
 import ToastPosition from "./components/ToastPosition";
+import { useCartLocalInit } from "./hook/useCartLocalInit";
 
 const App = () => {
   const queryClient = new QueryClient();
-
+  useCartLocalInit();
   return (
     <Provider store={store}>
       <QueryClientProvider client={queryClient}>
@@ -20,7 +21,7 @@ const App = () => {
           <SnackbarProvider
             maxSnack={3}
             autoHideDuration={3000}
-            anchorOrigin={{ vertical: "top" , horizontal: "right" }}
+            anchorOrigin={{ vertical: "top", horizontal: "right" }}
           >
             <ToastPosition />
             <BrowserRouter>

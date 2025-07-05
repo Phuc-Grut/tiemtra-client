@@ -34,19 +34,21 @@ const useToast = () => {
             id={key.toString()}
             display="flex"
             alignItems="center"
-            justifyContent= "center"
+            justifyContent="center"
             bgcolor="#fff"
             borderRadius={1.5}
             boxShadow={2}
             px={2}
             py={1}
-            sx={{ minWidth: 180, maxWidth: 210 }}
+            sx={{
+              minWidth: 180,
+              whiteSpace: "normal",
+            }}
           >
             {getIcon(variant)}
             <Typography
               variant="body2"
               fontWeight={700}
-              noWrap
               sx={{ flexGrow: 1 }}
             >
               {message}
