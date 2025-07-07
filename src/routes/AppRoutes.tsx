@@ -8,6 +8,7 @@ import Category from "src/views/Admin/Category";
 import Attribute from "src/views/Admin/Attribute";
 import StoreLayout from "src/layouts/StoreLayout";
 import Product from "src/views/Admin/Product";
+import Brand from "src/views/Admin/Brand";
 import ProtectedRoute from "src/components/ProtectedRoute";
 import ProductDetail from "src/views/Store/ProductDetail";
 import VerifyOtp from "src/views/Auth/pages/VerifyOtp";
@@ -37,6 +38,7 @@ const AppRoutes = () => {
         <Route path="product" element={<Product />} />
         <Route path="category" element={<Category />} />
         <Route path="attribute" element={<Attribute />} />
+         <Route path="brand" element={<Brand/>} />
         <Route path="category/*" element={<Category />} />
       </Route>
     </Routes>

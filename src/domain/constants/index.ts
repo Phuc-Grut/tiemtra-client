@@ -88,3 +88,13 @@ export const STORE_CART = {
         GET_TOTAL_QUANTITY: `${URL_STORE}/cart/get-total-quantity`,
     }
 }
+export const BRAND = {
+  URL_API: {
+    GET_ALL_API: "/api/admin/brand/get-paging-brands",
+    GET_BY_ID_API: "/api/admin/brand/get-by-id",
+    CREATE_API: "/api/admin/brand/create-brand",
+    UPDATE_API: (id: number) => `/api/admin/brand/update-brand/${id}`,
+    DELETE_API_BY_IDS: "/api/admin/brand/delete-by-ids",
+    CHECK_DELETE_BY_IDS: "/api/admin/brand/check-delete-by-ids",
+  },
+};

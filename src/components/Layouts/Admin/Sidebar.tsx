@@ -129,6 +129,32 @@ const Sidebar = ({ expanded, setExpanded }: SidebarProps) => {
             {expanded && <ListItemText primary="Sản phẩm" />}
           </ListItem>
         </Tooltip>
+         <Tooltip
+          title="Thương hiệu"
+          placement="right"
+          disableHoverListener={expanded}
+        >
+          <ListItem
+            component={Link}
+            to="/admin/brand"
+            sx={{ cursor: "pointer", justifyContent: "center" }}
+          >
+            <ListItemIcon
+              sx={{
+                minWidth: 0,
+                paddingRight: expanded ? 1 : "auto",
+                justifyContent: "center",
+              }}
+            >
+              <img
+                src="/image/icons/brand-icon.png"
+                alt="Brand"
+                style={{ width: 24, height: 24 }}
+              />
+            </ListItemIcon>
+            {expanded && <ListItemText primary="Thương hiệu" />}
+          </ListItem>
+        </Tooltip>
 
         <Tooltip
           title="category"
