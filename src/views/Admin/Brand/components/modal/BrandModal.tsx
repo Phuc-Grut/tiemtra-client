@@ -5,11 +5,10 @@ import {
   DialogActions,
   Button,
   TextField,
-  Typography,
   Box,
 } from "@mui/material";
 import { useEffect, useState } from "react";
-import { IAddBrandRequest, IBrand } from "src/Interfaces/IBrand";
+import { IBrand } from "src/Interfaces/IBrand";
 import brandApi from "src/services/api/Brand";
 
 interface BrandModalProps {
@@ -24,46 +23,46 @@ const BrandModal = ({ open, onClose, brandId, mode }: BrandModalProps) => {
   const isEditMode = mode === "edit";
   const isCreateMode = mode === "create";
 
-  const [form, setForm] = useState<IAddBrandRequest>({
-    brandName: "",
-    description: "",
-    logo: "",
-  });
-
-  const [metadata, setMetadata] = useState<Partial<IBrand>>({});
+  const [brandName, setBrandName] = useState("");
+  const [description, setDescription] = useState("");
+  const [logoFile, setLogoFile] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string>("");
 
   useEffect(() => {
     if ((isEditMode || isViewMode) && brandId) {
       brandApi.getByIdApi({ id: brandId }).then((res) => {
         const brand: IBrand = res.data;
-        setForm({
-          brandName: brand.brandName || "",
-          description: brand.description || "",
-          logo: brand.logo || "",
-        });
-        setMetadata({
-          creatorName: brand.creatorName,
-          updaterName: brand.updaterName,
-          createdAt: brand.createdAt,
-          updatedAt: brand.updatedAt,
-        });
+        setBrandName(brand.brandName);
+        setDescription(brand.description || "");
+        setPreviewUrl(brand.logo || "");
       });
     } else if (isCreateMode) {
-      setForm({ brandName: "", description: "", logo: "" });
-      setMetadata({});
+      setBrandName("");
+      setDescription("");
+      setLogoFile(null);
+      setPreviewUrl("");
     }
   }, [brandId, mode]);
 
-  const handleChange = (field: keyof IAddBrandRequest, value: string) => {
-    setForm((prev) => ({ ...prev, [field]: value }));
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setLogoFile(file);
+      setPreviewUrl(URL.createObjectURL(file));
+    }
   };
 
   const handleSubmit = async () => {
     try {
+      const formData = new FormData();
+      formData.append("brandName", brandName);
+      formData.append("description", description);
+      if (logoFile) formData.append("logoFile", logoFile);
+
       if (isCreateMode) {
-        await brandApi.addBrandApi(form);
+        await brandApi.addBrandApi(formData);
       } else if (isEditMode && brandId) {
-        await brandApi.updateBrandApi(brandId, form);
+        await brandApi.updateBrandApi(brandId, formData);
       }
       onClose();
     } catch (error) {
@@ -80,59 +79,40 @@ const BrandModal = ({ open, onClose, brandId, mode }: BrandModalProps) => {
           ? "Chi tiết thương hiệu"
           : "Chỉnh sửa thương hiệu"}
       </DialogTitle>
-
       <DialogContent dividers>
         <TextField
           fullWidth
           label="Tên thương hiệu"
-          value={form.brandName}
-          onChange={(e) => handleChange("brandName", e.target.value)}
+          value={brandName}
+          onChange={(e) => setBrandName(e.target.value)}
           margin="normal"
           disabled={isViewMode}
         />
         <TextField
           fullWidth
           label="Mô tả"
-          value={form.description}
-          onChange={(e) => handleChange("description", e.target.value)}
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
           margin="normal"
-          disabled={isViewMode}
           multiline
           minRows={3}
-        />
-        <TextField
-          fullWidth
-          label="Logo URL"
-          value={form.logo}
-          onChange={(e) => handleChange("logo", e.target.value)}
-          margin="normal"
           disabled={isViewMode}
         />
-
-        {isViewMode && (
+        {!isViewMode && (
           <Box mt={2}>
-            <Typography variant="body2">
-              <strong>Người tạo:</strong> {metadata.creatorName || "Không rõ"}
-            </Typography>
-            <Typography variant="body2">
-              <strong>Ngày tạo:</strong>{" "}
-              {metadata.createdAt
-                ? new Date(metadata.createdAt).toLocaleString()
-                : "Không rõ"}
-            </Typography>
-            <Typography variant="body2">
-              <strong>Người sửa cuối:</strong> {metadata.updaterName || "Không rõ"}
-            </Typography>
-            <Typography variant="body2">
-              <strong>Ngày cập nhật:</strong>{" "}
-              {metadata.updatedAt
-                ? new Date(metadata.updatedAt).toLocaleString()
-                : "Không rõ"}
-            </Typography>
+            <input type="file" accept="image/*" onChange={handleFileChange} />
+          </Box>
+        )}
+        {previewUrl && (
+          <Box mt={2}>
+            <img
+              src={previewUrl}
+              alt="Logo Preview"
+              style={{ width: 80, height: 80, borderRadius: 4 }}
+            />
           </Box>
         )}
       </DialogContent>
-
       <DialogActions>
         <Button onClick={onClose}>Hủy</Button>
         {!isViewMode && (

@@ -41,7 +41,7 @@ const BrandTable: React.FC<BrandTableProps> = ({ onEdit, onView }) => {
     sortBy: "",
   });
 
-  const { data: brands, isLoading, error } = useQuery({
+  const { data: brands, isLoading, error, refetch } = useQuery({
     queryKey: ["get-paging-brand", filter],
     queryFn: async () => {
       const response = await brandApi.getPagingApi(filter);
@@ -71,6 +71,20 @@ const BrandTable: React.FC<BrandTableProps> = ({ onEdit, onView }) => {
     });
   };
 
+  const handleDeleteSelected = async () => {
+    try {
+      const confirmed = window.confirm("Bạn có chắc muốn xoá các thương hiệu đã chọn?");
+      if (!confirmed) return;
+
+      const brandIds = selected.map(Number);
+      await brandApi.deleteManyBrands(brandIds);
+      setSelected([]);
+      refetch();
+    } catch (error) {
+      console.error("Lỗi khi xoá thương hiệu:", error);
+    }
+  };
+
   const brandMenuActions = brandContextMenuItems.map((item) => ({
     ...item,
     onClick: (brand: IBrand) => {
@@ -82,7 +96,7 @@ const BrandTable: React.FC<BrandTableProps> = ({ onEdit, onView }) => {
           onEdit(brand.brandId);
           break;
         case "DELETE":
-          console.log("delete", brand.brandId);
+          handleDeleteSelected();
           break;
         default:
           break;
@@ -113,34 +127,39 @@ const BrandTable: React.FC<BrandTableProps> = ({ onEdit, onView }) => {
         />
       ),
     },
-    {
-      key: "creatorName",
-      label: "Người tạo",
-      width: 150,
-    },
-    {
-      key: "updaterName",
-      label: "Người cập nhật",
-      width: 150,
-    },
-    {
-      key: "createdAt",
-      label: "Ngày tạo",
-      width: 150,
-      render: (b: IBrand) => new Date(b.createdAt ?? '').toLocaleDateString("vi-VN"),
-    },
-    {
-      key: "updatedAt",
-      label: "Ngày cập nhật",
-      width: 150,
-      render: (b: IBrand) => new Date(b.updatedAt ?? '').toLocaleDateString("vi-VN"),
-    },
   ];
 
   return (
     <Box sx={{ flexGrow: 1, display: "flex", flexDirection: "column" }}>
+      <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+        <TextField
+          size="small"
+          label="Tìm kiếm thương hiệu"
+          variant="outlined"
+          value={filter.keyword}
+          onChange={(e) =>
+            setFilter((prev) => ({
+              ...prev,
+              keyword: e.target.value,
+              pageNumber: 1,
+            }))
+          }
+        />
+
+        {selected.length > 0 && (
+          <Button
+            variant="contained"
+            color="error"
+            startIcon={<DeleteIcon />}
+            onClick={handleDeleteSelected}
+          >
+            Xoá ({selected.length})
+          </Button>
+        )}
+      </Box>
+
       <DataTableContainer<IBrand>
-        data={brands}
+        data={brands ?? []}
         selected={selected}
         setSelected={setSelected}
         columns={columns}
