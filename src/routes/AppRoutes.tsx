@@ -13,6 +13,7 @@ import ProductDetail from "src/views/Store/ProductDetail";
 import VerifyOtp from "src/views/Auth/pages/VerifyOtp";
 import CartPage from "src/views/Store/Cart";
 import ProductList from "src/views/Store/ProductList";
+import Order from "src/views/Admin/Order";
 const AppRoutes = () => {
   return (
     <Routes>
@@ -38,6 +39,7 @@ const AppRoutes = () => {
         <Route path="category" element={<Category />} />
         <Route path="attribute" element={<Attribute />} />
         <Route path="category/*" element={<Category />} />
+        <Route path="Order/*" element={<Order />} />
       </Route>
     </Routes>
   );

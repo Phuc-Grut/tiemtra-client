@@ -88,3 +88,9 @@ export const STORE_CART = {
         GET_TOTAL_QUANTITY: `${URL_STORE}/cart/get-total-quantity`,
     }
 }
+
+export const ADMIN_ORDER = {
+    URL_API: {
+        GET_PAGING: `${URL_ADMIN}/order/get-paging-orders`
+    }
+}
