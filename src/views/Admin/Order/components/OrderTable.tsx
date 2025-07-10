@@ -11,6 +11,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import DataTableContainer from "src/components/DataTableContainer";
 import GenericContextMenu from "src/components/GenericContextMenu";
 import CustomPagination from "src/components/CustomPagination";
+import NoteCell from "src/components/NoteCell";
 
 const OrderTable = () => {
   const buildCleanFilter = (filter: IOrderFilter) => {
@@ -152,17 +153,22 @@ const OrderTable = () => {
     {
       key: "paymentMethod",
       label: "Phương thức thanh toán",
-      width: 120,
+      width: 220,
       render: (item) => getOrderStatusText(item.paymentMethod ?? -1),
     },
 
     {
       key: "paymentStatus",
       label: "Trạng thái thanh toán",
-      width: 120,
+      width: 220,
       render: (item) => getOrderStatusText(item.paymentMethod ?? -1),
     },
-    { key: "note", label: "Ghi chú", width: 250 },
+    {
+      key: "note",
+      label: "Ghi chú",
+      width: 200,
+      render: (item) => <NoteCell value={item?.note} />,
+    },
     {
       key: "createdAt",
       label: "Thời gian tạo",

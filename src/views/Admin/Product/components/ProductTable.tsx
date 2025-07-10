@@ -1,9 +1,4 @@
-import {
-  Box,
-  Button,
-  MenuItem,
-  TextField,
-} from "@mui/material";
+import { Box, Button, MenuItem, TextField } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -20,7 +15,7 @@ import GenericContextMenu from "src/components/GenericContextMenu";
 import ProductModal from "./modals/ProductModal";
 import DataTableContainer from "src/components/DataTableContainer";
 import { ColumnConfig } from "src/Interfaces/Table";
-
+import NoteCell from "src/components/NoteCell";
 
 const ProductTable = () => {
   // const [selected, setSelected] = useState<number[]>([]);
@@ -203,7 +198,7 @@ const ProductTable = () => {
       sortable: true,
       render: (p) => renderPrice(p),
     },
-    { key: "stock", label: "Tồn kho", width: 90, sortable: true },
+    { key: "stock", label: "Tồn kho", width: 100, sortable: true },
     { key: "totalSold", label: "Đã bán", width: 90, sortable: true },
     { key: "brandName", label: "Thương hiệu", width: 120 },
     {
@@ -212,7 +207,12 @@ const ProductTable = () => {
       width: 120,
       render: (p) => getProductStatusText(p.productStatus ?? -1),
     },
-    { key: "note", label: "Ghi chú", width: 250 },
+    {
+      key: "note",
+      label: "Ghi chú",
+      width: 250,
+      render: (p) => <NoteCell value={p?.note} />,
+    },
   ];
 
   return (

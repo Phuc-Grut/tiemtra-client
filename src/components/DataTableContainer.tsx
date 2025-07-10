@@ -12,6 +12,7 @@ import {
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 import FilterAltOutlinedIcon from "@mui/icons-material/FilterAltOutlined";
+import { useSidebar } from "./Layouts/SidebarContext";
 
 interface ColumnConfig<T> {
   key: string;
@@ -51,13 +52,21 @@ const DataTableContainer = <T,>({
 }: TableContainerProps<T>) => {
   const allSelected = selected.length > 0 && selected.length === data.length;
   const indeterminate = selected.length > 0 && selected.length < data.length;
+  const { expanded } = useSidebar();
+  const sidebarWidth = expanded ? 260 : 80;
+
+  const totalMinWidth = columns.reduce((sum, col) => sum + (col.width || 0), 0);
 
   return (
     <MuiTableContainer
       component={Paper}
-      sx={{ overflowX: "auto", flexGrow: 1 }}
+      sx={{
+        overflowX: "auto",
+        flexGrow: 1,
+        maxWidth: `calc(100vw - ${sidebarWidth}px)`,
+      }}
     >
-      <Table stickyHeader>
+      <Table stickyHeader sx={{ minWidth: totalMinWidth }}>
         <TableHead>
           <TableRow sx={{ height: 36 }}>
             <TableCell
