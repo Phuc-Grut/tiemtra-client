@@ -16,6 +16,7 @@ import { AddProductToCart } from "src/Interfaces/ICart";
 import cartApi from "src/services/api/Cart";
 import useToast from "src/components/Toast";
 import { useCurrentUser } from "src/hook/useCurrentUser";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface ProductInfoSectionProps {
   product: IProduct;
@@ -24,6 +25,7 @@ interface ProductInfoSectionProps {
 const ProductInfoSection = ({ product }: ProductInfoSectionProps) => {
   const [variant, setVariant] = useState("");
   const [quantity, setQuantity] = useState(1);
+  const queryClient = useQueryClient();
 
   const { showSuccess, showError } = useToast();
   const user = useCurrentUser();
@@ -110,7 +112,9 @@ const ProductInfoSection = ({ product }: ProductInfoSectionProps) => {
     // add api
     try {
       const res = await cartApi.addProductToCart(data);
+
       showSuccess(res.data.message);
+      queryClient.invalidateQueries({ queryKey: ["cart-total-quantity"] });
     } catch (err: any) {
       showError(err.response?.data ?? "Thêm sản phẩm thất bại");
     }

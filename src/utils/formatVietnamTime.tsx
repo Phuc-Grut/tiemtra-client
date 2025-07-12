@@ -1,15 +1,15 @@
-const formatVietnamTime = (input: string | Date) => {
-  const date = new Date(input);
-  if (isNaN(date.getTime())) return "-";
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
 
-  return date.toLocaleString("vi-VN", {
-    hour: "2-digit",
-    minute: "2-digit",
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-    timeZone: "Asia/Ho_Chi_Minh",
-  });
+dayjs.extend(utc);
+dayjs.extend(timezone);
+
+const formatVietnamTime = (input: string | Date) => {
+  const date = dayjs(input);
+  if (!date.isValid()) return "-";
+
+  return date.tz("Asia/Ho_Chi_Minh").format("HH:mm DD/MM/YYYY");
 };
 
 export default formatVietnamTime;

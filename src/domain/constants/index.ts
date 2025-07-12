@@ -91,6 +91,14 @@ export const STORE_CART = {
 
 export const ADMIN_ORDER = {
     URL_API: {
-        GET_PAGING: `${URL_ADMIN}/order/get-paging-orders`
+        GET_PAGING: `${URL_ADMIN}/order/get-paging-orders`,
+        
+    }
+}
+
+export const STORE_ORDER = {
+    URL_API: {
+        CREATE_ORDER: `${URL_STORE}/order/create-order`,
+        GENERATE_ORDER_CODE: `${URL_STORE}/order/generate-order-code`,
     }
 }
