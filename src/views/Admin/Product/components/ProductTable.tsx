@@ -1,4 +1,12 @@
-import { Box, Button, MenuItem, TextField } from "@mui/material";
+import {
+  Box,
+  Button,
+  FormControl,
+  MenuItem,
+  Select,
+  SelectChangeEvent,
+  TextField,
+} from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -215,6 +223,15 @@ const ProductTable = () => {
     },
   ];
 
+  const handleProductStatusChange = (e: SelectChangeEvent) => {
+    const value = e.target.value;
+    setFilter((prev) => ({
+      ...prev,
+      status: value === "" ? undefined : parseInt(value),
+      pageNumber: 1,
+    }));
+  };
+
   return (
     <Box
       sx={{
@@ -236,22 +253,66 @@ const ProductTable = () => {
           height: "33px",
           display: "flex",
           alignItems: "center",
-          justifyContent: "space-between",
+          gap: 1,
         }}
       >
-        <input
-          type="text"
-          placeholder="Tìm kiếm..."
-          style={{
-            width: "100%",
-            maxWidth: "220px",
-            height: "130%",
-            fontSize: "13px",
-            padding: "0px 8px",
-            borderRadius: "4px",
-            border: "2px solid #ccc",
-          }}
-        />
+          <input
+            type="text"
+            placeholder="Tìm kiếm..."
+            style={{
+              width: "100%",
+              maxWidth: "220px",
+              height: "130%",
+              fontSize: "13px",
+              padding: "0px 8px",
+              borderRadius: "4px",
+              border: "1px solid #ccc",
+            }}
+          />
+
+          <FormControl
+            size="small"
+            sx={{
+              width: "180px",
+              height: "130%",
+              overflow: "hidden",
+            }}
+          >
+            <Select
+              value={filter.status !== undefined ? String(filter.status) : ""}
+              onChange={handleProductStatusChange}
+              displayEmpty
+              sx={{
+                height: "24px",
+                fontSize: "14px",
+                padding: "0px 8px",
+                borderRadius: "4px",
+                border: "1px solid #ccc",
+                backgroundColor: "white",
+                boxSizing: "border-box",
+                "& fieldset": {
+                  border: "none",
+                },
+              }}
+              MenuProps={{
+                PaperProps: {
+                  sx: {
+                    fontSize: "14px",
+                    maxHeight: "50vh",
+                    overflowY: "auto",
+                  },
+                },
+              }}
+            >
+              <MenuItem value="">Trạng thái</MenuItem>
+              <MenuItem value={0}>Nháp</MenuItem>
+              <MenuItem value={1}>Đang bán</MenuItem>
+              <MenuItem value={3}>Hết hàng</MenuItem>
+              <MenuItem value={2}>Ngừng bán</MenuItem>
+            </Select>
+          </FormControl>
+
+        {/* Nút xoá nằm sát phải */}
         {selected.length > 0 && (
           <Button
             variant="contained"
@@ -262,7 +323,7 @@ const ProductTable = () => {
               />
             }
             sx={{
-              marginLeft: "12px",
+              ml: "auto",
               textTransform: "none",
               fontSize: "13px",
               height: "24px",

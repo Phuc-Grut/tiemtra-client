@@ -159,7 +159,7 @@ const OrderTable = () => {
     {
       key: "receiverAddress",
       label: "Địa chỉ giao hàng",
-      width: 180,
+      width: 280,
     },
 
     {
@@ -232,7 +232,7 @@ const OrderTable = () => {
           placeholder="Tìm kiếm..."
           style={{
             width: "100%",
-            maxWidth: "150px",
+            maxWidth: "200px",
             height: "130%",
             fontSize: "13px",
             padding: "0px 8px",
@@ -347,9 +347,10 @@ const OrderTable = () => {
               />
             }
             sx={{
+              ml: "auto",
               textTransform: "none",
               fontSize: "13px",
-              height: "32px",
+              height: "24px",
               padding: "0px 8px",
               backgroundColor: "red",
               color: "white",

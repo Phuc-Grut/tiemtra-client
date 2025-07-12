@@ -25,7 +25,7 @@ interface ProductFormSectionProps {
 const productStatusOptions = [
   { label: "Nháp", value: 0 },
   { label: "Đang bán", value: 1 },
-  { label: "Ẩn", value: 2 },
+  { label: "Ngừng bán", value: 2 },
   { label: "Hết hàng", value: 3 },
 ];
 
