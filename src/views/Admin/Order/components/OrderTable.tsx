@@ -292,9 +292,9 @@ const OrderTable = () => {
         >
           <Select
             value={
-              filter.orderStatus !== undefined ? String(filter.orderStatus) : ""
+              filter.orderCode !== undefined ? String(filter.orderCode) : ""
             }
-            onChange={handleOrderStatusChange}
+            // onChange={handleOrderStatusChange}
             displayEmpty
             sx={{
               height: "24px",
