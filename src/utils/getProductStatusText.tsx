@@ -31,7 +31,7 @@ export const getProductStatusText = (status: number) => {
     case ProductStatus.Inactive:
       return (
         <Chip
-          label="Ẩn"
+          label="Ngừng bán"
           size="small"
           sx={{
             backgroundColor: "#ff9800", // cam
@@ -46,12 +46,13 @@ export const getProductStatusText = (status: number) => {
           label="Hết hàng"
           size="small"
           sx={{
-            backgroundColor: "#f44336", // đỏ
+            backgroundColor: "#f44336",
             color: "#fff",
             fontWeight: "bold",
           }}
         />
       );
+    
     default:
       return (
         <Chip

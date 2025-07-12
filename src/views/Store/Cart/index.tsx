@@ -250,11 +250,9 @@ const CartPage = () => {
     try {
       setLoading(true);
       const payload = createOrderPayload();
-      console.log("🚀 ~ handlePlaceOrder ~ payload:", payload)
       await orderApi.createOrder(payload);
       showSuccess("Đặt hàng thành công!");
 
-      // Clear cart local nếu chưa login
       if (!user) {
         localStorage.removeItem("cart");
         window.dispatchEvent(new Event("local-cart-updated"));
@@ -262,10 +260,10 @@ const CartPage = () => {
 
       queryClient.invalidateQueries({ queryKey: ["cart"] });
       queryClient.invalidateQueries({ queryKey: ["cart-total-quantity"] });
+      
+      window.location.href = "/";
       showSuccess("Đặt hàng thành công");
 
-      // Điều hướng
-      window.location.href = "/";
     } catch (err) {
       showError("Đặt hàng thất bại");
     } finally {
