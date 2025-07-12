@@ -129,7 +129,7 @@ const OrderTable = () => {
     {
       key: "customer",
       label: "Khách hàng",
-      width: 120,
+      width: 160,
       render: (item) => (
         <Box>
           <Typography fontWeight="bold" fontSize={12}>
@@ -141,10 +141,11 @@ const OrderTable = () => {
         </Box>
       ),
     },
+
     {
       key: "receiver",
       label: "Người nhận",
-      width: 120,
+      width: 150,
       render: (item) => (
         <Box>
           <Typography fontSize={14}>{item.receivertName}</Typography>
@@ -153,6 +154,12 @@ const OrderTable = () => {
           </Typography>
         </Box>
       ),
+    },
+
+    {
+      key: "receiverAddress",
+      label: "Địa chỉ giao hàng",
+      width: 180,
     },
 
     {

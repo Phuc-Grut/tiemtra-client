@@ -1,5 +1,5 @@
 export interface IOrder {
-  orderId:string
+  orderId: string;
   orderCode: string;
   customerName: string;
   customerCode: string;
@@ -48,4 +48,21 @@ export interface IOrderFilter {
   sortBy?: string;
   pageNumber?: number;
   pageSize?: number;
+}
+
+export interface ICreateOrder {
+  orderCode: string;
+  note?: string;
+  recipientName: string;
+  recipientAddress: string;
+  recipientPhone: string;
+  orderItems: IOrderItem[];
+  paymentMethod: PaymentMethod;
+}
+
+export interface IOrderItem {
+  productId: string;
+  productVariationId?: string;
+  quantity: number;
+  unitPrice?: number;
 }

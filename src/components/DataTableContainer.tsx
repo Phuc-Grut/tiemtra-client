@@ -53,7 +53,7 @@ const DataTableContainer = <T,>({
   const allSelected = selected.length > 0 && selected.length === data.length;
   const indeterminate = selected.length > 0 && selected.length < data.length;
   const { expanded } = useSidebar();
-  const sidebarWidth = expanded ? 260 : 80;
+  const sidebarWidth = expanded ? 260 : 100;
 
   const totalMinWidth = columns.reduce((sum, col) => sum + (col.width || 0), 0);
 

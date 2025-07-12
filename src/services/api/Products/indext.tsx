@@ -1,6 +1,6 @@
 import { AxiosResponse } from "axios";
 import { ADMIN_PRODUCT, STORE_PPRODUCT } from "src/domain/constants";
-import { CreateProductRequest, IProduct, IProductFilter } from "src/Interfaces/IProduct";
+import { CreateProductRequest, IProductFilter } from "src/Interfaces/IProduct";
 import requester from "src/services/extended/axiosInstance";
 
 interface ProductRequest {
