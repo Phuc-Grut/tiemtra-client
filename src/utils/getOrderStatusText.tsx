@@ -6,7 +6,7 @@ export const getOrderStatusText = (status: number) => {
     case OrderStatus.Pending:
       return (
         <Chip
-          label="Chờ sử lý"
+          label="Chờ xác nhận"
           size="small"
           sx={{
             backgroundColor: "#e0e0e0", // xám nhạt

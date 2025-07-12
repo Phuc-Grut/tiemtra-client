@@ -10,7 +10,7 @@ export interface IOrder {
   note: string;
   orderStatus: OrderStatus;
   paymentMethod: PaymentMethod;
-  PaymentStatus: PaymentStatus;
+  paymentStatus: PaymentStatus;
   createAt: string | Date;
   updateAt: string | Date;
 }
