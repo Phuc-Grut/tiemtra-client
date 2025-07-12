@@ -6,12 +6,23 @@ import orderApi from "src/services/api/Order";
 import formatVietnamTime from "src/utils/formatVietnamTime";
 import getOrderStatusText from "src/utils/getOrderStatusText";
 import { orderContextMenuItems } from "../contextMenu";
-import { Box, Button, MenuItem, TextField, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  FormControl,
+  MenuItem,
+  Select,
+  SelectChangeEvent,
+  TextField,
+  Typography,
+} from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import DataTableContainer from "src/components/DataTableContainer";
 import GenericContextMenu from "src/components/GenericContextMenu";
 import CustomPagination from "src/components/CustomPagination";
 import NoteCell from "src/components/NoteCell";
+import { getPaymentMethodChip } from "src/utils/getPaymentMethodChip";
+import { getPaymentStatusChip } from "src/utils/getPaymentStatusChip";
 
 const OrderTable = () => {
   const buildCleanFilter = (filter: IOrderFilter) => {
@@ -66,12 +77,19 @@ const OrderTable = () => {
     refetchOnWindowFocus: false,
   });
 
-  console.log("🚀 ~ OrderTable ~ orders:", orders);
-
   const [orderModalOpen, setOrderModalOpen] = useState(false);
   const [orderId, setOrderId] = useState("");
   const [selected, setSelected] = useState<(string | number)[]>([]);
   const [contextItem, setContextItem] = useState<IOrder | null>(null);
+
+  const handleOrderStatusChange = (e: SelectChangeEvent) => {
+    const value = e.target.value;
+    setFilter((prev) => ({
+      ...prev,
+      orderStatus: value === "" ? undefined : parseInt(value),
+      pageNumber: 1,
+    }));
+  };
 
   const orderMenuActions = orderContextMenuItems.map((item) => ({
     ...item,
@@ -114,8 +132,10 @@ const OrderTable = () => {
       width: 120,
       render: (item) => (
         <Box>
-          <Typography fontWeight="bold">{item.customerCode}</Typography>
-          <Typography fontSize={12} color="text.secondary">
+          <Typography fontWeight="bold" fontSize={12}>
+            {item.customerCode}
+          </Typography>
+          <Typography fontSize={14} color="text.secondary">
             {item.customerName}
           </Typography>
         </Box>
@@ -127,8 +147,8 @@ const OrderTable = () => {
       width: 120,
       render: (item) => (
         <Box>
-          <Typography fontWeight="bold">{item.receivertName}</Typography>
-          <Typography fontSize={12} color="text.secondary">
+          <Typography fontSize={14}>{item.receivertName}</Typography>
+          <Typography fontSize={14} color="text.secondary">
             {item.receiverPhone}
           </Typography>
         </Box>
@@ -154,14 +174,14 @@ const OrderTable = () => {
       key: "paymentMethod",
       label: "Phương thức thanh toán",
       width: 220,
-      render: (item) => getOrderStatusText(item.paymentMethod ?? -1),
+      render: (item) => getPaymentMethodChip(item.paymentMethod ?? -1),
     },
 
     {
       key: "paymentStatus",
       label: "Trạng thái thanh toán",
       width: 220,
-      render: (item) => getOrderStatusText(item.paymentMethod ?? -1),
+      render: (item) => getPaymentStatusChip(item.paymentStatus ?? -1),
     },
     {
       key: "note",
@@ -172,7 +192,7 @@ const OrderTable = () => {
     {
       key: "createdAt",
       label: "Thời gian tạo",
-      render: (item) => formatVietnamTime(item.updateAt || item.createAt),
+      render: (item) => formatVietnamTime(item.createAt),
     },
   ];
 
@@ -192,12 +212,12 @@ const OrderTable = () => {
     >
       <Box
         sx={{
-          padding: "6px 6px",
+          padding: "6px",
           borderBottom: "3px solid #ddd",
           height: "33px",
           display: "flex",
           alignItems: "center",
-          justifyContent: "space-between",
+          gap: 1,
         }}
       >
         <input
@@ -205,14 +225,110 @@ const OrderTable = () => {
           placeholder="Tìm kiếm..."
           style={{
             width: "100%",
-            maxWidth: "220px",
+            maxWidth: "150px",
             height: "130%",
             fontSize: "13px",
             padding: "0px 8px",
             borderRadius: "4px",
-            border: "2px solid #ccc",
+            border: "1px solid #ccc",
           }}
         />
+
+        <FormControl
+          size="small"
+          sx={{
+            width: "180px",
+            height: "130%",
+            overflow: "hidden",
+          }}
+        >
+          <Select
+            value={
+              filter.orderStatus !== undefined ? String(filter.orderStatus) : ""
+            }
+            onChange={handleOrderStatusChange}
+            displayEmpty
+            sx={{
+              height: "24px",
+              fontSize: "14px",
+              padding: "0px 8px",
+              borderRadius: "4px",
+              border: "1px solid #ccc",
+              backgroundColor: "white",
+              boxSizing: "border-box",
+              "& fieldset": {
+                border: "none",
+              },
+            }}
+            MenuProps={{
+              PaperProps: {
+                sx: {
+                  fontSize: "14px",
+                  maxHeight: "50vh",
+                  overflowY: "auto",
+                },
+              },
+            }}
+          >
+            <MenuItem value="">Trạng thái</MenuItem>
+            <MenuItem value={0}>Chờ xác nhận</MenuItem>
+            <MenuItem value={1}>Đã xác nhận</MenuItem>
+            <MenuItem value={2}>Đang giao hàng</MenuItem>
+            <MenuItem value={3}>Đã giao hàng</MenuItem>
+            <MenuItem value={4}>Giao thất bại</MenuItem>
+            <MenuItem value={5}>Shop huỷ</MenuItem>
+            <MenuItem value={6}>Người mua huỷ</MenuItem>
+            <MenuItem value={7}>Đã hoàn tiền</MenuItem>
+          </Select>
+        </FormControl>
+
+        <FormControl
+          size="small"
+          sx={{
+            width: "300px",
+            height: "130%",
+            overflow: "hidden",
+          }}
+        >
+          <Select
+            value={
+              filter.orderStatus !== undefined ? String(filter.orderStatus) : ""
+            }
+            onChange={handleOrderStatusChange}
+            displayEmpty
+            sx={{
+              height: "24px",
+              fontSize: "14px",
+              padding: "0px 8px",
+              borderRadius: "4px",
+              border: "1px solid #ccc",
+              backgroundColor: "white",
+              boxSizing: "border-box",
+              "& fieldset": {
+                border: "none",
+              },
+            }}
+            MenuProps={{
+              PaperProps: {
+                sx: {
+                  fontSize: "14px",
+                  maxHeight: "50vh",
+                  overflowY: "auto",
+                },
+              },
+            }}
+          >
+            <MenuItem value="">Khách Hàng</MenuItem>
+            {/* <MenuItem value={0}>Chờ xác nhận</MenuItem>
+            <MenuItem value={1}>Đã xác nhận</MenuItem>
+            <MenuItem value={2}>Đang giao hàng</MenuItem>
+            <MenuItem value={3}>Đã giao hàng</MenuItem>
+            <MenuItem value={4}>Giao thất bại</MenuItem>
+            <MenuItem value={5}>Shop huỷ</MenuItem>
+            <MenuItem value={6}>Người mua huỷ</MenuItem>
+            <MenuItem value={7}>Đã hoàn tiền</MenuItem> */}
+          </Select>
+        </FormControl>
 
         {selected.length > 0 && (
           <Button
@@ -224,10 +340,9 @@ const OrderTable = () => {
               />
             }
             sx={{
-              marginLeft: "12px",
               textTransform: "none",
               fontSize: "13px",
-              height: "24px",
+              height: "32px",
               padding: "0px 8px",
               backgroundColor: "red",
               color: "white",
@@ -235,12 +350,12 @@ const OrderTable = () => {
                 backgroundColor: "#cc0000",
               },
             }}
-            // onClick={() => setConfirmModalOpen(true)}
           >
             Xoá ({selected.length})
           </Button>
         )}
       </Box>
+
       <DataTableContainer<IOrder>
         data={orders}
         selected={selected}
@@ -313,7 +428,7 @@ const OrderTable = () => {
       <GenericContextMenu
         anchorEl={anchorEl}
         onClose={() => setAnchorEl(null)}
-        items={orderContextMenuItems}
+        items={orderMenuActions}
         contextItem={contextItem}
       />
     </Box>
