@@ -1,31 +1,12 @@
 import { Box } from "@mui/material";
 import { useState } from "react";
-import PageHeader from "src/components/Layouts/Admin/PageHeader";
+
 import BrandTable from "./components/BrandTable";
-import BrandModal from "./components/modal/BrandModal";
+import AddBrandModal from "./components/modal/AddBrand";
+import PageHeader from "src/components/Layouts/Admin/PageHeader";
 
 const Brand = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalMode, setModalMode] = useState<"create" | "edit" | "view">("create");
-  const [selectedBrandId, setSelectedBrandId] = useState<number | undefined>(undefined);
-
-  const handleOpenCreate = () => {
-    setModalMode("create");
-    setSelectedBrandId(undefined);
-    setIsModalOpen(true);
-  };
-
-  const handleOpenEdit = (brandId: number) => {
-    setModalMode("edit");
-    setSelectedBrandId(brandId);
-    setIsModalOpen(true);
-  };
-
-  const handleOpenView = (brandId: number) => {
-    setModalMode("view");
-    setSelectedBrandId(brandId);
-    setIsModalOpen(true);
-  };
+  const [isAddOpen, setIsAddOpen] = useState(false);
 
   return (
     <Box
@@ -41,7 +22,8 @@ const Brand = () => {
       <PageHeader
         pageTitle="Thương hiệu"
         pageUrl="/admin/brand"
-        onAddClick={handleOpenCreate}
+        showAddButton
+        onAddClick={() => setIsAddOpen(true)}
       />
 
       <Box
@@ -52,18 +34,10 @@ const Brand = () => {
           flexDirection: "column",
         }}
       >
-        <BrandTable
-          onEdit={handleOpenEdit}
-          onView={handleOpenView}
-        />
+        <BrandTable />
       </Box>
 
-      <BrandModal
-        open={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        brandId={selectedBrandId}
-        mode={modalMode}
-      />
+      <AddBrandModal open={isAddOpen} onClose={() => setIsAddOpen(false)} />
     </Box>
   );
 };

@@ -1,87 +1,108 @@
+import React, { useState } from "react";
 import {
   Box,
   Button,
+  Checkbox,
   MenuItem,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
   TextField,
 } from "@mui/material";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { IBrand, IBrandFilterRequest } from "src/Interfaces/IBrand";
+
 import brandApi from "src/services/api/Brand";
+import { IBrand } from "src/Interfaces/IBrand";
+import formatVietnamTime from "src/utils/formatVietnamTime";
 import CustomPagination from "src/components/CustomPagination";
+import useToast from "src/components/Toast";
+import ModalConfirm from "src/components/ModalConfirm";
 import GenericContextMenu from "src/components/GenericContextMenu";
-import DataTableContainer from "src/components/DataTableContainer";
+import UpdateBrandModal from "src/views/Admin/Brand/components/modal/UpdateBrand";
 import { brandContextMenuItems } from "../contextMenu";
 
-interface ColumnConfig<T> {
-  key: string;
-  label: string;
-  width?: number;
-  sortable?: boolean;
-  render?: (item: T) => React.ReactNode;
-  align?: "left" | "center" | "right";
-}
+const BrandTable = () => {
+  const queryClient = useQueryClient();
+  const { showSuccess, showError } = useToast();
 
-interface BrandTableProps {
-  onEdit: (brandId: number) => void;
-  onView: (brandId: number) => void;
-}
-
-const BrandTable: React.FC<BrandTableProps> = ({ onEdit, onView }) => {
-  const [selected, setSelected] = useState<(string | number)[]>([]);
-  const [anchorEl, setAnchorEl] = useState<HTMLElement | { mouseX: number; mouseY: number } | null>(null);
+  const [pageNumber, setPageNumber] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [maxPages, setMaxPages] = useState(1);
+  const [selected, setSelected] = useState<number[]>([]);
   const [contextItem, setContextItem] = useState<IBrand | null>(null);
-  const [maxPages, setMaxPages] = useState<number>(1);
+  const [anchorEl, setAnchorEl] = useState<HTMLElement | { mouseX: number; mouseY: number } | null>(null);
 
-  const [filter, setFilter] = useState<IBrandFilterRequest>({
-    pageNumber: 1,
-    pageSize: 10,
-    keyword: "",
-    sortBy: "",
-  });
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [selectedBrand, setSelectedBrand] = useState<IBrand | null>(null);
+  const [confirmModalOpen, setConfirmModalOpen] = useState(false);
+  const [confirmMessage, setConfirmMessage] = useState<string[]>([]);
+  const [showConfirmButton, setShowConfirmButton] = useState(false);
+  const [pendingDeleteIds, setPendingDeleteIds] = useState<number[]>([]);
 
-  const { data: brands, isLoading, error, refetch } = useQuery({
-    queryKey: ["get-paging-brand", filter],
+  const {
+    data: brands = [],
+    isLoading,
+  } = useQuery({
+    queryKey: ["brands", pageNumber, pageSize],
     queryFn: async () => {
-      const response = await brandApi.getPagingApi(filter);
-      const realTotalPages = response.data.totalPages ?? 1;
-      setMaxPages(realTotalPages);
-      return response.data.items ?? [];
+      const response = await brandApi.getPagingApi({ pageNumber, pageSize });
+      const total = response.data.totalPages || 1;
+      setMaxPages(total);
+      return response.data.items || [];
     },
+    staleTime: 0,
+    refetchOnWindowFocus: false,
   });
 
-  const toggleSort = (field: string) => {
-    setFilter((prev) => {
-      const currentSort = prev.sortBy ?? "";
-      const isAsc = currentSort === `${field}-asc`;
-      const isDesc = currentSort === `${field}-desc`;
-
-      let nextSortBy = "";
-
-      if (!isAsc && !isDesc) nextSortBy = `${field}-asc`;
-      else if (isAsc) nextSortBy = `${field}-desc`;
-      else if (isDesc) nextSortBy = "";
-
-      return {
-        ...prev,
-        sortBy: nextSortBy,
-        pageNumber: 1,
-      };
-    });
+  const handleSelect = (id: number) => {
+    setSelected((prev) =>
+      prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
+    );
   };
 
-  const handleDeleteSelected = async () => {
+  const handleDeleteSelected = async (ids: number[] = selected) => {
+    if (ids.length === 0) return;
     try {
-      const confirmed = window.confirm("Bạn có chắc muốn xoá các thương hiệu đã chọn?");
-      if (!confirmed) return;
+      const res = await brandApi.checkCanDeleteManyBrands(ids);
+      if (!res.data.canDeleteAll) {
+        setConfirmModalOpen(true);
+        setConfirmMessage([
+          `Có ${res.data.cannotDeleteCount} thương hiệu không thể xoá:`,
+          ...res.data.blockers.$values.map((b: { message: string }) => b.message),
+        ]);
+        setShowConfirmButton(false);
+      } else {
+        setConfirmModalOpen(true);
+        setConfirmMessage([
+          "Sau khi xóa, liên kết giữa thương hiệu và sản phẩm sẽ bị mất. Xác nhận xoá?",
+        ]);
+        setPendingDeleteIds(ids);
+        setShowConfirmButton(true);
+      }
+    } catch {
+      showError("Xoá thất bại!");
+    }
+  };
 
-      const brandIds = selected.map(Number);
-      await brandApi.deleteManyBrands(brandIds);
-      setSelected([]);
-      refetch();
-    } catch (error) {
-      console.error("Lỗi khi xoá thương hiệu:", error);
+  const handleConfirmDelete = async () => {
+    try {
+      const res = await brandApi.deleteManyBrands(pendingDeleteIds);
+      if (res.data.success) {
+        showSuccess("Xoá thành công!");
+        setSelected([]);
+        queryClient.invalidateQueries({ queryKey: ["brands"] });
+      } else {
+        showError("Xoá thất bại!");
+      }
+    } catch {
+      showError("Lỗi khi xoá!");
+    } finally {
+      setConfirmModalOpen(false);
     }
   };
 
@@ -89,127 +110,125 @@ const BrandTable: React.FC<BrandTableProps> = ({ onEdit, onView }) => {
     ...item,
     onClick: (brand: IBrand) => {
       switch (item.id) {
-        case "VIEW":
-          onView(brand.brandId);
-          break;
         case "EDIT":
-          onEdit(brand.brandId);
+          setSelectedBrand(brand);
+          setEditModalOpen(true);
           break;
         case "DELETE":
-          handleDeleteSelected();
+          handleDeleteSelected([brand.brandId]);
           break;
         default:
-          break;
+          console.log("Action:", item.id);
       }
     },
   }));
 
-  const columns: ColumnConfig<IBrand>[] = [
-    {
-      key: "brandName",
-      label: "Tên thương hiệu",
-      width: 200,
-    },
-    {
-      key: "description",
-      label: "Mô tả",
-      width: 300,
-    },
-    {
-      key: "logo",
-      label: "Logo",
-      width: 100,
-      render: (b: IBrand) => (
-        <img
-          src={b.logo || "https://via.placeholder.com/50"}
-          alt="logo"
-          style={{ width: 40, height: 40, borderRadius: 4 }}
-        />
-      ),
-    },
-  ];
-
   return (
-    <Box sx={{ flexGrow: 1, display: "flex", flexDirection: "column" }}>
-      <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
-        <TextField
-          size="small"
-          label="Tìm kiếm thương hiệu"
-          variant="outlined"
-          value={filter.keyword}
-          onChange={(e) =>
-            setFilter((prev) => ({
-              ...prev,
-              keyword: e.target.value,
-              pageNumber: 1,
-            }))
-          }
+    <Box sx={{ p: 1, backgroundColor: "#fff", borderRadius: 2, boxShadow: 1 }}>
+      <Box display="flex" justifyContent="space-between" alignItems="center" mb={1}>
+        <input
+          type="text"
+          placeholder="Tìm kiếm thương hiệu..."
+          style={{ width: 220, fontSize: 13, padding: "4px 8px", borderRadius: 4, border: "1px solid #ccc" }}
         />
 
         {selected.length > 0 && (
           <Button
             variant="contained"
             color="error"
-            startIcon={<DeleteIcon />}
-            onClick={handleDeleteSelected}
+            startIcon={<DeleteIcon sx={{ fontSize: 16 }} />}
+            size="small"
+            onClick={() => handleDeleteSelected()}
           >
             Xoá ({selected.length})
           </Button>
         )}
       </Box>
 
-      <DataTableContainer<IBrand>
-        data={brands ?? []}
-        selected={selected}
-        setSelected={setSelected}
-        columns={columns}
-        isLoading={isLoading}
-        error={!!error}
-        sortBy={filter.sortBy}
-        toggleSort={toggleSort}
-        getRowId={(b) => b.brandId}
-        onRowClick={(b) => onView(b.brandId)}
-        onContextMenu={(e, b) => {
-          setContextItem(b);
-          setAnchorEl({ mouseX: e.clientX, mouseY: e.clientY });
-        }}
-      />
+      <TableContainer component={Paper}>
+        <Table stickyHeader>
+          <TableHead>
+            <TableRow>
+              <TableCell padding="checkbox">
+                <Checkbox
+                  checked={selected.length === brands.length && brands.length > 0}
+                  indeterminate={selected.length > 0 && selected.length < brands.length}
+                  onChange={() =>
+                    setSelected(
+                      selected.length === brands.length ? [] : brands.map((b: { brandId: any; }) => b.brandId)
+                    )
+                  }
+                />
+              </TableCell>
+              <TableCell>Logo</TableCell>
+              <TableCell>Tên thương hiệu</TableCell>
+              <TableCell>Mô tả</TableCell>
+              <TableCell>Người tạo</TableCell>
+              <TableCell>Cập nhật</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {isLoading ? (
+              <TableRow><TableCell colSpan={6}>Đang tải...</TableCell></TableRow>
+            ) : brands.length === 0 ? (
+              <TableRow><TableCell colSpan={6}>Không có dữ liệu</TableCell></TableRow>
+            ) : (
+              brands.map((brand : IBrand) => (
+                <TableRow
+                  key={brand.brandId}
+                  hover
+                  onContextMenu={(e) => {
+                    e.preventDefault();
+                    setAnchorEl({ mouseX: e.clientX, mouseY: e.clientY });
+                    setContextItem(brand);
+                  }}
+                >
+                  <TableCell padding="checkbox">
+                    <Checkbox
+                      checked={selected.includes(brand.brandId)}
+                      onChange={() => handleSelect(brand.brandId)}
+                    />
+                  </TableCell>
+                  <TableCell>
+                    {brand.logoUrl ? (
+                      <img
+                        src={brand.logoUrl}
+                        alt={brand.brandName}
+                        style={{ width: 40, height: 40, borderRadius: 4, objectFit: "cover" }}
+                      />
+                    ) : "Không có ảnh"}
+                  </TableCell>
+                  <TableCell>{brand.brandName}</TableCell>
+                  <TableCell>{brand.description || "Không có mô tả"}</TableCell>
+                  <TableCell>{brand.creatorName}</TableCell>
+                 
+                </TableRow>
+              ))
+            )}
+          </TableBody>
+        </Table>
+      </TableContainer>
 
       <Box mt={1} display="flex" justifyContent="center" alignItems="center" gap={2}>
         <CustomPagination
-          pageNumber={filter.pageNumber}
+          pageNumber={pageNumber}
+          setPageNumber={setPageNumber}
           totalPages={maxPages}
-          setPageNumber={(newPage) =>
-            setFilter((prev) => ({ ...prev, pageNumber: newPage }))
-          }
         />
-
-        <Box display="flex" alignItems="center" gap={1}>
-          <TextField
-            select
-            value={filter.pageSize}
-            onChange={(e) => {
-              const newSize = parseInt(e.target.value);
-              setFilter((prev) => ({
-                ...prev,
-                pageSize: newSize,
-                pageNumber: 1,
-              }));
-            }}
-            size="small"
-            variant="standard"
-            sx={{ width: 80 }}
-          >
-            {[5, 10, 15, 20].map((option) => (
-              <MenuItem key={option} value={option}>
-                {option}
-              </MenuItem>
-            ))}
-          </TextField>
-          <Box fontSize="12px" color="#555">
-            Bản ghi/trang
-          </Box>
-        </Box>
+        <TextField
+          select
+          size="small"
+          variant="standard"
+          value={pageSize}
+          onChange={(e) => {
+            setPageSize(parseInt(e.target.value));
+            setPageNumber(1);
+          }}
+        >
+          {[5, 10, 15, 20].map((size) => (
+            <MenuItem key={size} value={size}>{size}</MenuItem>
+          ))}
+        </TextField>
       </Box>
 
       <GenericContextMenu
@@ -217,6 +236,27 @@ const BrandTable: React.FC<BrandTableProps> = ({ onEdit, onView }) => {
         onClose={() => setAnchorEl(null)}
         items={brandMenuActions}
         contextItem={contextItem}
+      />
+
+      <UpdateBrandModal
+        open={editModalOpen}
+        brand={selectedBrand}
+        onClose={() => {
+          setEditModalOpen(false);
+          setSelectedBrand(null);
+        }}
+      />
+
+      <ModalConfirm
+        open={confirmModalOpen}
+        message={confirmMessage}
+        onClose={() => {
+          setConfirmModalOpen(false);
+          setPendingDeleteIds([]);
+          setSelected([]);
+        }}
+        onConfirm={handleConfirmDelete}
+        showConfirmButton={showConfirmButton}
       />
     </Box>
   );
