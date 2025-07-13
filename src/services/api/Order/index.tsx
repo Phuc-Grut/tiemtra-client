@@ -12,6 +12,8 @@ const orderApi = {
 
   generateOrderCode: (): Promise<AxiosResponse<string>> =>
     requester.get(STORE_ORDER.URL_API.GENERATE_ORDER_CODE),
+
+  comfirmOrder: (orderId: string) => requester.post(ADMIN_ORDER.URL_API.COMFIRM_ORDER(orderId))
 };
 
 export default orderApi;

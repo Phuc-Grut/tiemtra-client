@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { IOrder, IOrderFilter } from "src/Interfaces/IOrder";
 import { ColumnConfig } from "src/Interfaces/Table";
@@ -23,6 +23,8 @@ import CustomPagination from "src/components/CustomPagination";
 import NoteCell from "src/components/NoteCell";
 import { getPaymentMethodChip } from "src/utils/getPaymentMethodChip";
 import { getPaymentStatusChip } from "src/utils/getPaymentStatusChip";
+import ModalConfirm from "src/components/ModalConfirm";
+import useToast from "src/components/Toast";
 
 const OrderTable = () => {
   const buildCleanFilter = (filter: IOrderFilter) => {
@@ -45,7 +47,8 @@ const OrderTable = () => {
   const [anchorEl, setAnchorEl] = useState<
     HTMLElement | { mouseX: number; mouseY: number } | null
   >(null);
-
+  const queryClient = useQueryClient();
+  const { showSuccess, showError } = useToast();
   const [maxPages, setMaxPages] = useState<number>(1);
 
   const [filter, setFilter] = useState<IOrderFilter>({
@@ -77,8 +80,10 @@ const OrderTable = () => {
     refetchOnWindowFocus: false,
   });
 
-  const [orderModalOpen, setOrderModalOpen] = useState(false);
+  const [confirmOrderModalOpen, setConfirmOrderModalOpen] = useState(false);
+
   const [orderId, setOrderId] = useState("");
+  console.log("🚀 ~ OrderTable ~ orderId:", orderId);
   const [selected, setSelected] = useState<(string | number)[]>([]);
   const [contextItem, setContextItem] = useState<IOrder | null>(null);
 
@@ -96,11 +101,19 @@ const OrderTable = () => {
     onClick: (o: IOrder) => {
       switch (item.id) {
         case "VIEW":
-          setOrderModalOpen(true);
+          // setOrderModalOpen(true);
           setOrderId(o.orderId);
+          console.log("Xem đơn hàng:", o.orderId);
           break;
+
+        case "CONFIRM_ORDER":
+          setConfirmOrderModalOpen(true);
+          setOrderId(o.orderId);
+          console.log("Xác nhận đơn hàng:", o.orderId);
+          break;
+
         case "EDIT":
-          setOrderModalOpen(true);
+          // setOrderModalOpen(true);
           setOrderId(o.orderId);
           // setProductModalMode("edit");
           break;
@@ -202,6 +215,29 @@ const OrderTable = () => {
       render: (item) => formatVietnamTime(item.createAt),
     },
   ];
+
+  const handleConfirmOrder = async (orderId: string) => {
+  try {
+    const res = await orderApi.comfirmOrder(orderId);
+
+    if (!res.data.success) {
+      showError(res.data.message || "Đã có lỗi xảy ra");
+      return;
+    }
+
+    showSuccess(res.data.message || "Xác nhận đơn hàng thành công");
+
+    queryClient.invalidateQueries({
+      queryKey: ["get-paging-orders"],
+    });
+
+    setConfirmOrderModalOpen(false);
+  } catch (error: any) {
+    const apiMessage = error?.response?.data?.message || "Lỗi kết nối đến máy chủ";
+    showError(apiMessage);
+  }
+};
+
 
   return (
     <Box
@@ -438,6 +474,18 @@ const OrderTable = () => {
         onClose={() => setAnchorEl(null)}
         items={orderMenuActions}
         contextItem={contextItem}
+      />
+
+      <ModalConfirm
+        open={confirmOrderModalOpen}
+        onClose={() => {
+          setConfirmOrderModalOpen(false);
+          setOrderId("");
+        }}
+        onConfirm={() => handleConfirmOrder(orderId)}
+        showConfirmButton={true}
+        title="Xác nhận đơn hàng"
+        message={"Bạn có muốn xác nhân đơn hàng này"}
       />
     </Box>
   );

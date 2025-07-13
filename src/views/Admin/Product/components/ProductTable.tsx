@@ -66,6 +66,7 @@ const ProductTable = () => {
   const [contextItem, setContextItem] = useState<IProduct | null>(null);
 
   const [productId, setProductId] = useState("");
+  console.log("🚀 ~ ProductTable ~ productId:", productId)
 
   const {
     data: products,

@@ -4,6 +4,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ListIcon from "@mui/icons-material/List";
 import { red } from "@mui/material/colors";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle"; 
 
 export const ContextMenuItems: IContextMenu[] = [
   {
@@ -28,5 +29,11 @@ export const ContextMenuItems: IContextMenu[] = [
     label: "Danh sách sản phẩm",
     icon: <ListIcon fontSize="small" />,
     onClick: (item) => console.log("Xem chi tiết", item),
+  },
+  {
+    id: "CONFIRM_ORDER",
+    label: "Xác nhận đơn hàng",
+    icon: <CheckCircleIcon fontSize="small" color="success" />,
+    onClick: (item) => console.log("Xác nhận đơn hàng", item),
   },
 ];
