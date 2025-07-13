@@ -76,7 +76,7 @@ const AttributeTable = () => {
         ["attributes"].includes(query.queryKey[0] as string),
     });
   };
-  
+
   const handleConfirmDelete = async (attributeIds: number[] = selected) => {
     if (attributeIds.length === 0) {
       showError("Xóa thất bại");
@@ -379,6 +379,7 @@ const AttributeTable = () => {
         }}
         attribute={selectedAttribute}
       />
+
       <ModalConfirm
         open={confirmModalOpen}
         onClose={() => {
