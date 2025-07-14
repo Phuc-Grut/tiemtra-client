@@ -108,7 +108,7 @@ const AttributeTable = () => {
     onClick: (att: IAttribute) => {
       switch (item.id) {
         case "EDIT":
-          console.log("Sửa mục:", att);
+          // console.log("Sửa mục:", att);
           setSelectedAttribute(att);
           setEditModalOpen(true);
           break;
@@ -117,7 +117,7 @@ const AttributeTable = () => {
           setConfirmModalOpen(true);
           break;
         default:
-          console.log("Chọn menu:", item.id, att);
+          // console.log("Chọn menu:", item.id, att);
       }
     },
   }));

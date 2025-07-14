@@ -92,7 +92,9 @@ export const STORE_CART = {
 export const ADMIN_ORDER = {
     URL_API: {
         GET_PAGING: `${URL_ADMIN}/order/get-paging-orders`,
-        COMFIRM_ORDER: (orderId: string) => `${URL_ADMIN}/order/confirm-order/${orderId}`
+        COMFIRM_ORDER: (orderId: string) => `${URL_ADMIN}/order/confirm-order/${orderId}`,
+
+        CHANGE_ORDER_STATUS: (orderId: string) => `${URL_ADMIN}/order/change-order-status/${orderId}`
     }
 }
 
