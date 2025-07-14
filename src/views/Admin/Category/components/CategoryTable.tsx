@@ -191,18 +191,18 @@ const CategoryTable = ({
           navigate(nextPath);
           break;
         case "EDIT":
-          console.log("Sửa mục:", category);
+          // console.log("Sửa mục:", category);
           setSelectedCategory(category);
           setEditModalOpen(true);
           break;
         case "LIST_PRODUCT":
-          console.log("Sửa mục:", category);
+          // console.log("Sửa mục:", category);
           break;
         case "DELETE":
           handleDeleteSelected([category?.categoryId]);
           break;
         default:
-          console.log("Chọn menu:", item.id, category);
+          // console.log("Chọn menu:", item.id, category);
       }
     },
   }));

@@ -13,7 +13,7 @@ export const useCartLocalInit = () => {
       };
 
       localStorage.setItem("cart", JSON.stringify(emptyCart));
-      console.log("[LocalCart] Đã tạo giỏ hàng local rỗng");
+      // console.log("[LocalCart] Đã tạo giỏ hàng local rỗng");
     }
   }, []);
 };

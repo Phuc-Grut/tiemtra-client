@@ -1,6 +1,6 @@
 import { AxiosResponse } from "axios";
 import { ADMIN_ORDER, STORE_ORDER } from "src/domain/constants";
-import { ICreateOrder, IOrderFilter } from "src/Interfaces/IOrder";
+import { ICreateOrder, IOrderFilter, OrderStatus } from "src/Interfaces/IOrder";
 import requester from "src/services/extended/axiosInstance";
 
 const orderApi = {
@@ -13,7 +13,13 @@ const orderApi = {
   generateOrderCode: (): Promise<AxiosResponse<string>> =>
     requester.get(STORE_ORDER.URL_API.GENERATE_ORDER_CODE),
 
-  comfirmOrder: (orderId: string) => requester.post(ADMIN_ORDER.URL_API.COMFIRM_ORDER(orderId))
+  comfirmOrder: (orderId: string) =>
+    requester.post(ADMIN_ORDER.URL_API.COMFIRM_ORDER(orderId)),
+
+  changeOrderStatus: (orderId: string, orderStatus: OrderStatus) =>
+    requester.put(ADMIN_ORDER.URL_API.CHANGE_ORDER_STATUS(orderId), {
+      newStatus: orderStatus,
+    }),
 };
 
 export default orderApi;

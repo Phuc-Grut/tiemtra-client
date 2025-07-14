@@ -25,6 +25,7 @@ import { getPaymentMethodChip } from "src/utils/getPaymentMethodChip";
 import { getPaymentStatusChip } from "src/utils/getPaymentStatusChip";
 import ModalConfirm from "src/components/ModalConfirm";
 import useToast from "src/components/Toast";
+import ChangeOrderStatusModal from "./ChangeOrderStatusModal";
 
 const OrderTable = () => {
   const buildCleanFilter = (filter: IOrderFilter) => {
@@ -81,10 +82,11 @@ const OrderTable = () => {
   });
 
   const [confirmOrderModalOpen, setConfirmOrderModalOpen] = useState(false);
+  const [changeOrderStatusModal, setChangeOrderStatusModal] = useState(false);
 
   const [orderId, setOrderId] = useState("");
-  console.log("🚀 ~ OrderTable ~ orderId:", orderId);
   const [selected, setSelected] = useState<(string | number)[]>([]);
+  const [selectedOrder, setSelectedOrder] = useState<IOrder | null>(null);
   const [contextItem, setContextItem] = useState<IOrder | null>(null);
 
   const handleOrderStatusChange = (e: SelectChangeEvent) => {
@@ -103,13 +105,17 @@ const OrderTable = () => {
         case "VIEW":
           // setOrderModalOpen(true);
           setOrderId(o.orderId);
-          console.log("Xem đơn hàng:", o.orderId);
           break;
 
         case "CONFIRM_ORDER":
           setConfirmOrderModalOpen(true);
           setOrderId(o.orderId);
-          console.log("Xác nhận đơn hàng:", o.orderId);
+          break;
+
+        case "CHANGE_ORDER_STATUS":
+          console.log("Chuyển trạng thái:", o.orderId);
+          setChangeOrderStatusModal(true);
+          setSelectedOrder(o);
           break;
 
         case "EDIT":
@@ -123,7 +129,7 @@ const OrderTable = () => {
           // setConfirmModalOpen(true);
           break;
         default:
-          console.log("Chọn menu:", item.id, o);
+        // console.log("Chọn menu:", item.id, o);
       }
     },
   }));
@@ -213,31 +219,32 @@ const OrderTable = () => {
       key: "createdAt",
       label: "Thời gian tạo",
       render: (item) => formatVietnamTime(item.createAt),
+      width: 120,
     },
   ];
 
   const handleConfirmOrder = async (orderId: string) => {
-  try {
-    const res = await orderApi.comfirmOrder(orderId);
+    try {
+      const res = await orderApi.comfirmOrder(orderId);
 
-    if (!res.data.success) {
-      showError(res.data.message || "Đã có lỗi xảy ra");
-      return;
+      if (!res.data.success) {
+        showError(res.data.message || "Đã có lỗi xảy ra");
+        return;
+      }
+
+      showSuccess(res.data.message || "Xác nhận đơn hàng thành công");
+
+      queryClient.invalidateQueries({
+        queryKey: ["get-paging-orders"],
+      });
+
+      setConfirmOrderModalOpen(false);
+    } catch (error: any) {
+      const apiMessage =
+        error?.response?.data?.message || "Lỗi kết nối đến máy chủ";
+      showError(apiMessage);
     }
-
-    showSuccess(res.data.message || "Xác nhận đơn hàng thành công");
-
-    queryClient.invalidateQueries({
-      queryKey: ["get-paging-orders"],
-    });
-
-    setConfirmOrderModalOpen(false);
-  } catch (error: any) {
-    const apiMessage = error?.response?.data?.message || "Lỗi kết nối đến máy chủ";
-    showError(apiMessage);
-  }
-};
-
+  };
 
   return (
     <Box
@@ -486,6 +493,13 @@ const OrderTable = () => {
         showConfirmButton={true}
         title="Xác nhận đơn hàng"
         message={"Bạn có muốn xác nhân đơn hàng này"}
+      />
+
+      <ChangeOrderStatusModal
+        open={!!selectedOrder}
+        onClose={() => setSelectedOrder(null)}
+        order={selectedOrder}
+        // onSuccess={() => refetch()}
       />
     </Box>
   );
