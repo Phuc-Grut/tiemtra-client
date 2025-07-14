@@ -8,6 +8,8 @@ import {
   TableRow,
   Checkbox,
   Paper,
+  useMediaQuery,
+  useTheme,
 } from "@mui/material";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
@@ -53,7 +55,12 @@ const DataTableContainer = <T,>({
   const allSelected = selected.length > 0 && selected.length === data.length;
   const indeterminate = selected.length > 0 && selected.length < data.length;
   const { expanded } = useSidebar();
-  const sidebarWidth = expanded ? 260 : 100;
+
+  const theme = useTheme();
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm")); // <600px
+  const isTablet = useMediaQuery(theme.breakpoints.between("sm", "md")); // 600px - 900px
+  // const isDesktop = useMediaQuery(theme.breakpoints.up("md")); // >=
+  const sidebarWidth = isSmallScreen || isTablet ? 0 : expanded ? 260 : 100;
 
   const totalMinWidth = columns.reduce((sum, col) => sum + (col.width || 0), 0);
 
