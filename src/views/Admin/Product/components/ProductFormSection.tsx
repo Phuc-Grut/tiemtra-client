@@ -37,7 +37,7 @@ const ProductFormSection = ({
 }: ProductFormSectionProps) => {
   
   const isReadOnly = mode === "view";
-  const MAX_FILE_SIZE = 200 * 1024;
+  const MAX_FILE_SIZE = 500 * 1024;
   const { showSuccess, showError } = useToast();
 
   const handleChange = (

@@ -161,45 +161,24 @@ const ProductModal = ({
         sx: {
           borderRadius: 2,
           boxShadow: "0 4px 20px rgba(0,0,0,0.1)",
-          height: "95vh",
-          width: { xs: "90%", md: "80%", lg: "90%" },
+          // height: "95vh",
+          minHeight: "95%",
+          width: { xs: "90%", md: "80%", lg: "95%" },
           maxWidth: "none",
           display: "flex",
           flexDirection: "column",
         },
       }}
     >
-      <Box sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
+      <Box sx={{ display: "flex", flexDirection: "column" }}>
         {/* Close Button */}
-        <Button
-          onClick={onClose}
-          sx={{
-            zIndex: 10,
-            width: 40,
-            height: 40,
-            minWidth: "unset",
-            borderRadius: "50%",
-            backgroundColor: "#f5f5f5",
-            position: "absolute",
-            color: "#333",
-            top: 8,
-            right: 8,
-            padding: 0,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            "&:hover": {
-              backgroundColor: "#f5f5f5",
-              color: "#333",
-            },
-          }}
-        >
-          <CloseIcon sx={{ fontSize: 28 }} />
-        </Button>
 
         {/* Tabs - Header */}
         <Box
           sx={{
+            position: "sticky",
+            top: 0,
+            zIndex: 5,
             borderBottom: 1,
             borderColor: "divider",
             bgcolor: "#f5f5f5",
@@ -241,6 +220,32 @@ const ProductModal = ({
               />
             ))}
           </Tabs>
+
+          <Button
+            onClick={onClose}
+            sx={{
+              zIndex: 10,
+              width: 40,
+              height: 40,
+              minWidth: "unset",
+              borderRadius: "50%",
+              backgroundColor: "#f5f5f5",
+              position: "absolute",
+              color: "#333",
+              top: 8,
+              right: 8,
+              padding: 0,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              "&:hover": {
+                backgroundColor: "#f5f5f5",
+                color: "#333",
+              },
+            }}
+          >
+            <CloseIcon sx={{ fontSize: 28 }} />
+          </Button>
         </Box>
 
         {/* Scrollable Content */}
