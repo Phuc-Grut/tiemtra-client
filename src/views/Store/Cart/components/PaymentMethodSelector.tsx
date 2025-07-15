@@ -1,10 +1,5 @@
 import React from "react";
-import {
-  Box,
-  Typography,
-  Stack,
-  IconButton,
-} from "@mui/material";
+import { Box, Typography, Stack, IconButton } from "@mui/material";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import RadioButtonUncheckedIcon from "@mui/icons-material/RadioButtonUnchecked";
 import { PaymentMethod } from "src/Interfaces/IOrder";
@@ -20,9 +15,12 @@ const PaymentMethodSelector = ({
   value,
   onChange,
   totalPrice,
-  orderCode = "DH123456", // Tạm mặc định
+  orderCode, // Tạm mặc định
 }: Props) => {
-  const qrUrl = `https://img.vietqr.io/image/970423-07347135501-compact.png?amount=${totalPrice}&addInfo=${orderCode}`;
+
+  const shippingFee = 30000;
+  const total = (totalPrice || 0) + shippingFee;
+  const qrUrl = `https://img.vietqr.io/image/970423-07347135501-compact.png?amount=${total}&addInfo=${orderCode}`;
 
   return (
     <Box mt={2} padding={1}>
@@ -44,7 +42,11 @@ const PaymentMethodSelector = ({
               <RadioButtonUncheckedIcon color="disabled" fontSize="small" />
             )}
           </IconButton>
-          <Typography color={value === PaymentMethod.COD ? "text.primary" : "text.secondary"}>
+          <Typography
+            color={
+              value === PaymentMethod.COD ? "text.primary" : "text.secondary"
+            }
+          >
             Thanh toán khi nhận hàng (COD)
           </Typography>
         </Box>
@@ -62,7 +64,13 @@ const PaymentMethodSelector = ({
               <RadioButtonUncheckedIcon color="disabled" fontSize="small" />
             )}
           </IconButton>
-          <Typography color={value === PaymentMethod.BankTransfer ? "text.primary" : "text.secondary"}>
+          <Typography
+            color={
+              value === PaymentMethod.BankTransfer
+                ? "text.primary"
+                : "text.secondary"
+            }
+          >
             Chuyển khoản ngân hàng
           </Typography>
         </Box>
@@ -84,7 +92,7 @@ const PaymentMethodSelector = ({
             Chủ tài khoản: <strong>NGO HONG PHUC</strong>
           </Typography>
           <Typography>
-            💰 Số tiền: <strong>{totalPrice.toLocaleString()}đ</strong>
+            💰 Số tiền: <strong>{total.toLocaleString()}đ</strong>
           </Typography>
           <Typography>
             📝 Nội dung: <strong>{orderCode}</strong>

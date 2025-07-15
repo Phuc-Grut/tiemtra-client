@@ -10,16 +10,12 @@ import {
   IconButton,
   Button,
   Paper,
+  Select,
+  MenuItem,
 } from "@mui/material";
 import { Delete } from "@mui/icons-material";
 import { CreateProductRequest } from "src/Interfaces/IProduct";
 import { useEffect } from "react";
-
-interface Variation {
-  typeName: string;
-  price?: number;
-  stock?: number;
-}
 
 interface props {
   formData: CreateProductRequest;
@@ -30,11 +26,22 @@ interface props {
 const ProductVariationsSection = ({ formData, setFormData, mode }: props) => {
   const isReadOnly = mode === "view";
 
+  const ProductVariationStatus = {
+    Active: 1,
+    Inactive: 2,
+    OutOfStock: 3,
+  };
+
   const handleAddVariation = () => {
     setFormData((prev) => {
       const newVariations = [
         ...(prev.productVariations ?? []),
-        { typeName: "", price: null, stock: null },
+        {
+          typeName: "",
+          price: null,
+          stock: null,
+          status: ProductVariationStatus.Active, // hoặc status mặc định nào đó do user chọn trước
+        },
       ];
 
       return {
@@ -45,11 +52,7 @@ const ProductVariationsSection = ({ formData, setFormData, mode }: props) => {
     });
   };
 
-  const handleChange = (
-    index: number,
-    field: keyof Variation,
-    value: string
-  ) => {
+  const handleChange = (index: number, field: string, value: any) => {
     const updated = [...(formData.productVariations ?? [])];
 
     updated[index] = {
@@ -80,8 +83,8 @@ const ProductVariationsSection = ({ formData, setFormData, mode }: props) => {
     if (variations.length === 0) {
       setFormData((prev) => ({
         ...prev,
-        hasVariations: false
-      }))
+        hasVariations: false,
+      }));
       return;
     }
 
@@ -96,24 +99,23 @@ const ProductVariationsSection = ({ formData, setFormData, mode }: props) => {
       ...prev,
       price: 0,
       stock: totalStock,
-      hasVariations: true
+      hasVariations: true,
     }));
   }, [formData.productVariations, setFormData]);
 
   return (
-    <Box sx={{ mt: 4, width: "90%" }}>
+    <Box sx={{ mt: 4, width: "100%" }}>
       <TableContainer
         component={Paper}
         elevation={1}
         sx={{
           maxWidth: "100%",
           width: { xs: "100%", sm: "100%", md: "100%" },
-          maxHeight: {
-            xs: "200px",
-            sm: "250px",
-            md: "220px",
-          },
-          overflowY: "auto",
+          // maxHeight: {
+          //   xs: "200px",
+          //   sm: "250px",
+          //   md: "220px",
+          // },
         }}
       >
         <Table
@@ -128,8 +130,16 @@ const ProductVariationsSection = ({ formData, setFormData, mode }: props) => {
           <TableHead>
             <TableRow>
               <TableCell sx={Styles.tableCell}>Loại sản phẩm</TableCell>
-              <TableCell sx={Styles.tableCell}>Giá (VND)</TableCell>
-              <TableCell sx={Styles.tableCell}>Tồn kho</TableCell>
+              <TableCell sx={{ ...Styles.tableCell, width: 200 }}>
+                Giá (VND)
+              </TableCell>
+              <TableCell sx={{ ...Styles.tableCell, width: 150 }}>
+                Tồn kho
+              </TableCell>
+              <TableCell sx={{ ...Styles.tableCell, width: 200 }}>
+                Trạng thái
+              </TableCell>
+
               <TableCell align="center" sx={Styles.tableCell}>
                 Hành động
               </TableCell>
@@ -182,6 +192,31 @@ const ProductVariationsSection = ({ formData, setFormData, mode }: props) => {
                     }}
                   />
                 </TableCell>
+
+                <TableCell sx={Styles.tableCellBody}>
+                  <Select
+                    value={variation.status ?? ProductVariationStatus.Active}
+                    onChange={(e) =>
+                      handleChange(index, "status", e.target.value)
+                    }
+                    variant="standard"
+                    disableUnderline
+                    fullWidth
+                    disabled={isReadOnly}
+                    size="small"
+                  >
+                    <MenuItem value={ProductVariationStatus.Active}>
+                      Đang bán
+                    </MenuItem>
+                    <MenuItem value={ProductVariationStatus.Inactive}>
+                      Ngừng bán
+                    </MenuItem>
+                    <MenuItem value={ProductVariationStatus.OutOfStock}>
+                      Hết hàng
+                    </MenuItem>
+                  </Select>
+                </TableCell>
+
                 <TableCell align="center" sx={Styles.tableCellBody}>
                   <IconButton
                     onClick={() => handleDelete(index)}

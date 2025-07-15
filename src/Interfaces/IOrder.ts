@@ -58,6 +58,7 @@ export interface ICreateOrder {
   recipientPhone: string;
   orderItems: IOrderItem[];
   paymentMethod: PaymentMethod;
+  shippingFee : number
 }
 
 export interface IOrderItem {

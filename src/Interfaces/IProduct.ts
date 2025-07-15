@@ -33,6 +33,7 @@ export interface ProductVariation {
   typeName: string;
   price: number | null;
   stock: number | null;
+  status: ProductVariationStatus
 }
 
 export interface Brand {
@@ -75,6 +76,13 @@ export interface IProductFilter {
 
 export enum ProductStatus {
   Draft = 0, // nháp
+  Active = 1, // đang bán
+  Inactive = 2, // Ngừng bán
+  OutOfStock = 3, // hết hàng
+}
+
+
+export enum ProductVariationStatus {
   Active = 1, // đang bán
   Inactive = 2, // Ngừng bán
   OutOfStock = 3, // hết hàng

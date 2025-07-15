@@ -20,6 +20,7 @@ import { ICreateOrder, PaymentMethod } from "src/Interfaces/IOrder";
 import PaymentMethodSelector from "./components/PaymentMethodSelector";
 import CustomerInfoForm from "./components/CustomerInfoForm";
 import orderApi from "src/services/api/Order";
+import { AxiosError } from "axios";
 
 const CartPage = () => {
   const user = useCurrentUser();
@@ -80,7 +81,7 @@ const CartPage = () => {
         const res = await orderApi.generateOrderCode();
         setOrderCode(res.data);
       } catch (err) {
-        showError("Không thể tạo mã đơn hàng");
+        // showError("Không thể tạo mã đơn hàng");
       }
     };
 
@@ -234,6 +235,7 @@ const CartPage = () => {
     return {
       orderCode: orderCode,
       note: customerInfo.note,
+      shippingFee: 30000,
       recipientName: customerInfo.fullName,
       recipientAddress: customerInfo.address,
       recipientPhone: customerInfo.phone,
@@ -249,9 +251,14 @@ const CartPage = () => {
   const handlePlaceOrder = async () => {
     try {
       setLoading(true);
+
       const payload = createOrderPayload();
-      await orderApi.createOrder(payload);
-      showSuccess("Đặt hàng thành công!");
+      const res = await orderApi.createOrder(payload);
+
+      if (!res.data.success) {
+        showError(res.data.message || "Đặt hàng thất bại");
+        return;
+      }
 
       if (!user) {
         localStorage.removeItem("cart");
@@ -260,12 +267,16 @@ const CartPage = () => {
 
       queryClient.invalidateQueries({ queryKey: ["cart"] });
       queryClient.invalidateQueries({ queryKey: ["cart-total-quantity"] });
-      
-      window.location.href = "/";
-      showSuccess("Đặt hàng thành công");
 
+      showSuccess("Đặt hàng thành công");
+      setTimeout(() => {
+        window.location.href = "/";
+      }, 1000);
     } catch (err) {
-      showError("Đặt hàng thất bại");
+      const axiosError = err as AxiosError<any>;
+      const message =
+        axiosError.response?.data?.message || "Có lỗi xảy ra khi đặt hàng";
+      showError(message);
     } finally {
       setLoading(false);
     }
@@ -361,7 +372,7 @@ const CartPage = () => {
           <PaymentMethodSelector
             value={paymentMethod}
             onChange={setPaymentMethod}
-            totalPrice={cart?.totalPrice}
+            totalPrice={cart?.totalPrice }
             orderCode={orderCode}
           />
 
@@ -372,7 +383,7 @@ const CartPage = () => {
               variant="contained"
               color="success"
               onClick={() => {
-                handlePlaceOrder()
+                handlePlaceOrder();
               }}
             >
               MUA HÀNG
