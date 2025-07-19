@@ -88,19 +88,3 @@ export const STORE_CART = {
         GET_TOTAL_QUANTITY: `${URL_STORE}/cart/get-total-quantity`,
     }
 }
-
-export const ADMIN_ORDER = {
-    URL_API: {
-        GET_PAGING: `${URL_ADMIN}/order/get-paging-orders`,
-        COMFIRM_ORDER: (orderId: string) => `${URL_ADMIN}/order/confirm-order/${orderId}`,
-
-        CHANGE_ORDER_STATUS: (orderId: string) => `${URL_ADMIN}/order/change-order-status/${orderId}`
-    }
-}
-
-export const STORE_ORDER = {
-    URL_API: {
-        CREATE_ORDER: `${URL_STORE}/order/create-order`,
-        GENERATE_ORDER_CODE: `${URL_STORE}/order/generate-order-code`,
-    }
-}

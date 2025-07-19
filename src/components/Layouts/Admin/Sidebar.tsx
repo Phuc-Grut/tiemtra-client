@@ -16,7 +16,7 @@ import {
   ChevronLeft,
   ChevronRight,
   TuneOutlined,
-  Inventory2,
+  Inventory2
 } from "@mui/icons-material";
 import { Link } from "react-router-dom";
 import { useTheme } from "@mui/material/styles";
@@ -129,52 +129,6 @@ const Sidebar = ({ expanded, setExpanded }: SidebarProps) => {
               <Inventory2  />
             </ListItemIcon>
             {expanded && <ListItemText primary="Sản phẩm" />}
-          </ListItem>
-        </Tooltip>
-
-        <Tooltip
-          title="Order"
-          placement="right"
-          disableHoverListener={expanded}
-        >
-          <ListItem
-            component={Link}
-            to="/admin/order"
-            sx={{ cursor: "pointer", justifyContent: "center" }}
-          >
-            <ListItemIcon
-              sx={{
-                minWidth: 0,
-                paddingRight: expanded ? 1 : "auto",
-                justifyContent: "center",
-              }}
-            >
-              <LibraryBooks />
-            </ListItemIcon>
-            {expanded && <ListItemText primary="Đơn Bán Hàng" />}
-          </ListItem>
-        </Tooltip>
-
-        <Tooltip
-          title="Customer"
-          placement="right"
-          disableHoverListener={expanded}
-        >
-          <ListItem
-            component={Link}
-            to="/admin/customer"
-            sx={{ cursor: "pointer", justifyContent: "center" }}
-          >
-            <ListItemIcon
-              sx={{
-                minWidth: 0,
-                paddingRight: expanded ? 1 : "auto",
-                justifyContent: "center",
-              }}
-            >
-              <InsertEmoticonRoundedIcon />
-            </ListItemIcon>
-            {expanded && <ListItemText primary="Khách Hàng" />}
           </ListItem>
         </Tooltip>
 
