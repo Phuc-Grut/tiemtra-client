@@ -76,7 +76,7 @@ const AttributeTable = () => {
         ["attributes"].includes(query.queryKey[0] as string),
     });
   };
-  
+
   const handleConfirmDelete = async (attributeIds: number[] = selected) => {
     if (attributeIds.length === 0) {
       showError("Xóa thất bại");
@@ -108,7 +108,7 @@ const AttributeTable = () => {
     onClick: (att: IAttribute) => {
       switch (item.id) {
         case "EDIT":
-          console.log("Sửa mục:", att);
+          // console.log("Sửa mục:", att);
           setSelectedAttribute(att);
           setEditModalOpen(true);
           break;
@@ -117,7 +117,7 @@ const AttributeTable = () => {
           setConfirmModalOpen(true);
           break;
         default:
-          console.log("Chọn menu:", item.id, att);
+          // console.log("Chọn menu:", item.id, att);
       }
     },
   }));
@@ -379,6 +379,7 @@ const AttributeTable = () => {
         }}
         attribute={selectedAttribute}
       />
+
       <ModalConfirm
         open={confirmModalOpen}
         onClose={() => {

@@ -16,8 +16,6 @@ import "swiper/css";
 import "swiper/css/pagination";
 import { Pagination } from "swiper/modules";
 import { IProduct, ProductVariation } from "src/Interfaces/IProduct";
-import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
-import FlashOnIcon from "@mui/icons-material/FlashOn";
 import { Link } from "react-router-dom";
 import { slugify } from "src/utils/slugify";
 
@@ -60,7 +58,7 @@ const ProductSlider2 = ({ products = [] }: Props) => {
       .map((v: ProductVariation) => v.price)
       .filter((price): price is number => typeof price === "number");
 
-    if (prices.length === 0) return "—";
+    if (prices.length === 0) return "0 đ";
 
     const min = Math.min(...prices);
     const max = Math.max(...prices);
@@ -179,61 +177,25 @@ const ProductSlider2 = ({ products = [] }: Props) => {
                       </Typography>
                     </CardContent>
 
-                    <Box
+                    <Button
+                      size="small"
+                      variant="contained"
                       sx={{
-                        display: "flex",
-                        gap: 1,
-                        mb: 0.5,
-                        px: 1,
+                        backgroundColor: "#009900",
+                        fontSize: "11px",
+                        textTransform: "none",
+                        borderRadius: 20,
+                        padding: "4px 18px",
+                        marginBottom: 1,
+                        display: "block",
+                        mx: "auto",
+                        "&:hover": {
+                          backgroundColor: "#007700",
+                        },
                       }}
                     >
-                      <Button
-                        variant="outlined"
-                        sx={{
-                          flex: 1,
-                          fontSize: "10px",
-                          minHeight: "26px",
-                          padding: "2px 6px",
-                          borderColor: "#009900",
-                          color: "#009900",
-                          textTransform: "none",
-                          borderRadius: "999px",
-                          lineHeight: 1,
-                          "& .MuiButton-startIcon": {
-                            marginRight: "4px",
-                          },
-                          "&:hover": {
-                            backgroundColor: "#e6f2e6",
-                            borderColor: "#007700",
-                          },
-                        }}
-                      >
-                        <AddShoppingCartIcon sx={{ fontSize: 16 }} />
-                      </Button>
-
-                      <Button
-                        variant="contained"
-                        startIcon={<FlashOnIcon sx={{ fontSize: 14 }} />}
-                        sx={{
-                          flex: 1,
-                          fontSize: "10px",
-                          minHeight: "26px",
-                          padding: "2px 6px",
-                          backgroundColor: "#009900",
-                          textTransform: "none",
-                          borderRadius: "999px",
-                          lineHeight: 1,
-                          "& .MuiButton-startIcon": {
-                            marginRight: "4px",
-                          },
-                          "&:hover": {
-                            backgroundColor: "#007700",
-                          },
-                        }}
-                      >
-                        Mua
-                      </Button>
-                    </Box>
+                      Xem chi tiết
+                    </Button>
                   </Card>
                 </Link>
               </SwiperSlide>
@@ -331,59 +293,25 @@ const ProductSlider2 = ({ products = [] }: Props) => {
                     </Typography>
                   </CardContent>
 
-                  <Box
+                  <Button
+                    size="small"
+                    variant="contained"
                     sx={{
-                      display: "flex",
-                      gap: 1,
-                      marginTop: 0,
+                      backgroundColor: "#009900",
+                      fontSize: "12px",
+                      textTransform: "none",
+                      borderRadius: 20,
+                      padding: "4px 18px",
                       marginBottom: 1,
-                      paddingLeft: 1,
-                      paddingRight: 1,
+                      display: "block",
+                      mx: "auto",
+                      "&:hover": {
+                        backgroundColor: "#007700",
+                      },
                     }}
                   >
-                    <Button
-                      variant="outlined"
-                      size="small"
-                      startIcon={<AddShoppingCartIcon />}
-                      sx={{
-                        flex: 1,
-                        fontSize: "10px",
-                        px: 1.2,
-                        py: 0.7,
-                        borderColor: "#009900",
-                        color: "#009900",
-                        textTransform: "none",
-                        borderRadius: 2,
-                        minWidth: 0,
-                        "&:hover": {
-                          backgroundColor: "#e6f2e6",
-                          borderColor: "#007700",
-                        },
-                      }}
-                    >
-                      Giỏ hàng
-                    </Button>
-                    <Button
-                      variant="contained"
-                      size="small"
-                      startIcon={<FlashOnIcon />}
-                      sx={{
-                        flex: 1,
-                        fontSize: "10px",
-                        px: 1.2,
-                        py: 0.7,
-                        backgroundColor: "#009900",
-                        textTransform: "none",
-                        borderRadius: 2,
-                        minWidth: 0,
-                        "&:hover": {
-                          backgroundColor: "#007700",
-                        },
-                      }}
-                    >
-                      Mua ngay
-                    </Button>
-                  </Box>
+                    Xem chi tiết
+                  </Button>
                 </Card>
               </Link>
             ))}

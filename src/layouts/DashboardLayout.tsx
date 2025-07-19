@@ -4,6 +4,7 @@ import { Outlet } from "react-router-dom";
 import TopBar from "src/components/Layouts/Admin/Topbar";
 import Footer from "src/components/Layouts/Admin/Footer";
 import { useState } from "react";
+import { SidebarContext } from "src/components/Layouts/SidebarContext";
 
 const AdminDashboard = () => {
   const [expanded, setExpanded] = useState(true);
@@ -27,21 +28,23 @@ const AdminDashboard = () => {
         {!isMobile && <Sidebar expanded={expanded} setExpanded={setExpanded} />}
         {isMobile && <Sidebar expanded={expanded} setExpanded={setExpanded} />}
 
-        <Box sx={{ flexGrow: 1, display: "flex", flexDirection: "column" }}>
-          <Box
-            sx={{
-              flexGrow: 1,
-              marginTop: "10px",
-              display: "flex",
-              flexDirection: "column",
-              width: isMobile ? "100vw" : "auto",
-            }}
-          >
-            <Outlet />
-          </Box>
+        <SidebarContext.Provider value={{ expanded }}>
+          <Box sx={{ flexGrow: 1, display: "flex", flexDirection: "column" }}>
+            <Box
+              sx={{
+                flexGrow: 1,
+                marginTop: "10px",
+                display: "flex",
+                flexDirection: "column",
+                width: isMobile ? "100vw" : "auto",
+              }}
+            >
+              <Outlet />
+            </Box>
 
-          <Footer />
-        </Box>
+            <Footer />
+          </Box>
+        </SidebarContext.Provider>
       </Box>
     </Box>
   );

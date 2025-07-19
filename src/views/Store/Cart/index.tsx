@@ -16,6 +16,11 @@ import cartApi from "src/services/api/Cart";
 import { ICart, ICartItem } from "src/Interfaces/ICart";
 import useToast from "src/components/Toast";
 import { useCurrentUser } from "src/hook/useCurrentUser";
+import { ICreateOrder, PaymentMethod } from "src/Interfaces/IOrder";
+import PaymentMethodSelector from "./components/PaymentMethodSelector";
+import CustomerInfoForm from "./components/CustomerInfoForm";
+import orderApi from "src/services/api/Order";
+import { AxiosError } from "axios";
 
 const CartPage = () => {
   const user = useCurrentUser();
@@ -29,6 +34,16 @@ const CartPage = () => {
 
   const [cartItems, setCartItems] = useState<ICartItem[]>([]);
   const [cart, setCart] = useState<ICart | undefined>();
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>(
+    PaymentMethod.COD
+  );
+
+  const [customerInfo, setCustomerInfo] = useState({
+    fullName: "",
+    phone: "",
+    address: "",
+    note: "", // thay vì note?: string
+  });
 
   // 1. Lấy giỏ từ local nếu chưa đăng nhập
   const raw = localStorage.getItem("cart");
@@ -57,6 +72,21 @@ const CartPage = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [serverCart, user]);
+
+  const [orderCode, setOrderCode] = useState("");
+
+  useEffect(() => {
+    const fetchOrderCode = async () => {
+      try {
+        const res = await orderApi.generateOrderCode();
+        setOrderCode(res.data);
+      } catch (err) {
+        // showError("Không thể tạo mã đơn hàng");
+      }
+    };
+
+    fetchOrderCode();
+  }, []);
 
   const handleQuantityChange = async (cartItemId: string, delta: number) => {
     const item = cartItems.find((i) => i.cartItemId === cartItemId);
@@ -154,6 +184,7 @@ const CartPage = () => {
         prev.filter((item) => item.cartItemId !== cartItemId)
       );
       queryClient.invalidateQueries({ queryKey: ["cart-total-quantity"] });
+      queryClient.invalidateQueries({ queryKey: ["cart"] });
       showSuccess("Đã xóa sản phẩm khỏi giỏ hàng!");
     } catch (err: any) {
       showError(err.response?.data ?? "Xóa sản phẩm thất bại");
@@ -199,6 +230,57 @@ const CartPage = () => {
       </Box>
     );
   }
+
+  const createOrderPayload = (): ICreateOrder => {
+    return {
+      orderCode: orderCode,
+      note: customerInfo.note,
+      shippingFee: 30000,
+      recipientName: customerInfo.fullName,
+      recipientAddress: customerInfo.address,
+      recipientPhone: customerInfo.phone,
+      paymentMethod: paymentMethod,
+      orderItems: cartItems.map((item) => ({
+        productId: item.productId,
+        productVariationId: item.productVariationId,
+        quantity: item.quantity,
+      })),
+    };
+  };
+
+  const handlePlaceOrder = async () => {
+    try {
+      setLoading(true);
+
+      const payload = createOrderPayload();
+      const res = await orderApi.createOrder(payload);
+
+      if (!res.data.success) {
+        showError(res.data.message || "Đặt hàng thất bại");
+        return;
+      }
+
+      if (!user) {
+        localStorage.removeItem("cart");
+        window.dispatchEvent(new Event("local-cart-updated"));
+      }
+
+      queryClient.invalidateQueries({ queryKey: ["cart"] });
+      queryClient.invalidateQueries({ queryKey: ["cart-total-quantity"] });
+
+      showSuccess("Đặt hàng thành công");
+      setTimeout(() => {
+        window.location.href = "/";
+      }, 1000);
+    } catch (err) {
+      const axiosError = err as AxiosError<any>;
+      const message =
+        axiosError.response?.data?.message || "Có lỗi xảy ra khi đặt hàng";
+      showError(message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <Container
@@ -274,9 +356,39 @@ const CartPage = () => {
               ← TIẾP TỤC MUA SẮM
             </Button>
           </Box>
+
+          {/* Form thông tin khách hàng */}
+          <Grid item xs={12}>
+            <CustomerInfoForm
+              value={customerInfo}
+              onChange={setCustomerInfo}
+              paymentMethod={paymentMethod}
+            />
+          </Grid>
         </Grid>
+
         <Grid item xs={12} md={4}>
           <CartSummary subtotal={cart?.totalPrice} />
+          <PaymentMethodSelector
+            value={paymentMethod}
+            onChange={setPaymentMethod}
+            totalPrice={cart?.totalPrice }
+            orderCode={orderCode}
+          />
+
+          <Box mt={3} paddingLeft={0}>
+            <Button
+              fullWidth
+              size="large"
+              variant="contained"
+              color="success"
+              onClick={() => {
+                handlePlaceOrder();
+              }}
+            >
+              MUA HÀNG
+            </Button>
+          </Box>
         </Grid>
       </Grid>
     </Container>

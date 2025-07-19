@@ -72,6 +72,7 @@ const CategoryTable = ({
   );
 
   const [confirmMessage, setConfirmMessage] = useState<string[]>([]);
+  console.log("🚀 ~ confirmMessage:", confirmMessage);
   const [pendingDeleteIds, setPendingDeleteIds] = useState<number[]>([]);
   const [confirmModalOpen, setConfirmModalOpen] = useState(false);
   const [showConfirmButton, setShowConfirmButton] = useState(false);
@@ -191,18 +192,18 @@ const CategoryTable = ({
           navigate(nextPath);
           break;
         case "EDIT":
-          console.log("Sửa mục:", category);
+          // console.log("Sửa mục:", category);
           setSelectedCategory(category);
           setEditModalOpen(true);
           break;
         case "LIST_PRODUCT":
-          console.log("Sửa mục:", category);
+          // console.log("Sửa mục:", category);
           break;
         case "DELETE":
           handleDeleteSelected([category?.categoryId]);
           break;
         default:
-          console.log("Chọn menu:", item.id, category);
+        // console.log("Chọn menu:", item.id, category);
       }
     },
   }));
@@ -219,13 +220,18 @@ const CategoryTable = ({
 
     try {
       const res = await categoryApi.checkCanDeleteManyCategories(categoryIds);
+      console.log("🚀 ~ handleDeleteSelected ~ res:", res.data.canDeleteAll);
 
-      if (!res.data.canDeleteAll) {
+      if (res.data.canDeleteAll === false) {
         setConfirmModalOpen(true);
         const cannotDeleteCount = res.data.cannotDeleteCount;
+        console.log(
+          "🚀 ~ handleDeleteSelected ~ cannotDeleteCount:",
+          cannotDeleteCount
+        );
         setConfirmMessage([
           `Có ${cannotDeleteCount} danh mục không thể xoá:`,
-          ...res.data.blockers.$values.map((b: any) => b.message),
+          ...res.data.blockers.map((b: any) => b.message),
         ]);
 
         setShowConfirmButton(false);
@@ -242,7 +248,7 @@ const CategoryTable = ({
       }
     } catch (error) {
       console.error("Error checking delete:", error);
-      showError("Xóa thất bại");
+      // showError("Xóa thất bại");
     }
   };
 

@@ -1,13 +1,12 @@
-import { ProductStatus } from "src/Interfaces/IProduct";
-
 import { Chip } from "@mui/material";
+import { PaymentStatus } from "src/Interfaces/IOrder";
 
-export const getProductStatusText = (status: number) => {
+export const getPaymentStatusChip = (status: PaymentStatus) => {
   switch (status) {
-    case ProductStatus.Draft:
+    case PaymentStatus.Unpaid:
       return (
         <Chip
-          label="Nháp"
+          label="Chưa thanh toán"
           size="small"
           sx={{
             backgroundColor: "#e0e0e0", // xám nhạt
@@ -16,10 +15,10 @@ export const getProductStatusText = (status: number) => {
           }}
         />
       );
-    case ProductStatus.Active:
+    case PaymentStatus.Paid:
       return (
         <Chip
-          label="Đang bán"
+          label="Đã thanh toán"
           size="small"
           sx={{
             backgroundColor: "#4caf50", // xanh lá
@@ -28,10 +27,10 @@ export const getProductStatusText = (status: number) => {
           }}
         />
       );
-    case ProductStatus.Inactive:
+    case PaymentStatus.RefundRequested:
       return (
         <Chip
-          label="Ngừng bán"
+          label="Yêu cầu hoàn tiền"
           size="small"
           sx={{
             backgroundColor: "#ff9800", // cam
@@ -40,26 +39,25 @@ export const getProductStatusText = (status: number) => {
           }}
         />
       );
-    case ProductStatus.OutOfStock:
+    case PaymentStatus.Refunded:
       return (
         <Chip
-          label="Hết hàng"
+          label="Đã hoàn tiền"
           size="small"
           sx={{
-            backgroundColor: "#f44336",
+            backgroundColor: "#3f51b5", // xanh tím
             color: "#fff",
             fontWeight: "bold",
           }}
         />
       );
-    
     default:
       return (
         <Chip
           label="Không xác định"
           size="small"
           sx={{
-            backgroundColor: "#9e9e9e", // xám
+            backgroundColor: "#9e9e9e",
             color: "#fff",
             fontWeight: "bold",
           }}
@@ -67,5 +65,3 @@ export const getProductStatusText = (status: number) => {
       );
   }
 };
-
-export default getProductStatusText;

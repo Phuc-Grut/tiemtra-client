@@ -71,6 +71,7 @@ const HomePage = () => {
 
     return () => {
       if (loadMoreRef.current) {
+        // eslint-disable-next-line react-hooks/exhaustive-deps
         observer.unobserve(loadMoreRef.current);
       }
     };

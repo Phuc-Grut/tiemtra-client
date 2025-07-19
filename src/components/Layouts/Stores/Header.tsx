@@ -117,7 +117,7 @@ const Header = () => {
                   onClick={() => (window.location.href = "/")}
                 />
               </Box>
-              <IconButton onClick={() => navigate("/cart")}>
+              <IconButton onClick={() => navigate("/gio-hang")}>
                 <Badge
                   badgeContent={totalQuantity}
                   color="error"
@@ -235,7 +235,7 @@ const Header = () => {
 
             <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
               {!isSmallScreen && (
-                <IconButton onClick={() => navigate("/cart")}>
+                <IconButton onClick={() => navigate("/gio-hang")}>
                   <Badge
                     badgeContent={totalQuantity}
                     color="error"

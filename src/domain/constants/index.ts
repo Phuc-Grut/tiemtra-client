@@ -88,30 +88,3 @@ export const STORE_CART = {
         GET_TOTAL_QUANTITY: `${URL_STORE}/cart/get-total-quantity`,
     }
 }
-export const BRAND = {
-  ACTION_TYPES: {
-    GET_ALL: "BRAND/GET_ALL",
-    GET_BY_ID: "BRAND/GET_BY_ID",
-    CREATE: "BRAND/CREATE",
-    UPDATE: "BRAND/UPDATE",
-    CHECK_DELETE_BY_IDS: "BRAND/CHECK_DELETE_MANY",
-    DELETE_API_BY_IDS: "BRAND/DELETE_API_BY_IDS",
-    UPLOAD_IMAGE: "BRAND/UPLOAD_IMAGE",
-  },
-
-  URL_API: {
-    GET_ALL_API: `${URL_ADMIN}/brand/get-paging-brands`,
-
-    GET_BY_ID_API: (id: number) => `${URL_ADMIN}/brand/get-by-id/${id}`,
-
-    CREATE_API: `${URL_ADMIN}/brand/create-brand`,
-
-    UPDATE_API: (id: number) => `${URL_ADMIN}/brand/update-brand/${id}`,
-
-    CHECK_DELETE_BY_IDS: `${URL_ADMIN}/brand/check-delete-by-ids`,
-
-    DELETE_API_BY_IDS: `${URL_ADMIN}/brand/delete-by-ids`,
-
-    UPLOAD_IMAGE: `${URL_ADMIN}/brand/brand-image`,
-  },
-};

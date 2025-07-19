@@ -1,7 +1,10 @@
 import {
   Box,
   Button,
+  FormControl,
   MenuItem,
+  Select,
+  SelectChangeEvent,
   TextField,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -19,15 +22,8 @@ import { productContextMenuItems } from "../contextMenu";
 import GenericContextMenu from "src/components/GenericContextMenu";
 import ProductModal from "./modals/ProductModal";
 import DataTableContainer from "src/components/DataTableContainer";
-
-interface ColumnConfig<T> {
-  key: string;
-  label: string;
-  width?: number;
-  sortable?: boolean;
-  render?: (item: T) => React.ReactNode;
-  align?: "left" | "center" | "right";
-}
+import { ColumnConfig } from "src/Interfaces/Table";
+import NoteCell from "src/components/NoteCell";
 
 const ProductTable = () => {
   // const [selected, setSelected] = useState<number[]>([]);
@@ -70,6 +66,7 @@ const ProductTable = () => {
   const [contextItem, setContextItem] = useState<IProduct | null>(null);
 
   const [productId, setProductId] = useState("");
+  // console.log("🚀 ~ ProductTable ~ productId:", productId)
 
   const {
     data: products,
@@ -210,7 +207,7 @@ const ProductTable = () => {
       sortable: true,
       render: (p) => renderPrice(p),
     },
-    { key: "stock", label: "Tồn kho", width: 90, sortable: true },
+    { key: "stock", label: "Tồn kho", width: 100, sortable: true },
     { key: "totalSold", label: "Đã bán", width: 90, sortable: true },
     { key: "brandName", label: "Thương hiệu", width: 120 },
     {
@@ -219,8 +216,22 @@ const ProductTable = () => {
       width: 120,
       render: (p) => getProductStatusText(p.productStatus ?? -1),
     },
-    { key: "note", label: "Ghi chú", width: 250 },
+    {
+      key: "note",
+      label: "Ghi chú",
+      width: 250,
+      render: (p) => <NoteCell value={p?.note} />,
+    },
   ];
+
+  const handleProductStatusChange = (e: SelectChangeEvent) => {
+    const value = e.target.value;
+    setFilter((prev) => ({
+      ...prev,
+      status: value === "" ? undefined : parseInt(value),
+      pageNumber: 1,
+    }));
+  };
 
   return (
     <Box
@@ -243,22 +254,66 @@ const ProductTable = () => {
           height: "33px",
           display: "flex",
           alignItems: "center",
-          justifyContent: "space-between",
+          gap: 1,
         }}
       >
-        <input
-          type="text"
-          placeholder="Tìm kiếm..."
-          style={{
-            width: "100%",
-            maxWidth: "220px",
-            height: "130%",
-            fontSize: "13px",
-            padding: "0px 8px",
-            borderRadius: "4px",
-            border: "2px solid #ccc",
-          }}
-        />
+          <input
+            type="text"
+            placeholder="Tìm kiếm..."
+            style={{
+              width: "100%",
+              maxWidth: "220px",
+              height: "130%",
+              fontSize: "13px",
+              padding: "0px 8px",
+              borderRadius: "4px",
+              border: "1px solid #ccc",
+            }}
+          />
+
+          <FormControl
+            size="small"
+            sx={{
+              width: "180px",
+              height: "130%",
+              overflow: "hidden",
+            }}
+          >
+            <Select
+              value={filter.status !== undefined ? String(filter.status) : ""}
+              onChange={handleProductStatusChange}
+              displayEmpty
+              sx={{
+                height: "24px",
+                fontSize: "14px",
+                padding: "0px 8px",
+                borderRadius: "4px",
+                border: "1px solid #ccc",
+                backgroundColor: "white",
+                boxSizing: "border-box",
+                "& fieldset": {
+                  border: "none",
+                },
+              }}
+              MenuProps={{
+                PaperProps: {
+                  sx: {
+                    fontSize: "14px",
+                    maxHeight: "50vh",
+                    overflowY: "auto",
+                  },
+                },
+              }}
+            >
+              <MenuItem value="">Trạng thái</MenuItem>
+              <MenuItem value={0}>Nháp</MenuItem>
+              <MenuItem value={1}>Đang bán</MenuItem>
+              <MenuItem value={3}>Hết hàng</MenuItem>
+              <MenuItem value={2}>Ngừng bán</MenuItem>
+            </Select>
+          </FormControl>
+
+        {/* Nút xoá nằm sát phải */}
         {selected.length > 0 && (
           <Button
             variant="contained"
@@ -269,7 +324,7 @@ const ProductTable = () => {
               />
             }
             sx={{
-              marginLeft: "12px",
+              ml: "auto",
               textTransform: "none",
               fontSize: "13px",
               height: "24px",
@@ -286,269 +341,6 @@ const ProductTable = () => {
           </Button>
         )}
       </Box>
-
-      {/* <TableContainer component={Paper} sx={{ overflowX: "auto", flexGrow: 1 }}>
-        <Table stickyHeader>
-          <TableHead>
-            <TableRow sx={{ height: 36 }}>
-              <TableCell
-                sx={{
-                  height: "10px",
-                  lineHeight: "28px",
-                  padding: "4px 8px",
-                  width: "20px",
-                  borderRight: "1px solid rgb(240, 235, 235)",
-                  borderBlock: "1px solid rgb(240, 235, 235)",
-                }}
-              >
-                <Checkbox
-                  style={{ width: "20px", height: "20px" }}
-                  checked={
-                    selected.length > 0 && selected.length === products.length
-                  }
-                  indeterminate={
-                    selected.length > 0 && selected.length < products.length
-                  }
-                  sx={{
-                    color: "#999",
-                    "&.Mui-checked": {
-                      color: "red",
-                    },
-                  }}
-                  onChange={() => {
-                    if (isLoading || products.length === 0) return;
-
-                    const isAllSelected = selected.length === products.length;
-                    const isIndeterminate =
-                      selected.length > 0 && selected.length < products.length;
-
-                    if (isAllSelected || isIndeterminate) {
-                      setSelected([]);
-                    } else {
-                      setSelected(products.map((p: IProduct) => p.productId));
-                    }
-                  }}
-                />
-              </TableCell>
-              <TableCell
-                sx={{
-                  ...Styles.tableCell,
-                  fontWeight: "bold",
-                  color: "black",
-                  height: "30px",
-                  lineHeight: "28px",
-                  padding: "4px 8px",
-                  width: 150,
-                }}
-              >
-                Ảnh
-              </TableCell>
-              <TableCell sx={{ ...Styles.tableCell, width: 120 }}>
-                Mã sản phẩm
-              </TableCell>
-              <TableCell sx={{ ...Styles.tableCell, width: 150 }}>
-                Tên sản phẩm
-              </TableCell>
-
-              <TableCell
-                sx={{
-                  ...Styles.tableCell,
-                  width: 150,
-                  cursor: "pointer",
-                  userSelect: "none",
-                }}
-                onClick={() => toggleSort("price")}
-              >
-                Giá bán{" "}
-                {filter.sortBy?.startsWith("price") ? (
-                  filter.sortBy.endsWith("asc") ? (
-                    <ArrowUpwardIcon sx={{ fontSize: 14, ml: 0.3 }} />
-                  ) : (
-                    <ArrowDownwardIcon sx={{ fontSize: 14, ml: 0.3 }} />
-                  )
-                ) : (
-                  <FilterAltOutlinedIcon
-                    sx={{
-                      fontSize: 16,
-                      verticalAlign: "middle",
-                      ml: 0.5,
-                      color: "#aaa",
-                    }}
-                  />
-                )}
-              </TableCell>
-
-              <TableCell
-                sx={{
-                  ...Styles.tableCell,
-                  width: 90,
-                  cursor: "pointer",
-                  userSelect: "none",
-                }}
-                onClick={() => toggleSort("stock")}
-              >
-                Tồn kho{" "}
-                {filter.sortBy?.startsWith("stock") ? (
-                  filter.sortBy.endsWith("asc") ? (
-                    <ArrowUpwardIcon sx={{ fontSize: 14, ml: 0.3 }} />
-                  ) : (
-                    <ArrowDownwardIcon sx={{ fontSize: 14, ml: 0.3 }} />
-                  )
-                ) : (
-                  <FilterAltOutlinedIcon
-                    sx={{
-                      fontSize: 16,
-                      verticalAlign: "middle",
-                      ml: 0.5,
-                      color: "#aaa",
-                    }}
-                  />
-                )}
-              </TableCell>
-              <TableCell
-                sx={{
-                  ...Styles.tableCell,
-                  width: 90,
-                  cursor: "pointer",
-                  userSelect: "none",
-                }}
-                onClick={() => toggleSort("sold")}
-              >
-                Đã bán{" "}
-                {filter.sortBy?.startsWith("sold") ? (
-                  filter.sortBy.endsWith("asc") ? (
-                    <ArrowUpwardIcon sx={{ fontSize: 14, ml: 0.3 }} />
-                  ) : (
-                    <ArrowDownwardIcon sx={{ fontSize: 14, ml: 0.3 }} />
-                  )
-                ) : (
-                  <FilterAltOutlinedIcon
-                    sx={{
-                      fontSize: 16,
-                      verticalAlign: "middle",
-                      ml: 0.5,
-                      color: "#aaa",
-                    }}
-                  />
-                )}
-              </TableCell>
-              <TableCell sx={{ ...Styles.tableCell, width: 120 }}>
-                Thương hiệu
-              </TableCell>
-              <TableCell sx={{ ...Styles.tableCell, width: 120 }}>
-                Trạng thái
-              </TableCell>
-              <TableCell sx={{ ...Styles.tableCell, width: 250 }}>
-                Ghi chú
-              </TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {isLoading ? (
-              <TableRow>
-                <TableCell colSpan={10} align="center">
-                  Đang tải dữ liệu...
-                </TableCell>
-              </TableRow>
-            ) : error ? (
-              <TableRow>
-                <TableCell colSpan={6} sx={{ padding: "10px" }}>
-                  Danh sách trống!!
-                </TableCell>
-              </TableRow>
-            ) : products && products.length > 0 ? (
-              products.map((p: IProduct, index: number) => (
-                <TableRow
-                  key={p.productId}
-                  hover
-                  sx={{ cursor: "pointer" }}
-                  onClick={() => {
-                    setProductModalOpen(true);
-                    setProductId(p.productId);
-                    setProductModalMode("view");
-                  }}
-                  onContextMenu={(e) => {
-                    e.preventDefault();
-
-                    setContextItem(p);
-                    setAnchorEl({ mouseX: e.clientX, mouseY: e.clientY });
-                  }}
-                >
-                  <TableCell
-                    sx={{
-                      borderRight: "1px solid rgb(236, 234, 234)",
-                      lineHeight: "28px",
-                      padding: "4px 8px",
-                    }}
-                  >
-                    <Checkbox
-                      checked={selected.includes(p.productId)}
-                      onChange={() => handleSelect(p.productId)}
-                      onClick={(e) => e.stopPropagation()}
-                      sx={{
-                        color: "#999",
-                        "&.Mui-checked": {
-                          color: "red",
-                        },
-                      }}
-                      style={{ width: "14px", height: "14px" }}
-                    />
-                  </TableCell>
-                  <TableCell
-                    sx={{
-                      width: "100%",
-                      maxHeight: 90,
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      borderRight: "1px solid rgb(240, 235, 235)",
-                    }}
-                  >
-                    <img
-                      src={
-                        p.privewImageUrl ||
-                        "https://via.placeholder.com/40?text=No+Image"
-                      }
-                      alt="Ảnh sản phẩm"
-                      style={{
-                        width: "95%",
-                        height: 85,
-                        objectFit: "cover",
-                        borderRadius: 2,
-                        border: "1px solid #eee",
-                        boxShadow: "0 0 3px rgba(0, 0, 0, 0.1)",
-                        backgroundColor: "#f9f9f9",
-                      }}
-                    />
-                  </TableCell>
-                  <TableCell sx={Styles.tableCellBody}>
-                    {p.productCode}
-                  </TableCell>
-                  <TableCell sx={Styles.tableCellBody}>
-                    {p.productName}
-                  </TableCell>
-                  <TableCell sx={Styles.tableCellBody}>
-                    {renderPrice(p)}
-                  </TableCell>
-                  <TableCell sx={Styles.tableCellBody}>{p.stock}</TableCell>
-                  <TableCell sx={Styles.tableCellBody}>{p.totalSold}</TableCell>
-                  <TableCell sx={Styles.tableCellBody}>{p.brandName}</TableCell>
-                  <TableCell sx={Styles.tableCellBody}>
-                    {getProductStatusText(p.productStatus ?? -1)}
-                  </TableCell>
-                  <TableCell sx={Styles.tableCellBody}>{p.note}</TableCell>
-                </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell colSpan={10} sx={{ padding: "10px" }}>
-                  Danh sách trống!!
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </TableContainer> */}
 
       <DataTableContainer<IProduct>
         data={products}

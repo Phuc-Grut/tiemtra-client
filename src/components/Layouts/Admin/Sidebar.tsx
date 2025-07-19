@@ -16,12 +16,13 @@ import {
   ChevronLeft,
   ChevronRight,
   TuneOutlined,
-  Inventory2,
-  LocalOfferOutlined
+  Inventory2
 } from "@mui/icons-material";
 import { Link } from "react-router-dom";
 import { useTheme } from "@mui/material/styles";
 import { useMediaQuery } from "@mui/material";
+import LibraryBooks from '@mui/icons-material/LibraryBooks';
+import InsertEmoticonRoundedIcon from '@mui/icons-material/InsertEmoticonRounded';
 
 type SidebarProps = {
   expanded: boolean;
@@ -130,28 +131,6 @@ const Sidebar = ({ expanded, setExpanded }: SidebarProps) => {
             {expanded && <ListItemText primary="Sản phẩm" />}
           </ListItem>
         </Tooltip>
-        <Tooltip
-          title="Thương hiệu"
-          placement="right"
-         disableHoverListener={expanded}
->
-        <ListItem
-          component={Link}
-          to="/admin/brand"
-          sx={{ cursor: "pointer", justifyContent: "center" }}
-  >
-        <ListItemIcon
-          sx={{
-          minWidth: 0,
-          paddingRight: expanded ? 1 : "auto",
-          justifyContent: "center",
-      }}
-    >
-      <LocalOfferOutlined /> {}
-    </ListItemIcon>
-    {expanded && <ListItemText primary="Thương hiệu" />}
-      </ListItem>
-</Tooltip>
 
         <Tooltip
           title="category"

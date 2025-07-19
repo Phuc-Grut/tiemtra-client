@@ -25,7 +25,7 @@ interface ProductFormSectionProps {
 const productStatusOptions = [
   { label: "Nháp", value: 0 },
   { label: "Đang bán", value: 1 },
-  { label: "Ẩn", value: 2 },
+  { label: "Ngừng bán", value: 2 },
   { label: "Hết hàng", value: 3 },
 ];
 
@@ -37,7 +37,7 @@ const ProductFormSection = ({
 }: ProductFormSectionProps) => {
   
   const isReadOnly = mode === "view";
-  const MAX_FILE_SIZE = 200 * 1024;
+  const MAX_FILE_SIZE = 500 * 1024;
   const { showSuccess, showError } = useToast();
 
   const handleChange = (

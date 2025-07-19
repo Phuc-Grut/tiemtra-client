@@ -14,6 +14,8 @@ import ProductDetail from "src/views/Store/ProductDetail";
 import VerifyOtp from "src/views/Auth/pages/VerifyOtp";
 import CartPage from "src/views/Store/Cart";
 import ProductList from "src/views/Store/ProductList";
+import Order from "src/views/Admin/Order";
+import CheckOut from "src/views/Store/Checkout";
 const AppRoutes = () => {
   return (
     <Routes>
@@ -23,8 +25,9 @@ const AppRoutes = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/" element={<HomePage />} />
         <Route path="san-pham/:code/:slug" element={<ProductDetail />} />
-        <Route path="/cart" element={<CartPage />} />
+        <Route path="/gio-hang" element={<CartPage />} />
         <Route path="/san-pham" element={<ProductList />} />
+        <Route path="/thanh-toan" element={<CheckOut />} />
       </Route>
       <Route
         path="/admin"
@@ -40,6 +43,7 @@ const AppRoutes = () => {
         <Route path="attribute" element={<Attribute />} />
          <Route path="brand" element={<Brand/>} />
         <Route path="category/*" element={<Category />} />
+        <Route path="order/*" element={<Order />} />
       </Route>
     </Routes>
   );
