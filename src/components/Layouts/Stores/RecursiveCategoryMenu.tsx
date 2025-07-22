@@ -102,18 +102,22 @@ export const RecursiveCategoryMenu = () => {
         sx={{
           fontSize: 14,
           px: 2,
-          py: 1,
-          borderBottom: "1px solid #f0f0f0",
-          "&:last-child": {
-            borderBottom: "none",
-          },
+          py: 1.2,
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          borderBottom: "1px solid #f5f5f5",
           "&:hover": {
             backgroundColor: "#f9f9f9",
             color: "#2e7d32",
           },
+          "& svg": {
+            color: "#aaa",
+          },
         }}
       >
-        {item.categoryName}
+        <span>{item.categoryName}</span>
+
         {Array.isArray(item.children) && item.children.length > 0 && (
           <ChevronRightIcon fontSize="small" />
         )}
@@ -163,14 +167,14 @@ export const RecursiveCategoryMenu = () => {
         <Paper
           sx={{
             position: "absolute",
-            top: anchorEl.offsetHeight,
+            top: anchorEl.offsetHeight + 2,
             left: 0,
             zIndex: 1300,
-            minWidth: 180,
+            minWidth: 200,
             backgroundColor: "#fff",
-            borderRadius: 1,
-            boxShadow: "0px 4px 10px rgba(0,0,0,0.1)",
-            padding: "4px 0",
+            borderRadius: "4px",
+            boxShadow: "0 6px 12px rgba(0,0,0,0.15)",
+            border: "1px solid #eee",
             overflow: "hidden",
           }}
           onMouseEnter={cancelClose}
@@ -189,7 +193,11 @@ export const RecursiveCategoryMenu = () => {
             top: submenu.position.top,
             left: submenu.position.left,
             zIndex: 1300 + submenu.level,
-            minWidth: 180,
+            minWidth: 200,
+            backgroundColor: "#fff",
+            borderRadius: "4px",
+            boxShadow: "0 6px 12px rgba(0,0,0,0.15)",
+            border: "1px solid #eee",
           }}
           onMouseEnter={cancelClose}
           onMouseLeave={handleMouseLeaveAll}
