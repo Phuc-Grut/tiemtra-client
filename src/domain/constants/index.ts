@@ -104,3 +104,9 @@ export const STORE_ORDER = {
         GENERATE_ORDER_CODE: `${URL_STORE}/order/generate-order-code`,
     }
 }
+
+export const STORE_CATEGORY = {
+    URL_API: {
+        GET_ALL: `${URL_STORE}/category/tree`
+    }
+}

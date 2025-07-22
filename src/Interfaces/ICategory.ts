@@ -36,3 +36,9 @@ export interface ICategoryRequest {
 export interface ICreator {
     fullName?: string
 }
+
+export interface ICategoryTreeDto {
+  categoryId: number;
+  categoryName: string;
+  children: ICategoryTreeDto[];
+}

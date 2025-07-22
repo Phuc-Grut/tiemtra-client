@@ -22,6 +22,7 @@ import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import cartApi from "src/services/api/Cart";
 import { useCurrentUser } from "src/hook/useCurrentUser";
+import { RecursiveCategoryMenu } from "./RecursiveCategoryMenu";
 
 const Header = () => {
   const navigate = useNavigate();
@@ -202,12 +203,10 @@ const Header = () => {
               <Button onClick={() => (window.location.href = "/")} size="small">
                 Trang chủ
               </Button>
-              <Button
-                size="small"
-                onClick={() => (window.location.href = "/san-pham")}
-              >
-                Sản phẩm
-              </Button>
+              <Box>
+                <RecursiveCategoryMenu />
+              </Box>
+
               <Button size="small">Giới thiệu</Button>
             </Box>
 

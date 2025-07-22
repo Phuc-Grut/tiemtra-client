@@ -1,9 +1,10 @@
 import { AxiosResponse } from "axios";
-import { CATEGORY } from "src/domain/constants";
+import { CATEGORY, STORE_CATEGORY } from "src/domain/constants";
 import {
   IAddCategoryRequest,
   ICategory,
   ICategoryRequest,
+  ICategoryTreeDto,
 } from "src/Interfaces/ICategory";
 import requester from "src/services/extended/axiosInstance";
 
@@ -18,7 +19,7 @@ const categoryApi = {
     requester.get(CATEGORY.URL_API.GET_ALL_API, { params }),
 
   getByIdApi: (params: CategoryIdRequest) =>
-    requester.get(CATEGORY.URL_API.GET_BY_ID_API, {params}),
+    requester.get(CATEGORY.URL_API.GET_BY_ID_API, { params }),
 
   addCategoryApi: (data: IAddCategoryRequest): Promise<AxiosResponse<any>> =>
     requester.post(CATEGORY.URL_API.CREATE_API, data),
@@ -34,14 +35,18 @@ const categoryApi = {
 
   getAttributeById: (id: number) =>
     requester.get(CATEGORY.URL_API.ATTRIBUTE_BY_ID(id)),
-  
+
   setAttributesForCategory: (data: {
     categoryId: number;
     attributeIds: number[];
   }): Promise<AxiosResponse<any>> =>
     requester.post(CATEGORY.URL_API.SET_ATTRIBUTES_API, data),
 
-  getLeafCategories: (): Promise<AxiosResponse<ICategory[]>> => requester.get(CATEGORY.URL_API.GET_LEAF_CATEGORY)
+  getLeafCategories: (): Promise<AxiosResponse<ICategory[]>> =>
+    requester.get(CATEGORY.URL_API.GET_LEAF_CATEGORY),
+
+  getAllTree: (): Promise<AxiosResponse<ICategoryTreeDto[]>> =>
+    requester.get(STORE_CATEGORY.URL_API.GET_ALL),
 };
 
 export default categoryApi;
