@@ -27,7 +27,7 @@ const HomePage = () => {
 
   const [filter, setFilter] = useState<IProductFilter>({
     pageNumber: 1,
-    pageSize: 5,
+    pageSize: 10,
     keyword: "",
     productCode: "",
     sortBy: "",
@@ -76,7 +76,6 @@ const HomePage = () => {
       }
     };
   }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
-
 
   return (
     <Box

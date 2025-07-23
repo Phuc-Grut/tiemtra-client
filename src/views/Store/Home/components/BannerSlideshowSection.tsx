@@ -63,12 +63,12 @@ const BannerSlideshowSection: React.FC = () => {
   const isTablet = useMediaQuery("(max-width:1024px)");
 
   const images: string[] = [
-    "/image/banner/banner1.jpg",
+    "/image/banner/baner2.png",
     "/image/banner/banner2.jpg",
-    "/image/banner/banner3.jpg",
+    "/image/banner/bannerNhieuSp.png",
   ];
 
-  const dynamicHeight = isMobile ? "25vh" : isTablet ? "60vh" : "80vh";
+  const dynamicHeight = isMobile ? "25vh" : isTablet ? "60vh" : "100vh";
 
   const settings = {
     dots: true,
