@@ -12,8 +12,8 @@ import { ICategory } from "src/Interfaces/ICategory";
 interface Props {
   keyword: string;
   setKeyword: (value: string) => void;
-  categoryId: number | "";
-  setCategoryId: (value: number | "") => void;
+  categoryId?: number;
+  setCategoryId: (value: number | undefined) => void; 
   categories: ICategory[];
 }
 
@@ -35,7 +35,7 @@ const ProductFilterPanel = ({
           borderRadius: "8px",
           px: 1.5,
           py: 0.5,
-          mb: 2,
+          mb: 0,
         }}
       >
         <SearchIcon sx={{ color: "#4CAF50", fontSize: "20px", mr: 1 }} />
@@ -79,7 +79,9 @@ const ProductFilterPanel = ({
             key={cat.categoryId}
             selected={categoryId === cat.categoryId}
             onClick={() =>
-              setCategoryId(categoryId === cat.categoryId ? "" : cat.categoryId)
+              setCategoryId(
+                categoryId === cat.categoryId ? undefined : cat.categoryId
+              )
             }
             sx={{
               px: 1,
@@ -107,7 +109,7 @@ const ProductFilterPanel = ({
                       color: "rgba(0, 0, 0, 0.4)",
                     }}
                   >
-                    ({ 0})
+                    ({0})
                   </Typography>
                 </Box>
               }
