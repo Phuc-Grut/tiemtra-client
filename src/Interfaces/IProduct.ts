@@ -61,6 +61,7 @@ export interface IProduct {
   productVariations?: ProductVariation[]
   productImageUrls: string[];
   productAttributes?: ProductAttribute[]
+  hasVariations?: boolean
 }
 
 export interface IProductFilter {
