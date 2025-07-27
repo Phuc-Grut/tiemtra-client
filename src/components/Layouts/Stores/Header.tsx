@@ -123,7 +123,7 @@ const Header = () => {
                 px: { xs: 1, sm: 2 },
               }}
             >
-              <IconButton>
+              <IconButton onClick={() => navigate("/san-pham")}>
                 <SearchIcon />
               </IconButton>
               {/* <Typography variant="h6" sx={{ fontWeight: "bold" }}>
