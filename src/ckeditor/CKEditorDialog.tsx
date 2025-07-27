@@ -59,7 +59,7 @@ const CKEditorDialog = ({
           disabled={readOnly}
           config={{
             licenseKey:
-              "eyJhbGciOiJFUzI1NiJ9.eyJleHAiOjE3NTMwNTU5OTksImp0aSI6IjIyMDM0NWNiLWMwNWYtNGViMy05NTZkLWVkMThiNWRhNTlhZCIsInVzYWdlRW5kcG9pbnQiOiJodHRwczovL3Byb3h5LWV2ZW50LmNrZWRpdG9yLmNvbSIsImRpc3RyaWJ1dGlvbkNoYW5uZWwiOlsiY2xvdWQiLCJkcnVwYWwiLCJzaCJdLCJ3aGl0ZUxhYmVsIjp0cnVlLCJsaWNlbnNlVHlwZSI6InRyaWFsIiwiZmVhdHVyZXMiOlsiKiJdLCJ2YyI6IjZmMDhmOWJjIn0.mLld4MYPf-n6SNxrmtT7gXPj8feQIX72N5bBZAOmFi-GjfmnubpeGW4z0-s-jJ_ifXJa4eg3FskR3x07mIHlWQ",
+              "eyJhbGciOiJFUzI1NiJ9.eyJleHAiOjE3NTQ4NzAzOTksImp0aSI6Ijk3NmNlOGE5LTA5ZDEtNDhiYS04Mzk3LTYyMzRlNTkxMTM5OSIsInVzYWdlRW5kcG9pbnQiOiJodHRwczovL3Byb3h5LWV2ZW50LmNrZWRpdG9yLmNvbSIsImRpc3RyaWJ1dGlvbkNoYW5uZWwiOlsiY2xvdWQiLCJkcnVwYWwiLCJzaCJdLCJ3aGl0ZUxhYmVsIjp0cnVlLCJsaWNlbnNlVHlwZSI6InRyaWFsIiwiZmVhdHVyZXMiOlsiKiJdLCJ2YyI6IjQxYTI2Yjk3In0.kJ12ynbsY_ga9NlcrVjiQHqayb7R5WmeQd4KL5XCv6-Dr65b_sHw2lfD1A0wvcFlk7tBYpFd2gChvliOm8q_ew",
             toolbar: [
               "heading",
               "|",
