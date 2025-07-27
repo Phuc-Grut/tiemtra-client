@@ -15,6 +15,7 @@ import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import categoryApi from "src/services/api/Category";
 import MobileCategoryMenu from "./MobileMenuDrawer";
+import { slugify } from "src/utils/slugify";
 
 interface CategoryNode {
   categoryId: number;
@@ -31,6 +32,10 @@ interface SubMenu {
 
 export const RecursiveCategoryMenu = () => {
   const navigate = useNavigate();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const [mobileOpen, setMobileOpen] = useState(false);
+
   const { data: categoryTree = [] } = useQuery({
     queryKey: ["category-tree"],
     queryFn: () => categoryApi.getAllTree().then((res) => res.data),
@@ -95,7 +100,12 @@ export const RecursiveCategoryMenu = () => {
         key={item.categoryId}
         onMouseEnter={(e) => handleHoverItem(e, item.children || [], level)}
         onClick={() => {
-          navigate(`/san-pham/${item.categoryName}`);
+          navigate(
+            `/san-pham/danh-muc-san-pham/${slugify(item.categoryName)}`,
+            {
+              state: { categoryId: item.categoryId },
+            }
+          );
           setMenuVisible(false);
           setSubMenus([]);
         }}
@@ -123,10 +133,6 @@ export const RecursiveCategoryMenu = () => {
         )}
       </MenuItem>
     ));
-
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
-  const [mobileOpen, setMobileOpen] = useState(false);
 
   if (isMobile) {
     return (

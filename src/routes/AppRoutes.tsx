@@ -26,6 +26,7 @@ const AppRoutes = () => {
         <Route path="san-pham/:code/:slug" element={<ProductDetail />} />
         <Route path="/gio-hang" element={<CartPage />} />
         <Route path="/san-pham" element={<ProductList />} />
+        <Route path="/san-pham/danh-muc-san-pham/:categorySlug" element={<ProductList />} />
         <Route path="/thanh-toan" element={<CheckOut />} />
       </Route>
       <Route

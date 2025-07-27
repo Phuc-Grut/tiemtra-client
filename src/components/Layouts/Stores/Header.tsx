@@ -18,11 +18,12 @@ import EmailIcon from "@mui/icons-material/Email";
 import PhoneIcon from "@mui/icons-material/Phone";
 import SearchIcon from "@mui/icons-material/Search";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import cartApi from "src/services/api/Cart";
 import { useCurrentUser } from "src/hook/useCurrentUser";
 import { RecursiveCategoryMenu } from "./RecursiveCategoryMenu";
+import { useSearchParams } from "react-router-dom";
 
 const Header = () => {
   const navigate = useNavigate();
@@ -78,6 +79,30 @@ const Header = () => {
     localStorage.removeItem("refresh_token");
     window.dispatchEvent(new Event("userChanged"));
     handleMenuClose();
+  };
+
+  const location = useLocation();
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const keywordParam = searchParams.get("keyword") || "";
+  const [localKeyword, setLocalKeyword] = useState(keywordParam);
+
+  useEffect(() => {
+    setLocalKeyword(keywordParam);
+  }, [keywordParam]);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const trimmed = localKeyword.trim();
+    if (!trimmed) return;
+
+    const params = new URLSearchParams(searchParams);
+    params.set("keyword", trimmed);
+    setSearchParams(params);
+
+    if (location.pathname !== "/san-pham") {
+      navigate(`/san-pham?keyword=${encodeURIComponent(trimmed)}`);
+    }
   };
 
   return (
@@ -218,17 +243,24 @@ const Header = () => {
                   justifyContent: "center",
                 }}
               >
-                <InputBase
-                  placeholder="Tìm sản phẩm..."
-                  sx={{
-                    bgcolor: "#eee",
-                    px: 2,
-                    py: 0.5,
-                    borderRadius: 4,
-                    width: { xs: "100%", sm: 200, md: 250 },
-                    maxWidth: "100%",
-                  }}
-                />
+                <form onSubmit={handleSubmit}>
+                  <InputBase
+                    value={localKeyword}
+                    onChange={(e) => setLocalKeyword(e.target.value)}
+                    placeholder="Tìm sản phẩm..."
+                    sx={{
+                      bgcolor: "#eee",
+                      px: 2,
+                      py: 0.5,
+                      borderRadius: 4,
+                      width: { xs: "100%", sm: 200, md: 250 },
+                      maxWidth: "100%",
+                    }}
+                  />
+                  {/* <IconButton type="submit" sx={{ ml: 1 }}>
+                    <SearchIcon />
+                  </IconButton> */}
+                </form>
               </Box>
             )}
 

@@ -8,13 +8,15 @@ import {
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import { ICategory } from "src/Interfaces/ICategory";
+import { useEffect, useState } from "react";
 
 interface Props {
   keyword: string;
   setKeyword: (value: string) => void;
   categoryId?: number;
-  setCategoryId: (value: number | undefined) => void; 
+  setCategoryId: (value: number | undefined) => void;
   categories: ICategory[];
+  onCategorySelect?: (category: ICategory) => void; // NEW
 }
 
 const ProductFilterPanel = ({
@@ -23,7 +25,27 @@ const ProductFilterPanel = ({
   categoryId,
   setCategoryId,
   categories,
+  onCategorySelect,
 }: Props) => {
+  // Tạo state cục bộ để debounce keyword
+  const [localKeyword, setLocalKeyword] = useState(keyword);
+
+  // Mỗi lần user gõ, delay 500ms rồi mới cập nhật URL
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      if (localKeyword !== keyword) {
+        setKeyword(localKeyword);
+      }
+    }, 500);
+
+    return () => clearTimeout(timeout);
+  }, [keyword, localKeyword, setKeyword]);
+
+  // Khi `keyword` từ URL thay đổi, cập nhật `localKeyword`
+  useEffect(() => {
+    setLocalKeyword(keyword);
+  }, [keyword]);
+
   return (
     <Box>
       {/* Search Box */}
@@ -41,8 +63,8 @@ const ProductFilterPanel = ({
         <SearchIcon sx={{ color: "#4CAF50", fontSize: "20px", mr: 1 }} />
         <InputBase
           placeholder="Search..."
-          value={keyword}
-          onChange={(e) => setKeyword(e.target.value)}
+          value={localKeyword}
+          onChange={(e) => setLocalKeyword(e.target.value)}
           fullWidth
           sx={{
             fontSize: "14px",
@@ -58,11 +80,11 @@ const ProductFilterPanel = ({
         fontSize="14px"
         color="#333"
         mb={0.5}
+        mt={1}
       >
         Danh mục sản phẩm
       </Typography>
 
-      {/* Green underline */}
       <Box
         sx={{
           height: "2px",
@@ -78,11 +100,14 @@ const ProductFilterPanel = ({
           <ListItemButton
             key={cat.categoryId}
             selected={categoryId === cat.categoryId}
-            onClick={() =>
-              setCategoryId(
-                categoryId === cat.categoryId ? undefined : cat.categoryId
-              )
-            }
+            onClick={() => {
+              const newSelected =
+                categoryId === cat.categoryId ? undefined : cat.categoryId;
+              setCategoryId(newSelected);
+              if (newSelected && onCategorySelect) {
+                onCategorySelect(cat); // Gọi hàm điều hướng theo slug
+              }
+            }}
             sx={{
               px: 1,
               py: 0.8,
