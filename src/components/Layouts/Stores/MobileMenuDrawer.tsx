@@ -9,6 +9,7 @@ import {
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { slugify } from "src/utils/slugify";
 
 interface CategoryNode {
   categoryId: number;
@@ -42,7 +43,7 @@ const MobileCategoryMenu = ({
               if (item.children?.length) {
                 handleToggle(item.categoryId);
               } else {
-                navigate(`/san-pham/${item.categoryName}`);
+                navigate(`/san-pham/danh-muc-san-pham/${slugify(item.categoryName)}`);
                 onClose();
               }
             }}

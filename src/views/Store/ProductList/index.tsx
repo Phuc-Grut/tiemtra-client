@@ -6,17 +6,17 @@ import {
   Typography,
 } from "@mui/material";
 import { useQueries, useQuery } from "@tanstack/react-query";
-import { useState } from "react";
-
 import categoryApi from "src/services/api/Category";
 import productApi from "src/services/api/Products/indext";
 import { IProductFilter } from "src/Interfaces/IProduct";
 import { ICategory } from "src/Interfaces/ICategory";
-
 import ProductFilterPanel from "./components/ProductFilterPanel";
 import ProductSlider3 from "src/components/ProductSlider3";
 import PageBanner from "./components/PageBanner";
 import FilteredProductSection from "./components/FilteredProductSection";
+import { useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { slugify } from "src/utils/slugify";
+import { useEffect, useMemo, useState } from "react";
 
 const buildCleanFilter = (filter: IProductFilter): Partial<IProductFilter> => {
   const cleaned: any = {
@@ -36,17 +36,54 @@ const buildCleanFilter = (filter: IProductFilter): Partial<IProductFilter> => {
 };
 
 const ProductList = () => {
-  const [keyword, setKeyword] = useState("");
+
+  const { categorySlug } = useParams();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const keyword = searchParams.get("keyword") || "";
 
   const [selectedCategoryId, setSelectedCategoryId] = useState<
     number | undefined
   >(undefined);
+
+  // Cập nhật keyword vào URL
+  const updateKeyword = (newKeyword: string) => {
+    const params = new URLSearchParams(searchParams);
+    if (newKeyword.trim()) {
+      params.set("keyword", newKeyword.trim());
+    } else {
+      params.delete("keyword");
+    }
+    setSearchParams(params);
+  };
+
+  const location = useLocation();
+  const categoryIdFromState = location.state?.categoryId;
+
+  const handleCategorySelect = (cat: ICategory) => {
+    const slug = slugify(cat.categoryName);
+    navigate(`/san-pham/danh-muc-san-pham/${slug}`);
+  };
 
   const { data: leafCategories = [], isLoading: isLoadingCategories } =
     useQuery<ICategory[]>({
       queryKey: ["leaf-categories"],
       queryFn: () => categoryApi.getLeafCategories().then((res) => res.data),
     });
+
+  const matchedCategoryId = useMemo(() => {
+    if (categoryIdFromState) return categoryIdFromState;
+    if (!categorySlug || leafCategories.length === 0) return undefined;
+
+    const match = leafCategories.find(
+      (cat) => slugify(cat.categoryName) === categorySlug
+    );
+    return match?.categoryId;
+  }, [categorySlug, categoryIdFromState, leafCategories]);
+
+  useEffect(() => {
+    setSelectedCategoryId(matchedCategoryId);
+  }, [matchedCategoryId]);
 
   const productQueries = useQueries({
     queries: leafCategories.map((cat) => {
@@ -90,10 +127,11 @@ const ProductList = () => {
             >
               <ProductFilterPanel
                 keyword={keyword}
-                setKeyword={setKeyword}
+                setKeyword={updateKeyword}
                 categoryId={selectedCategoryId}
                 setCategoryId={setSelectedCategoryId}
                 categories={leafCategories}
+                onCategorySelect={handleCategorySelect}
               />
             </Box>
           </Grid>
@@ -101,7 +139,6 @@ const ProductList = () => {
           {/* Right Product List */}
           <Grid item xs={12} md={9}>
             {!keyword && !selectedCategoryId ? (
-              // Giao diện mặc định: tất cả danh mục, slider từng nhóm
               leafCategories.map((cat, idx) => {
                 const query = productQueries[idx];
                 const products = Array.isArray(query.data?.items)
@@ -150,7 +187,6 @@ const ProductList = () => {
                 );
               })
             ) : (
-              // Giao diện khi có lọc (keyword hoặc categoryId)
               <FilteredProductSection
                 keyword={keyword}
                 categoryId={selectedCategoryId}
