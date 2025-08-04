@@ -13,6 +13,9 @@ export interface IOrder {
   paymentStatus: PaymentStatus;
   createAt: string | Date;
   updateAt: string | Date;
+  orderItems: IOrderItem
+  shippingFee?: number
+  totalOrderItems?: number
 }
 
 export enum OrderStatus {
@@ -56,7 +59,7 @@ export interface ICreateOrder {
   recipientName: string;
   recipientAddress: string;
   recipientPhone: string;
-  orderItems: IOrderItem[];
+  orderItems: ICreateOrderItem[];
   paymentMethod: PaymentMethod;
   shippingFee : number
 }
@@ -64,6 +67,40 @@ export interface ICreateOrder {
 export interface IOrderItem {
   productId: string;
   productVariationId?: string;
+  productCode: string;
+  productName: string;
+  previewImageUrl: string;
+  variationName: string;
   quantity: number;
-  unitPrice?: number;
+  unitPrice: number;
+  totalPrice: number;
+}
+
+export interface ICreateOrderItem {
+  productId: string;
+  productVariationId?: string;
+  quantity: number;
+}
+
+
+
+export interface IOrderDetail {
+  orderId: string;
+  orderCode: string;
+  customerName: string;
+  customerCode: string;
+  receivertName?: string;
+  receiverAddress?: string;
+  receiverPhone?: string;
+  totalAmount?: number;
+  note: string;
+  orderStatus: number;
+  paymentMethod: number;
+  paymentStatus: number;
+  createAt: string;
+  updateAt: string;
+  confirmedAt?: string;
+  shippingFee: number;
+  totalOrderItems: number;
+  orderItems: IOrderItem[];
 }
