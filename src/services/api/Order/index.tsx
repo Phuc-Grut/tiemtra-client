@@ -20,6 +20,9 @@ const orderApi = {
     requester.put(ADMIN_ORDER.URL_API.CHANGE_ORDER_STATUS(orderId), {
       newStatus: orderStatus,
     }),
+
+  getById: (orderId: string) =>
+    requester.get(ADMIN_ORDER.URL_API.GET_BY_ID(orderId)),
 };
 
 export default orderApi;

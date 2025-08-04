@@ -26,6 +26,7 @@ import { getPaymentStatusChip } from "src/utils/getPaymentStatusChip";
 import ModalConfirm from "src/components/ModalConfirm";
 import useToast from "src/components/Toast";
 import ChangeOrderStatusModal from "./ChangeOrderStatusModal";
+import OrderDetail from "./OrderDetail";
 
 const OrderTable = () => {
   const buildCleanFilter = (filter: IOrderFilter) => {
@@ -98,12 +99,14 @@ const OrderTable = () => {
     }));
   };
 
+  const [orderDetailModal, setOrderDetailModal] = useState(false);
+
   const orderMenuActions = orderContextMenuItems.map((item) => ({
     ...item,
     onClick: (o: IOrder) => {
       switch (item.id) {
         case "VIEW":
-          // setOrderModalOpen(true);
+          setOrderDetailModal(true)
           setOrderId(o.orderId);
           break;
 
@@ -495,12 +498,19 @@ const OrderTable = () => {
         message={"Bạn có muốn xác nhân đơn hàng này"}
       />
 
+      <OrderDetail 
+        onClose={() => setOrderDetailModal(false)}
+        open={orderDetailModal}
+        orderId={orderId}
+      />
+
       <ChangeOrderStatusModal
         open={!!selectedOrder}
         onClose={() => setSelectedOrder(null)}
         order={selectedOrder}
         // onSuccess={() => refetch()}
       />
+      
     </Box>
   );
 };
