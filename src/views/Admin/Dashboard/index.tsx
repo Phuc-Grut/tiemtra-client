@@ -10,6 +10,8 @@ import OrdersStatusPie from "./components/OrdersStatusPie";
 import TopProductsBarChart from "./components/TopProductsBarChart";
 import TopCustomersTable from "./components/TopCustomersTable";
 import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
+import FilterAltIcon from "@mui/icons-material/FilterAlt";
+import CloseIcon from "@mui/icons-material/Close";
 
 const Dashboard = () => {
   const [applied, setApplied] = useState({
@@ -28,6 +30,8 @@ const Dashboard = () => {
     return `${labelMap[applied.range]} • Kênh: ${applied.channel}`;
   }, [applied]);
 
+  const [showFilter, setShowFilter] = useState(true);
+
   return (
     <Box
       sx={{
@@ -37,45 +41,60 @@ const Dashboard = () => {
         backgroundColor: "#fff",
         borderRadius: "8px",
         boxShadow: "0px 2px 5px rgba(0, 0, 0, 0.1)",
-        minHeight: "calc(100vh - 171px)",
-        overflow: "auto",
-        maxHeight: "calc(100vh - 63px)",
-        paddingLeft: 1
+        height: "calc(100vh - 63px)",
       }}
     >
-      <DashboardHeader title="Bảng điều khiển — Tiệm Trà" />
-      <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-        {subtitle}
-      </Typography>
+      {/* Header */}
+      <Box sx={{ flexShrink: 0, p: 1 }}>
+        <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <Box>
+            <DashboardHeader title="Bảng điều khiển — Tiệm Trà" />
+            <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+              {subtitle}
+            </Typography>
+          </Box>
+          <Button
+            size="small"
+            startIcon={showFilter ? <CloseIcon /> : <FilterAltIcon />}
+            onClick={() => setShowFilter((prev) => !prev)}
+          >
+            {showFilter ? "Ẩn bộ lọc" : "Hiện bộ lọc"}
+          </Button>
+        </Box>
 
-      <AnalyticsFilter
-        onApply={(range, channel) => setApplied({ range, channel })}
-      />
+        {showFilter && (
+          <AnalyticsFilter
+            onApply={(range, channel) => setApplied({ range, channel })}
+          />
+        )}
+      </Box>
 
-      <KpiCards />
-
-      <Grid container spacing={2} sx={{ mt: 0.5 }}>
-        <Grid item xs={12} md={8}>
-          <RevenueLineChart />
+      {/* Nội dung cuộn */}
+      <Box sx={{ flex: 1, overflow: "auto", px: 1 }}>
+        <KpiCards />
+        <Grid container spacing={2} sx={{ mt: 0.5 }}>
+          <Grid item xs={12} md={8}>
+            <RevenueLineChart />
+          </Grid>
+          <Grid item xs={12} md={4}>
+            <OrdersStatusPie />
+          </Grid>
         </Grid>
-        <Grid item xs={12} md={4}>
-          <OrdersStatusPie />
-        </Grid>
-      </Grid>
 
-      <Grid container spacing={2} sx={{ mt: 0.5 }}>
-        <Grid item xs={12} md={8}>
-          <TopProductsBarChart />
+        <Grid container spacing={2} sx={{ mt: 0.5 }}>
+          <Grid item xs={12} md={8}>
+            <TopProductsBarChart />
+          </Grid>
+          <Grid item xs={12} md={4}>
+            <TopCustomersTable />
+          </Grid>
         </Grid>
-        <Grid item xs={12} md={4}>
-          <TopCustomersTable />
-        </Grid>
-      </Grid>
 
-      <Box sx={{ mt: 3, textAlign: "right", mb: 3 }}>
-        <Button startIcon={<ShoppingBagIcon />} variant="contained">
-          Xem danh sách đơn hàng
-        </Button>
+        <Box sx={{ mt: 3, textAlign: "right", mb: 3 }}>
+          <Button startIcon={<ShoppingBagIcon />} variant="contained">
+            Xem danh sách đơn hàng
+          </Button>
+        </Box>
       </Box>
     </Box>
   );
