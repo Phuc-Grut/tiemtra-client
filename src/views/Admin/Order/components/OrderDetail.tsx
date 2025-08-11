@@ -9,7 +9,6 @@ import {
   Typography,
   IconButton,
 } from "@mui/material";
-import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import orderApi from "src/services/api/Order";
 import OrderInfoSection from "./OrderInfoSection";
@@ -47,7 +46,7 @@ const OrderDetail = ({ open, onClose, orderId }: Props) => {
     <Dialog
       open={open}
       onClose={onClose}
-      maxWidth="lg" // to hơn
+      maxWidth="lg"
       fullWidth
       sx={{
         "& .MuiDialog-paper": {
