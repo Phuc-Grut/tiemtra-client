@@ -1,38 +1,41 @@
-// src/views/Admin/Dashboard/components/TopProductsBarChart.tsx
+// src/views/Admin/Dashboard/components/TopCustomersTable.tsx
 import React from "react";
-import { Box, Card, CardContent, Chip, Divider, Typography } from "@mui/material";
-import {
-  ResponsiveContainer,
-  BarChart,
-  CartesianGrid,
-  XAxis,
-  YAxis,
-  Tooltip,
-  Bar,
-} from "recharts";
-import { ProductBar } from "../types";
+import { Box, Card, CardContent, Chip, Divider, Grid, Typography } from "@mui/material";
+import { TopCustomer } from "../types";
 import { currency } from "../utils/currency";
-import { demoTopProducts } from "../demodata";
+import { demoTopCustomers } from "../demodata";
 
-export default function TopProductsBarChart({ data = demoTopProducts }: { data?: ProductBar[] }) {
+export default function TopCustomersTable({ data = demoTopCustomers }: { data?: TopCustomer[] }) {
   return (
     <Card sx={{ borderRadius: 3, height: 360, boxShadow: "0 8px 30px rgba(0,0,0,0.06)" }}>
       <CardContent sx={{ height: "100%" }}>
         <Typography variant="h6" fontWeight={700} mb={1}>
-          Top sản phẩm theo doanh thu
+          Top khách hàng
         </Typography>
-        <Chip size="small" label={`Top ${Math.min(5, data.length)}`} sx={{ mb: 1 }} />
-        <Divider sx={{ mb: 2 }} />
-        <Box sx={{ width: "100%", height: 260 }}>
-          <ResponsiveContainer>
-            <BarChart data={data} layout="vertical" margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis type="number" tickFormatter={(v) => `${Math.round(Number(v) / 1_000_000)}tr`} />
-              <YAxis type="category" dataKey="name" width={160} />
-              <Tooltip formatter={(v: any) => currency(Number(v))} />
-              <Bar dataKey="revenue" radius={[4, 4, 4, 4]} />
-            </BarChart>
-          </ResponsiveContainer>
+        <Chip size="small" label="Theo doanh thu" sx={{ mb: 1 }} />
+        <Divider sx={{ mb: 1.5 }} />
+        <Box sx={{ maxHeight: 260, overflow: "auto" }}>
+          <Grid container sx={{ px: 1, py: 1, color: "text.secondary", fontSize: 13 }}>
+            <Grid item xs={5}>Khách hàng</Grid>
+            <Grid item xs={2}>Số ĐH</Grid>
+            <Grid item xs={5} textAlign="right">Doanh thu</Grid>
+          </Grid>
+          {data.map((c, idx) => (
+            <Box key={idx} sx={{ px: 1, py: 1.2, borderTop: idx ? "1px solid rgba(0,0,0,0.06)" : "none" }}>
+              <Grid container alignItems="center">
+                <Grid item xs={5}>
+                  <Typography fontWeight={600} sx={{ lineHeight: 1.2 }}>{c.name}</Typography>
+                  <Typography variant="caption" color="text.secondary">{c.phone}</Typography>
+                </Grid>
+                <Grid item xs={2}>
+                  <Chip size="small" label={c.orders} />
+                </Grid>
+                <Grid item xs={5} textAlign="right">
+                  <Typography fontWeight={600}>{currency(c.revenue)}</Typography>
+                </Grid>
+              </Grid>
+            </Box>
+          ))}
         </Box>
       </CardContent>
     </Card>
