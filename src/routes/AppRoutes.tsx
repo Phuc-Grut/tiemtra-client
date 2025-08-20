@@ -15,6 +15,7 @@ import CartPage from "src/views/Store/Cart";
 import ProductList from "src/views/Store/ProductList";
 import Order from "src/views/Admin/Order";
 import CheckOut from "src/views/Store/Checkout";
+import Customer from "src/views/Admin/Customer";
 const AppRoutes = () => {
   return (
     <Routes>
@@ -43,6 +44,7 @@ const AppRoutes = () => {
         <Route path="attribute" element={<Attribute />} />
         <Route path="category/*" element={<Category />} />
         <Route path="order/*" element={<Order />} />
+        <Route path="customer" element={<Customer />} />
       </Route>
     </Routes>
   );

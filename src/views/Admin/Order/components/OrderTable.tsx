@@ -57,7 +57,7 @@ const OrderTable = () => {
     pageNumber: 1,
     pageSize: 10,
     orderCode: "",
-    customerCode: "",
+    customerCode: "KH8965",
     orderStatus: undefined,
     paymentMethod: undefined,
     PaymentStatus: undefined,

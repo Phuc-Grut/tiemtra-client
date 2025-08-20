@@ -99,6 +99,13 @@ export const ADMIN_ORDER = {
     }
 }
 
+export const ADMIN_CUSTOMER = {
+    URL_API: {
+        GET_PAGING: `${URL_ADMIN}/customer/get-paging-customer`,
+        
+    }
+}
+
 export const STORE_ORDER = {
     URL_API: {
         CREATE_ORDER: `${URL_STORE}/order/create-order`,

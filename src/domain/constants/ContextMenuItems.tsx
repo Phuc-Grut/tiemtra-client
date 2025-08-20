@@ -45,4 +45,11 @@ export const ContextMenuItems: IContextMenu[] = [
     icon: <MoveDownIcon fontSize="small" />,
     // onClick: (item) => console.log("Xác nhận đơn hàng", item),
   },
+
+  {
+    id: "VIEW_ORDER",
+    label: "DS Đơn Hàng",
+    icon: <VisibilityIcon fontSize="small" />,
+    // onClick: (item) => console.log("Xác nhận đơn hàng", item),
+  },
 ];
