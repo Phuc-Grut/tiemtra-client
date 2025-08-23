@@ -16,16 +16,12 @@ import ProductList from "src/views/Store/ProductList";
 import Order from "src/views/Admin/Order";
 import CheckOut from "src/views/Store/Checkout";
 import Customer from "src/views/Admin/Customer";
-import ForgotPasswordPage from "src/views/Auth/pages/ForgotPassword";
-import ResetPasswordPage from "src/views/Auth/pages/ResetPasswordPage";
 const AppRoutes = () => {
   return (
     <Routes>
       <Route element={<StoreLayout />}>
         <Route path="/register" element={<Register />} />
         <Route path="/verify-otp" element={<VerifyOtp />} />
-        <Route path="/forgort-password" element={<ForgotPasswordPage />} />
-        <Route path="/reset-password" element={<ResetPasswordPage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/" element={<HomePage />} />
         <Route path="san-pham/:code/:slug" element={<ProductDetail />} />

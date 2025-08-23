@@ -6,8 +6,6 @@ import {
   logout,
   registerApi,
   verifyOtpApi,
-  forgotPasswordApi,
-  resetPasswordApi,
 } from "../store";
 
 export const useAuth = () => {
@@ -15,8 +13,7 @@ export const useAuth = () => {
   const { user, loading, error } = useSelector(
     (state: RootState) => state.auth
   );
-
-  // đăng nhập
+  //đăng nhập
   const login = async (params: { email: string; password: string }) => {
     try {
       const result = await dispatch(loginApi(params)).unwrap();
@@ -26,7 +23,7 @@ export const useAuth = () => {
     }
   };
 
-  // đăng ký
+  //đăng ký
   const register = async (params: {
     fullName: string;
     email: string;
@@ -62,36 +59,6 @@ export const useAuth = () => {
     }
   };
 
-  // quên mật khẩu (gửi OTP)
-  const forgotPassword = async (params: { email: string }) => {
-    try {
-      const result = await dispatch(forgotPasswordApi(params)).unwrap();
-      return { success: true, data: result };
-    } catch (error: any) {
-      return {
-        success: false,
-        message: error?.message || error || "Không gửi được OTP!",
-      };
-    }
-  };
-
-  // đặt lại mật khẩu với OTP
-  const resetPassword = async (params: {
-    email: string;
-    otp: string;
-    newPassword: string;
-  }) => {
-    try {
-      const result = await dispatch(resetPasswordApi(params)).unwrap();
-      return { success: true, data: result };
-    } catch (error: any) {
-      return {
-        success: false,
-        message: error?.message || error || "Đặt lại mật khẩu thất bại!",
-      };
-    }
-  };
-
   const logoutUser = () => dispatch(logout());
 
   return {
@@ -100,9 +67,7 @@ export const useAuth = () => {
     error,
     login,
     register,
-    verifyOtp,
-    forgotPassword,
-    resetPassword,
     logout: logoutUser,
+    verifyOtp,
   };
 };

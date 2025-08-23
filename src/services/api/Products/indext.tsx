@@ -32,6 +32,9 @@ const productApi = {
   updateProduct: (id: string, data: CreateProductRequest): Promise<AxiosResponse<any>> =>
     requester.put(ADMIN_PRODUCT.URL_API.UPDATE_PRODUCT(id), data),
 
+  deleteProduct: (id: string): Promise<AxiosResponse<any>> =>
+    requester.delete(ADMIN_PRODUCT.URL_API.DELETE_PRODUCT(id)),
+
 
   // Stroe 
 

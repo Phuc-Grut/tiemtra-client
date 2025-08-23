@@ -80,6 +80,7 @@ export enum ProductStatus {
   Active = 1, // đang bán
   Inactive = 2, // Ngừng bán
   OutOfStock = 3, // hết hàng
+  Deleted = 4, // đã xóa
 }
 
 

@@ -52,6 +52,18 @@ export const getProductStatusText = (status: number) => {
           }}
         />
       );
+    case ProductStatus.Deleted:
+      return (
+        <Chip
+          label="Đã xóa"
+          size="small"
+          sx={{
+            backgroundColor: "#d32f2f", // đỏ đậm
+            color: "#fff",
+            fontWeight: "bold",
+          }}
+        />
+      );
     
     default:
       return (

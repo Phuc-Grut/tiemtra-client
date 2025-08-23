@@ -18,9 +18,6 @@ export const AUTHENTICATION = {
         VERIFY_OTP:  `${URL_AUTH}/auth/verify-otp`,
         RESEND_OTP:  `${URL_AUTH}/auth/resend-otp`,
         REFRESH_TOKEN_API:  `${URL_AUTH}/auth/refresh-token`,
-
-        FORGOT_PASSWORD_API: `${URL_AUTH}/auth/forgot-password`,
-        RESET_PASSWORD_API: `${URL_AUTH}/auth/reset-password`,
     }
 }
 
@@ -70,7 +67,8 @@ export const ADMIN_PRODUCT = {
         UPDATE_PRODUCT: (id: string) => `${URL_ADMIN}/product/update-product/${id}`,
         UP_PRODUCT_IMAGE: `${URL_ADMIN}/product/add-product-image`,
         GET_ALL_PRODUCT: `${URL_ADMIN}/product/get-paging-products`,
-        GET_BY_ID: `${URL_ADMIN}/product/get-by-id`
+        GET_BY_ID: `${URL_ADMIN}/product/get-by-id`,
+        DELETE_PRODUCT: (id: string) => `${URL_ADMIN}/product/delete-product/${id}`
     }
 }
 

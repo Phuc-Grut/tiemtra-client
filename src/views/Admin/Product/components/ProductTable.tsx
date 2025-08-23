@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import productApi from "src/services/api/Products/indext";
 import {
   IProduct,
@@ -24,9 +24,13 @@ import ProductModal from "./modals/ProductModal";
 import DataTableContainer from "src/components/DataTableContainer";
 import { ColumnConfig } from "src/Interfaces/Table";
 import NoteCell from "src/components/NoteCell";
+import ModalConfirm from "src/components/ModalConfirm";
+import useToast from "src/components/Toast";
 
 const ProductTable = () => {
   // const [selected, setSelected] = useState<number[]>([]);
+  const { showSuccess, showError } = useToast();
+  const queryClient = useQueryClient();
 
   const buildCleanFilter = (filter: IProductFilter) => {
     const cleaned: any = {
@@ -66,7 +70,26 @@ const ProductTable = () => {
   const [contextItem, setContextItem] = useState<IProduct | null>(null);
 
   const [productId, setProductId] = useState("");
+
+  // States for delete confirmation
+  const [confirmModalOpen, setConfirmModalOpen] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState<IProduct | null>(null);
   // console.log("🚀 ~ ProductTable ~ productId:", productId)
+
+  // Function to handle product deletion
+  const handleDeleteProduct = async () => {
+    if (!selectedProduct) return;
+    
+    try {
+      await productApi.deleteProduct(selectedProduct.productId);
+      showSuccess("Xóa sản phẩm thành công!");
+      queryClient.invalidateQueries({ queryKey: ["get-paging-product"] });
+      setConfirmModalOpen(false);
+      setSelectedProduct(null);
+    } catch (error: any) {
+      showError(error?.response?.data?.message || "Xóa sản phẩm thất bại!");
+    }
+  };
 
   const {
     data: products,
@@ -128,9 +151,8 @@ const ProductTable = () => {
           setProductModalMode("edit");
           break;
         case "DELETE":
-          console.log("delete mục:", p.productId);
-          // setSelected([p.productId]);
-          // setConfirmModalOpen(true);
+          setSelectedProduct(p);
+          setConfirmModalOpen(true);
           break;
         default:
           console.log("Chọn menu:", item.id, p);
@@ -427,6 +449,19 @@ const ProductTable = () => {
           setProductId("");
           setSelected([]);
         }}
+      />
+
+      <ModalConfirm
+        open={confirmModalOpen}
+        title="Xác nhận xóa sản phẩm"
+        message={`Bạn có chắc chắn muốn xóa sản phẩm "${selectedProduct?.productName}"? Sản phẩm sẽ chuyển sang trạng thái "Đã xóa" và không thể khôi phục.`}
+        onClose={() => {
+          setConfirmModalOpen(false);
+          setSelectedProduct(null);
+        }}
+        onConfirm={handleDeleteProduct}
+        confirmText="Xóa"
+        cancelText="Hủy"
       />
     </Box>
   );
