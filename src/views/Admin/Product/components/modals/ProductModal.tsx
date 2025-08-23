@@ -92,14 +92,49 @@ const ProductModal = ({
     }
   };
 
-  const validateProduct = (data: any) => {
-    const errs: { [k: string]: string } = {};
-    if (!data.productName?.trim())
+  type Errors = Record<string, string>;
+
+  const validateProduct = (data: CreateProductRequest): Errors => {
+    const errs: Errors = {};
+
+    // Tên sản phẩm luôn bắt buộc
+    if (!data.productName?.trim()) {
       errs.productName = "Tên sản phẩm bắt buộc nhập";
-    if (data.price == null || data.price === "" || Number(data.price) < 0)
-      errs.price = "Giá phải ≥ 0";
-    if (data.stock == null || Number(data.stock) < 0)
-      errs.stock = "Tồn kho phải ≥ 0";
+    }
+
+    if (data.hasVariations === true) {
+      const list = data.productVariations;
+
+      // Phải có ít nhất 1 biến thể
+      if (!Array.isArray(list) || list.length === 0) {
+        errs.productVariations = "Phải thêm ít nhất 1 biến thể.";
+        return errs; // chưa có item thì dừng sớm
+      }
+
+      // Kiểm từng biến thể
+      list.forEach((v, i) => {
+        if (!v?.typeName?.trim()) {
+          errs[`variations.${i}.typeName`] = "Tên loại bắt buộc nhập";
+        }
+        if (v?.price == null || Number(v.price) < 0) {
+          errs[`variations.${i}.price`] = "Giá phải ≥ 0";
+        }
+        if (v?.stock == null || Number(v.stock) < 0) {
+          errs[`variations.${i}.stock`] = "Tồn kho phải ≥ 0";
+        }
+      });
+
+      // Lưu ý: KHÔNG validate price/stock tổng trong nhánh này
+    } else {
+      // Không dùng biến thể → kiểm tra price/stock của sản phẩm
+      if (data.price == null || Number(data.price) < 0) {
+        errs.price = "Giá phải ≥ 0";
+      }
+      if (data.stock == null || Number(data.stock) < 0) {
+        errs.stock = "Tồn kho phải ≥ 0";
+      }
+    }
+
     return errs;
   };
 
