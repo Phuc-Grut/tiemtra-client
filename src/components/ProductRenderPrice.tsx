@@ -24,7 +24,7 @@ const ProductRenderPrice = ({ product, selectedTypeName }: Props) => {
     .map((v: ProductVariation) => v.price)
     .filter((price: any): price is number => typeof price === "number");
 
-  if (prices.length === 0) return <>—</>;
+  if (prices.length === 0) return <>0 VND</>;
 
   const min = Math.min(...prices);
   const max = Math.max(...prices);

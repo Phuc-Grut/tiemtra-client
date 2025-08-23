@@ -48,7 +48,6 @@ const ProductInfoSection = ({ product }: ProductInfoSectionProps) => {
       ?.productVariationId ?? null;
 
   const handleAddToCart = async (data: AddProductToCart) => {
-
     // check biến thể
     const hasVariations = data.product?.productVariations?.length;
     const selectedVariation = data.product?.productVariations?.find(
@@ -144,9 +143,11 @@ const ProductInfoSection = ({ product }: ProductInfoSectionProps) => {
       </Typography>
 
       <Box display="flex" alignItems="center" gap={2} mb={2}>
-        <Typography fontSize={12} fontWeight="bold">
-          PHÂN LOẠI
-        </Typography>
+        {product.hasVariations === true && (
+          <Typography fontSize={12} fontWeight="bold">
+            PHÂN LOẠI
+          </Typography>
+        )}
 
         <ToggleButtonGroup
           value={variant}
