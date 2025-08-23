@@ -60,6 +60,12 @@ const ProductSlider2 = ({ products = [] }: Props) => {
       : ` ${min.toLocaleString()}đ - ${max.toLocaleString()}đ`;
   };
 
+  const perViewDesired = isMobile ? 2 : 3;
+  const actualPerView = Math.min(perViewDesired, Math.max(products.length, 1));
+  const enableLoop = products.length > actualPerView;
+  const showArrows = !isMobile && products.length > actualPerView;
+  const centerSingle = products.length <= 1;
+
   return (
     <Box sx={{ maxWidth: 1200, width: "100%", textAlign: "center" }}>
       <Box
@@ -72,7 +78,7 @@ const ProductSlider2 = ({ products = [] }: Props) => {
           position: "relative",
         }}
       >
-        {!isMobile && (
+        {!isMobile && showArrows && (
           <IconButton
             onClick={handlePrev}
             sx={{
@@ -109,10 +115,11 @@ const ProductSlider2 = ({ products = [] }: Props) => {
               swiperRef.current = swiper;
             }}
             spaceBetween={isMobile ? 8 : 0}
-            slidesPerView={isMobile ? 2 : 3}
-            centeredSlides={false}
+            slidesPerView={actualPerView}
+            centeredSlides={centerSingle}
+            loop={enableLoop}
+            watchOverflow={true}
             style={{ paddingBottom: "32px" }}
-            loop={true}
           >
             {products.map((product, idx) => (
               <SwiperSlide
@@ -261,7 +268,7 @@ const ProductSlider2 = ({ products = [] }: Props) => {
           </Swiper>
         </Box>
 
-        {!isMobile && (
+        {!isMobile && showArrows && (
           <IconButton
             onClick={handleNext}
             sx={{
