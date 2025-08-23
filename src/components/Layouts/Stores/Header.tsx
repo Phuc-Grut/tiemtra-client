@@ -329,7 +329,7 @@ const Header = () => {
                       </MenuItem>
                     )}
 
-                    <MenuItem onClick={() => alert("Xem thông tin tài khoản")}>
+                    <MenuItem onClick={() => navigate("/thong-tin-ca-nhan")}>
                       Thông tin tài khoản
                     </MenuItem>
 

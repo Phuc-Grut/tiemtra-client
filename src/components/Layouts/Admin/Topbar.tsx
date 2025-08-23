@@ -107,7 +107,7 @@ const TopBar = ({ setExpanded }: TopBarProps) => {
           ) : (
             <>
               <MenuItem disabled>{user.fullName}</MenuItem>
-              <MenuItem onClick={() => alert("Xem thông tin tài khoản")}>
+              <MenuItem onClick={() => navigate("/thong-tin-ca-nhan")}>
                 Thông tin tài khoản
               </MenuItem>
               <MenuItem onClick={handleLogout}>Đăng xuất</MenuItem>

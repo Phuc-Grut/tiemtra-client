@@ -3,7 +3,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import { useEffect, useState } from "react";
 import ProductInfoTab from "../ProductInfoTab";
 import DetailedImagesSection from "../DetailedImagesSection";
-import { CreateProductRequest } from "src/Interfaces/IProduct";
+import { CreateProductRequest, ProductStatus } from "src/Interfaces/IProduct";
 import useToast from "src/components/Toast";
 import productApi from "src/services/api/Products/indext";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -26,6 +26,7 @@ const ProductModal = ({
   const { showSuccess, showError } = useToast();
   const [activeTab, setActiveTab] = useState(0);
   const queryClient = useQueryClient();
+  const [errors, setErrors] = useState<{ [k: string]: string }>({});
 
   const tabLabelsMap = {
     create: ["Thêm sản phẩm", "Ảnh chi tiết"],
@@ -49,7 +50,7 @@ const ProductModal = ({
     productImageUrls: [],
     productAttributes: [],
     productVariations: [],
-    productStatus: undefined,
+    productStatus: ProductStatus.Draft,
     note: "",
     totalSold: null,
   };
@@ -75,6 +76,7 @@ const ProductModal = ({
             selectedCategoryID={selectedCategoryID}
             setSelectedCategoryID={setSelectedCategoryID}
             mode={mode}
+            errors={errors}
           />
         );
       case 1:
@@ -90,23 +92,45 @@ const ProductModal = ({
     }
   };
 
+  const validateProduct = (data: any) => {
+    const errs: { [k: string]: string } = {};
+    if (!data.productName?.trim())
+      errs.productName = "Tên sản phẩm bắt buộc nhập";
+    if (data.price == null || data.price === "" || Number(data.price) < 0)
+      errs.price = "Giá phải ≥ 0";
+    if (data.stock == null || Number(data.stock) < 0)
+      errs.stock = "Tồn kho phải ≥ 0";
+    return errs;
+  };
+
   const handleCreateSubmit = async () => {
+    const v = validateProduct(formData);
+    setErrors(v);
+    if (Object.keys(v).length > 0) {
+      showError("Vui lòng kiểm tra các trường bắt buộc");
+      return;
+    }
+
+    if (!formData.categoryId) {
+      showError("Vui lòng chọn danh mục");
+      return;
+    }
+
     try {
       const res = await productApi.createProduct(formData);
-
       if (res.data.success) {
         showSuccess("Thêm thành công");
         setFormData(initialFormData);
-        queryClient.invalidateQueries({
-          queryKey: ["get-paging-product"],
-        });
+        queryClient.invalidateQueries({ queryKey: ["get-paging-product"] });
         onClose();
       } else {
-        showError("Thêm thất bại");
+        showError(res.data.message || "Thêm thất bại");
       }
-    } catch (error) {
-      console.error("Lỗi", error);
-      showError("Thêm thất bại");
+    } catch (error: any) {
+      // nếu API trả validation errors
+      const apiErrors = error?.response?.data?.errors;
+      if (apiErrors) setErrors(apiErrors);
+      showError(error?.response?.data?.message || "Thêm thất bại");
     }
   };
 
