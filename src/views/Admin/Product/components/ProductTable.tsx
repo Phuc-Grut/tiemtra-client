@@ -24,6 +24,8 @@ import ProductModal from "./modals/ProductModal";
 import DataTableContainer from "src/components/DataTableContainer";
 import { ColumnConfig } from "src/Interfaces/Table";
 import NoteCell from "src/components/NoteCell";
+import ModalConfirm from "src/components/ModalConfirm";
+import useToast from "src/components/Toast";
 
 const ProductTable = () => {
   // const [selected, setSelected] = useState<number[]>([]);
@@ -66,12 +68,13 @@ const ProductTable = () => {
   const [contextItem, setContextItem] = useState<IProduct | null>(null);
 
   const [productId, setProductId] = useState("");
-  // console.log("🚀 ~ ProductTable ~ productId:", productId)
+  const [confirmModalOpen, setConfirmModalOpen] = useState(false);
 
   const {
     data: products,
     isLoading,
     error,
+    refetch,
   } = useQuery({
     queryKey: ["get-paging-product", filter],
     queryFn: async () => {
@@ -129,8 +132,8 @@ const ProductTable = () => {
           break;
         case "DELETE":
           console.log("delete mục:", p.productId);
-          // setSelected([p.productId]);
-          // setConfirmModalOpen(true);
+          setSelected([p.productId]);
+          setConfirmModalOpen(true);
           break;
         default:
           console.log("Chọn menu:", item.id, p);
@@ -232,6 +235,46 @@ const ProductTable = () => {
       pageNumber: 1,
     }));
   };
+  const { showSuccess, showError, showInfo } = useToast();
+
+  const handleConfirmDelete = async (
+    productIds: Array<string | number> = selected
+  ): Promise<void> => {
+    const ids = Array.from(
+      new Set((productIds ?? []).map(String).filter(Boolean))
+    );
+
+    if (ids.length === 0) {
+      showError?.("Bạn chưa chọn sản phẩm nào.");
+      setConfirmModalOpen(false);
+      setSelected([]);
+      return;
+    }
+
+    try {
+      const res = await productApi.deleteProducts(ids);
+      const requested = res?.data?.requested ?? ids.length;
+      const affected = res?.data?.affected ?? 0;
+
+      if (affected === requested && requested > 0) {
+        showSuccess?.(`Đã xóa ${affected}/${requested} sản phẩm.`);
+        await refetch?.();
+        setConfirmModalOpen(false);
+        setSelected([])
+      } else if (affected > 0) {
+        showInfo?.(
+          `Đã xóa ${affected}/${requested}. Một số ID không tồn tại/đã bị xóa trước đó.`
+        );
+        setConfirmModalOpen(false);
+        setSelected([])
+      } else {
+        showError?.("Xóa thất bại! Không có sản phẩm nào được cập nhật.");
+      }
+    } catch (error: any) {
+      console.error("Error deleting products:", error);
+      showError?.(error?.response?.data?.message || "Xóa thất bại!");
+    }
+  };
 
   return (
     <Box
@@ -257,61 +300,61 @@ const ProductTable = () => {
           gap: 1,
         }}
       >
-          <input
-            type="text"
-            placeholder="Tìm kiếm..."
-            style={{
-              width: "100%",
-              maxWidth: "220px",
-              height: "130%",
-              fontSize: "13px",
+        <input
+          type="text"
+          placeholder="Tìm kiếm..."
+          style={{
+            width: "100%",
+            maxWidth: "220px",
+            height: "130%",
+            fontSize: "13px",
+            padding: "0px 8px",
+            borderRadius: "4px",
+            border: "1px solid #ccc",
+          }}
+        />
+
+        <FormControl
+          size="small"
+          sx={{
+            width: "180px",
+            height: "130%",
+            overflow: "hidden",
+          }}
+        >
+          <Select
+            value={filter.status !== undefined ? String(filter.status) : ""}
+            onChange={handleProductStatusChange}
+            displayEmpty
+            sx={{
+              height: "24px",
+              fontSize: "14px",
               padding: "0px 8px",
               borderRadius: "4px",
               border: "1px solid #ccc",
+              backgroundColor: "white",
+              boxSizing: "border-box",
+              "& fieldset": {
+                border: "none",
+              },
             }}
-          />
-
-          <FormControl
-            size="small"
-            sx={{
-              width: "180px",
-              height: "130%",
-              overflow: "hidden",
+            MenuProps={{
+              PaperProps: {
+                sx: {
+                  fontSize: "14px",
+                  maxHeight: "50vh",
+                  overflowY: "auto",
+                },
+              },
             }}
           >
-            <Select
-              value={filter.status !== undefined ? String(filter.status) : ""}
-              onChange={handleProductStatusChange}
-              displayEmpty
-              sx={{
-                height: "24px",
-                fontSize: "14px",
-                padding: "0px 8px",
-                borderRadius: "4px",
-                border: "1px solid #ccc",
-                backgroundColor: "white",
-                boxSizing: "border-box",
-                "& fieldset": {
-                  border: "none",
-                },
-              }}
-              MenuProps={{
-                PaperProps: {
-                  sx: {
-                    fontSize: "14px",
-                    maxHeight: "50vh",
-                    overflowY: "auto",
-                  },
-                },
-              }}
-            >
-              <MenuItem value="">Trạng thái</MenuItem>
-              <MenuItem value={0}>Nháp</MenuItem>
-              <MenuItem value={1}>Đang bán</MenuItem>
-              <MenuItem value={3}>Hết hàng</MenuItem>
-              <MenuItem value={2}>Ngừng bán</MenuItem>
-            </Select>
-          </FormControl>
+            <MenuItem value="">Trạng thái</MenuItem>
+            <MenuItem value={0}>Nháp</MenuItem>
+            <MenuItem value={1}>Đang bán</MenuItem>
+            <MenuItem value={3}>Hết hàng</MenuItem>
+            <MenuItem value={2}>Ngừng bán</MenuItem>
+          </Select>
+        </FormControl>
 
         {/* Nút xoá nằm sát phải */}
         {selected.length > 0 && (
@@ -335,7 +378,7 @@ const ProductTable = () => {
                 backgroundColor: "#cc0000",
               },
             }}
-            // onClick={() => setConfirmModalOpen(true)}
+            onClick={() => setConfirmModalOpen(true)}
           >
             Xoá ({selected.length})
           </Button>
@@ -427,6 +470,17 @@ const ProductTable = () => {
           setProductId("");
           setSelected([]);
         }}
+      />
+
+      <ModalConfirm
+        open={confirmModalOpen}
+        onClose={() => {
+          setConfirmModalOpen(false);
+          setSelected([]);
+        }}
+        onConfirm={() => handleConfirmDelete()}
+        showConfirmButton={true}
+        message={`Bạn có chắc chắn xóa ${selected.length} sản phẩm đã chọn ?`}
       />
     </Box>
   );

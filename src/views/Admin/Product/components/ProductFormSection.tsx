@@ -20,6 +20,7 @@ interface ProductFormSectionProps {
   setFormData: React.Dispatch<React.SetStateAction<CreateProductRequest>>;
   brands?: Brand[] | undefined;
   mode?: string;
+  errors?: Record<string, string>;
 }
 
 const productStatusOptions = [
@@ -34,8 +35,8 @@ const ProductFormSection = ({
   setFormData,
   brands,
   mode,
+  errors,
 }: ProductFormSectionProps) => {
-  
   const isReadOnly = mode === "view";
   const MAX_FILE_SIZE = 500 * 1024;
   const { showSuccess, showError } = useToast();
@@ -68,7 +69,7 @@ const ProductFormSection = ({
     if (!file) return;
 
     if (file.size > MAX_FILE_SIZE) {
-      showError(" Vui lòng chọn ảnh dưới 200 KB.");
+      showError(" Vui lòng chọn ảnh dưới 500 KB.");
       return;
     }
 
@@ -165,8 +166,8 @@ const ProductFormSection = ({
               onChange={handleChange}
               variant="outlined"
               size="small"
-              sx={{ bgcolor: "#fff" }}
-              InputProps={{ readOnly: mode === "view" || mode === "edit" }}
+              sx={{ bgcolor: "#f9f9f9" }}
+              InputProps={{ readOnly: true }}
             />
             <TextField
               label="Tên sản phẩm"
@@ -177,6 +178,8 @@ const ProductFormSection = ({
               size="small"
               sx={{ bgcolor: "#fff" }}
               InputProps={{ readOnly: isReadOnly }}
+              error={!!errors?.productName}
+              helperText={errors?.productName}
             />
           </Box>
 
@@ -190,7 +193,12 @@ const ProductFormSection = ({
               variant="outlined"
               size="small"
               sx={{ bgcolor: "#fff" }}
-              InputProps={{ readOnly: isReadOnly || formData.hasVariations===true }}
+              InputProps={{
+                readOnly: isReadOnly || formData.hasVariations === true,
+              }}
+              inputProps={{ min: 0, step: 1000 }}
+              error={!!errors?.price}
+              helperText={errors?.price}
             />
             <TextField
               label="Số lượng tồn kho"
@@ -201,7 +209,12 @@ const ProductFormSection = ({
               variant="outlined"
               size="small"
               sx={{ bgcolor: "#fff" }}
-              InputProps={{ readOnly: isReadOnly || formData.hasVariations===true }}
+              InputProps={{
+                readOnly: isReadOnly || formData.hasVariations === true,
+              }}
+              inputProps={{ min: 0 }} // chặn nhập số âm
+              error={!!errors?.stock}
+              helperText={errors?.stock}
             />
           </Box>
 
@@ -335,7 +348,6 @@ const ProductFormSection = ({
               setFormData((prev) => ({ ...prev, description: html }));
               setOpenEditor(false);
             }}
-
             readOnly={mode === "view"}
           />
         </Box>

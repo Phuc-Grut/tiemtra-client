@@ -18,6 +18,7 @@ import CheckOut from "src/views/Store/Checkout";
 import Customer from "src/views/Admin/Customer";
 import ForgotPasswordPage from "src/views/Auth/pages/ForgotPassword";
 import ResetPasswordPage from "src/views/Auth/pages/ResetPasswordPage";
+import AccountPage from "src/views/Store/AccountPage";
 const AppRoutes = () => {
   return (
     <Routes>
@@ -33,6 +34,7 @@ const AppRoutes = () => {
         <Route path="/san-pham" element={<ProductList />} />
         <Route path="/san-pham/danh-muc-san-pham/:categorySlug" element={<ProductList />} />
         <Route path="/thanh-toan" element={<CheckOut />} />
+        <Route path="/thong-tin-ca-nhan" element={<AccountPage />} />
       </Route>
       <Route
         path="/admin"

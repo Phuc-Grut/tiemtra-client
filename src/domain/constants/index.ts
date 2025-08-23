@@ -70,7 +70,9 @@ export const ADMIN_PRODUCT = {
         UPDATE_PRODUCT: (id: string) => `${URL_ADMIN}/product/update-product/${id}`,
         UP_PRODUCT_IMAGE: `${URL_ADMIN}/product/add-product-image`,
         GET_ALL_PRODUCT: `${URL_ADMIN}/product/get-paging-products`,
-        GET_BY_ID: `${URL_ADMIN}/product/get-by-id`
+        GET_BY_ID: `${URL_ADMIN}/product/get-by-id`,
+
+        DELETE_PRODUCT_BY_IDS: `${URL_ADMIN}/product/soft-delete`,
     }
 }
 

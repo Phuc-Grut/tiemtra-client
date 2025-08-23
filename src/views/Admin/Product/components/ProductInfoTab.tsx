@@ -21,6 +21,7 @@ interface ProductInfoTabProps {
     React.SetStateAction<number | undefined>
   >;
   mode?: string;
+  errors?: Record<string, string>;
 }
 
 const ProductInfoTab = ({
@@ -29,6 +30,7 @@ const ProductInfoTab = ({
   selectedCategoryID,
   setSelectedCategoryID,
   mode,
+  errors
 }: ProductInfoTabProps) => {
   const [categories, setCategories] = useState<CategoryDropdown[]>([]);
 
@@ -103,7 +105,7 @@ const ProductInfoTab = ({
         }}
       >
         <Box sx={{ flex: 2 }}>
-          <ProductFormSection formData={formData} setFormData={setFormData} mode = {mode}/>
+          <ProductFormSection errors = {errors} formData={formData} setFormData={setFormData} mode = {mode}/>
           <ProductVariationsSection
             formData={formData}
             setFormData={setFormData}
