@@ -411,8 +411,8 @@ const OrderTable = () => {
       </Box>
 
       <DataTableContainer<IOrder>
-        data={orders}
-        selected={selected}
+        data={orders ?? []}
+        selected={selected ?? []}
         setSelected={setSelected}
         columns={columns}
         isLoading={isLoading}
