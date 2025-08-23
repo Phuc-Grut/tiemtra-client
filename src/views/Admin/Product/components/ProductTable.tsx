@@ -71,7 +71,7 @@ const ProductTable = () => {
   const [confirmModalOpen, setConfirmModalOpen] = useState(false);
 
   const {
-    data: products,
+    data: products = [],
     isLoading,
     error,
     refetch,
@@ -386,8 +386,8 @@ const ProductTable = () => {
       </Box>
 
       <DataTableContainer<IProduct>
-        data={products}
-        selected={selected}
+        data={products ?? []}
+        selected={selected ?? []}
         setSelected={setSelected}
         columns={columns}
         isLoading={isLoading}

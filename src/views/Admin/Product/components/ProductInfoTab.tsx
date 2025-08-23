@@ -30,34 +30,47 @@ const ProductInfoTab = ({
   selectedCategoryID,
   setSelectedCategoryID,
   mode,
-  errors
+  errors,
 }: ProductInfoTabProps) => {
   const [categories, setCategories] = useState<CategoryDropdown[]>([]);
 
   // gợi ý product code
   useEffect(() => {
-    if (mode === "create" ) {
-      const fetchProductCode = async () => {
-        const res = await productApi.generateProductCode();
-        setFormData((prev) => ({
-          ...prev,
-          productCode: res.data,
-        }));
-      };
-      fetchProductCode();
+    if (mode === "create") {
+      (async () => {
+        try {
+          const res = await productApi.generateProductCode();
+          setFormData((prev) => ({
+            ...prev,
+            productCode: res?.data ?? "",
+          }));
+        } catch (e) {
+          console.error("Generate product code failed:", e);
+        }
+      })();
     }
-  }, [setFormData, mode]);
+  }, [mode, setFormData]);
 
   // lấy danh mục
   useEffect(() => {
     const getLeafCategoriesAsync = async () => {
-      const res = await categoryApi.getLeafCategories();
-      const dropdownData: CategoryDropdown[] = res.data.map((cat) => ({
-        categoryId: cat.categoryId,
-        categoryName: cat.categoryName,
-      }));
+      try {
+        const res = await categoryApi.getLeafCategories();
 
-      setCategories(dropdownData);
+        if (res?.data) {
+          const dropdownData: CategoryDropdown[] = res.data.map((cat: any) => ({
+            categoryId: cat.categoryId,
+            categoryName: cat.categoryName,
+          }));
+          setCategories(dropdownData);
+        } else {
+          console.warn("No categories data returned");
+          setCategories([]);
+        }
+      } catch (error) {
+        console.error("Failed to fetch categories:", error);
+        setCategories([]);
+      }
     };
 
     getLeafCategoriesAsync();
@@ -83,7 +96,7 @@ const ProductInfoTab = ({
     select: (res) => {
       return res.data.data.items;
     },
-    enabled: !!selectedCategoryID
+    enabled: !!selectedCategoryID,
   });
 
   return (
@@ -92,7 +105,7 @@ const ProductInfoTab = ({
         height: "100%",
         display: "flex",
         flexDirection: "column",
-        marginTop: -1
+        marginTop: -1,
       }}
     >
       <Box
@@ -105,11 +118,16 @@ const ProductInfoTab = ({
         }}
       >
         <Box sx={{ flex: 2 }}>
-          <ProductFormSection errors = {errors} formData={formData} setFormData={setFormData} mode = {mode}/>
+          <ProductFormSection
+            errors={errors}
+            formData={formData}
+            setFormData={setFormData}
+            mode={mode}
+          />
           <ProductVariationsSection
             formData={formData}
             setFormData={setFormData}
-            mode= {mode}
+            mode={mode}
           />
         </Box>
         <Box sx={{ flex: 1 }}>
