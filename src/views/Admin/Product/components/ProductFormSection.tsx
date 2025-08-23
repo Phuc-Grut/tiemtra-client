@@ -14,7 +14,7 @@ import useToast from "src/components/Toast";
 import { Brand, CreateProductRequest } from "src/Interfaces/IProduct";
 import productApi from "src/services/api/Products/indext";
 import formatVietnamTime from "src/utils/formatVietnamTime";
-
+import NumberFormatCustom from "src/utils/numberFormatCustom";
 interface ProductFormSectionProps {
   formData: CreateProductRequest;
   setFormData: React.Dispatch<React.SetStateAction<CreateProductRequest>>;
@@ -187,7 +187,6 @@ const ProductFormSection = ({
             <TextField
               label="Giá (VND)"
               name="price"
-              type="number"
               value={formData.price ?? ""}
               onChange={handleChange}
               variant="outlined"
@@ -195,8 +194,9 @@ const ProductFormSection = ({
               sx={{ bgcolor: "#fff" }}
               InputProps={{
                 readOnly: isReadOnly || formData.hasVariations === true,
+                inputComponent: NumberFormatCustom as any, // custom input
               }}
-              inputProps={{ min: 0, step: 1000 }}
+              inputProps={{ min: 0 }}
               error={!!errors?.price}
               helperText={errors?.price}
             />

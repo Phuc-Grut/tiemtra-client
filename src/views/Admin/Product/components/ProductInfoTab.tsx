@@ -128,6 +128,7 @@ const ProductInfoTab = ({
             formData={formData}
             setFormData={setFormData}
             mode={mode}
+            errors={errors}
           />
         </Box>
         <Box sx={{ flex: 1 }}>

@@ -16,14 +16,21 @@ import {
 import { Delete } from "@mui/icons-material";
 import { CreateProductRequest } from "src/Interfaces/IProduct";
 import { useEffect } from "react";
+import NumberFormatCustom from "src/utils/numberFormatCustom";
 
 interface props {
   formData: CreateProductRequest;
   setFormData: React.Dispatch<React.SetStateAction<CreateProductRequest>>;
   mode?: string;
+  errors?: Record<string, string>;
 }
 
-const ProductVariationsSection = ({ formData, setFormData, mode }: props) => {
+const ProductVariationsSection = ({
+  formData,
+  setFormData,
+  mode,
+  errors = {},
+}: props) => {
   const isReadOnly = mode === "view";
 
   const ProductVariationStatus = {
@@ -160,12 +167,13 @@ const ProductVariationsSection = ({ formData, setFormData, mode }: props) => {
                       disableUnderline: true,
                       readOnly: isReadOnly,
                     }}
+                    error={!!errors[`variations.${index}.typeName`]}
+                    helperText={errors[`variations.${index}.typeName`] ?? ""}
                   />
                 </TableCell>
                 <TableCell sx={Styles.tableCellBody}>
                   <TextField
                     variant="standard"
-                    type="number"
                     placeholder="Giá"
                     value={variation.price ?? ""}
                     onChange={(e) =>
@@ -174,7 +182,11 @@ const ProductVariationsSection = ({ formData, setFormData, mode }: props) => {
                     InputProps={{
                       disableUnderline: true,
                       readOnly: isReadOnly,
+                      inputComponent: NumberFormatCustom as any, // custom input
                     }}
+                    inputProps={{ min: 0, step: "0.01" }} // giá có thể lẻ
+                    error={!!errors?.[`variations.${index}.price`]}
+                    helperText={errors?.[`variations.${index}.price`] ?? ""}
                   />
                 </TableCell>
                 <TableCell sx={Styles.tableCellBody}>
@@ -190,6 +202,9 @@ const ProductVariationsSection = ({ formData, setFormData, mode }: props) => {
                       disableUnderline: true,
                       readOnly: isReadOnly,
                     }}
+                    inputProps={{ min: 0 }}
+                    error={!!errors?.[`variations.${index}.stock`]}
+                    helperText={errors?.[`variations.${index}.stock`] ?? ""}
                   />
                 </TableCell>
 
