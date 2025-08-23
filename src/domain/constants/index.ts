@@ -18,6 +18,9 @@ export const AUTHENTICATION = {
         VERIFY_OTP:  `${URL_AUTH}/auth/verify-otp`,
         RESEND_OTP:  `${URL_AUTH}/auth/resend-otp`,
         REFRESH_TOKEN_API:  `${URL_AUTH}/auth/refresh-token`,
+
+        FORGOT_PASSWORD_API: `${URL_AUTH}/auth/forgot-password`,
+        RESET_PASSWORD_API: `${URL_AUTH}/auth/reset-password`,
     }
 }
 

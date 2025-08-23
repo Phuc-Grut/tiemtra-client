@@ -48,7 +48,7 @@ export const loginApi = createAsyncThunk(
       localStorage.setItem("refresh_token", data.refreshToken || "");
       localStorage.setItem("user", JSON.stringify(data.data));
 
-      localStorage.removeItem("cart")
+      localStorage.removeItem("cart");
 
       return data;
     } catch (error: any) {
@@ -100,8 +100,47 @@ export const verifyOtpApi = createAsyncThunk(
 
       return data;
     } catch (error: any) {
+      return thunkAPI.rejectWithValue(error.response?.data?.message);
+    }
+  }
+);
+
+export const forgotPasswordApi = createAsyncThunk(
+  "auth/forgotPassword",
+  async (params: { email: string }, thunkAPI) => {
+    try {
+      const response = await authApi.forgotPassword(params);
+      const data = response.data;
+      // backend trả message trung lập, chỉ cần return
+      return data;
+    } catch (error: any) {
       return thunkAPI.rejectWithValue(
-        error.response?.data?.message
+        error.response?.data?.message || "Không gửi được OTP"
+      );
+    }
+  }
+);
+
+export const resetPasswordApi = createAsyncThunk(
+  "auth/resetPassword",
+  async (
+    params: { email: string; otp: string; newPassword: string },
+    thunkAPI
+  ) => {
+    try {
+      const response = await authApi.resetPassword(params);
+      const data = response.data;
+
+      if (!data?.success) {
+        return thunkAPI.rejectWithValue(
+          data.message || "Đặt lại mật khẩu thất bại"
+        );
+      }
+
+      return data;
+    } catch (error: any) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.message || "Lỗi khi đặt lại mật khẩu"
       );
     }
   }
@@ -155,6 +194,31 @@ const authSlice = createSlice({
         state.loading = false;
       })
       .addCase(verifyOtpApi.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+
+      .addCase(forgotPasswordApi.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(forgotPasswordApi.fulfilled, (state) => {
+        state.loading = false;
+      })
+      .addCase(forgotPasswordApi.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+
+      // reset password
+      .addCase(resetPasswordApi.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(resetPasswordApi.fulfilled, (state) => {
+        state.loading = false;
+      })
+      .addCase(resetPasswordApi.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       });

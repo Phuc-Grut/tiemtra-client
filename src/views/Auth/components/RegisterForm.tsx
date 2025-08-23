@@ -41,7 +41,7 @@ const RegisterForm = () => {
 
   const { register } = useAuth();
   const navigate = useNavigate();
-  const { showSuccess } = useToast();
+  const { showSuccess, showError } = useToast();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -93,7 +93,8 @@ const RegisterForm = () => {
 
     if (!result || result.success === false) {
       const message = result?.message || "Đăng ký thất bại";
-      setErrors((prev) => ({ ...prev, email: message }));
+      // setErrors((prev) => ({ ...prev, email: message }));
+      showError(message)
       return;
     }
     showSuccess("Đăng ký thành công")
