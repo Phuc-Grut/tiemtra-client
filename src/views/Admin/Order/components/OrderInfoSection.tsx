@@ -1,42 +1,21 @@
 import { Box, Grid, Typography } from "@mui/material";
+import { ReactNode } from "react";
+import formatVietnamTime from "src/utils/formatVietnamTime";
+import getOrderStatusText from "src/utils/getOrderStatusText";
+import { getPaymentMethodChip } from "src/utils/getPaymentMethodChip";
+import { getPaymentStatusChip } from "src/utils/getPaymentStatusChip";
 
-const getStatusLabel = (status: number) => {
-  switch (status) {
-    case 0: return "Chờ xác nhận";
-    case 1: return "Đã xác nhận";
-    case 2: return "Đang giao";
-    case 3: return "Hoàn thành";
-    case 4: return "Đã huỷ";
-    default: return "Không rõ";
-  }
-};
-
-const getPaymentMethodLabel = (method: number) => {
-  switch (method) {
-    case 0: return "Thanh toán khi nhận hàng";
-    case 1: return "Chuyển khoản";
-    default: return "Không rõ";
-  }
-};
-
-const getPaymentStatusLabel = (status: number) => {
-  switch (status) {
-    case 0: return "Chưa thanh toán";
-    case 1: return "Đã thanh toán";
-    default: return "Không rõ";
-  }
-};
-
-const formatDate = (iso: string) =>
-  iso && iso !== "0001-01-01T00:00:00" ? new Date(iso).toLocaleString("vi-VN") : "Chưa cập nhật";
-
-const InfoRow = ({ label, value }: { label: string; value: string | number }) => (
+const InfoRow = ({ label, value }: { label: string; value: ReactNode }) => (
   <Grid container spacing={1}>
     <Grid item xs={4}>
       <Typography fontWeight={500}>{label}:</Typography>
     </Grid>
     <Grid item xs={8}>
-      <Typography>{value}</Typography>
+      {typeof value === "string" || typeof value === "number" ? (
+        <Typography>{value}</Typography>
+      ) : (
+        value
+      )}
     </Grid>
   </Grid>
 );
@@ -55,11 +34,11 @@ const OrderInfoSection = ({ order }: { order: any }) => {
         </Grid>
         <Grid item xs={12} sm={6}>
           <InfoRow label="Ghi chú" value={order.note || "Không có"} />
-          <InfoRow label="Trạng thái đơn" value={getStatusLabel(order.orderStatus)} />
-          <InfoRow label="Thanh toán" value={getPaymentMethodLabel(order.paymentMethod)} />
-          <InfoRow label="Tình trạng TT" value={getPaymentStatusLabel(order.paymentStatus)} />
-          <InfoRow label="Ngày tạo" value={formatDate(order.createAt)} />
-          <InfoRow label="Ngày xác nhận" value={formatDate(order.confirmedAt)} />
+          <InfoRow label="Trạng thái đơn" value={getOrderStatusText(order.orderStatus)} />
+          <InfoRow label="Thanh toán" value={getPaymentMethodChip(order.paymentMethod)} />
+          <InfoRow label="Tình trạng TT" value={getPaymentStatusChip(order.paymentStatus)} />
+          <InfoRow label="Ngày tạo" value={formatVietnamTime(order.createAt)} />
+          <InfoRow label="Ngày xác nhận" value={formatVietnamTime(order.confirmedAt)} />
         </Grid>
       </Grid>
     </Box>

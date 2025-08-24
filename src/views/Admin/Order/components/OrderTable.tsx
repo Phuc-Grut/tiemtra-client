@@ -213,17 +213,11 @@ const OrderTable = () => {
       render: (item) => getPaymentStatusChip(item.paymentStatus ?? -1),
     },
     {
-      key: "note",
-      label: "Ghi chú",
-      width: 200,
-      render: (item) => <NoteCell value={item?.note} />,
-    },
-    {
       key: "createdAt",
       label: "Thời gian tạo",
       sortable: true,
       render: (item) => formatVietnamTime(item.createAt),
-      width: 120,
+      width: 150,
     },
   ];
 
@@ -352,7 +346,7 @@ const OrderTable = () => {
             }}
           >
             <MenuItem value="">Trạng thái</MenuItem>
-            <MenuItem value={0}>Chờ xác nhận</MenuItem>
+            <MenuItem value={10}>Chờ xác nhận</MenuItem>
             <MenuItem value={1}>Đã xác nhận</MenuItem>
             <MenuItem value={2}>Đang giao hàng</MenuItem>
             <MenuItem value={3}>Đã giao hàng</MenuItem>
