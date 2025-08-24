@@ -19,7 +19,7 @@ export interface IOrder {
 }
 
 export enum OrderStatus {
-  Pending = 0, // Đang chờ xử lý
+  Pending = 10, // Đang chờ xử lý
   Confirmed = 1, // Đã xác nhận
   Shipped = 2, // Đang giao hàng
   Delivered = 3, // Đã giao hàng thành công
