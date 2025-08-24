@@ -106,7 +106,7 @@ const OrderTable = () => {
     onClick: (o: IOrder) => {
       switch (item.id) {
         case "VIEW":
-          setOrderDetailModal(true)
+          setOrderDetailModal(true);
           setOrderId(o.orderId);
           break;
 
@@ -221,6 +221,7 @@ const OrderTable = () => {
     {
       key: "createdAt",
       label: "Thời gian tạo",
+      sortable: true,
       render: (item) => formatVietnamTime(item.createAt),
       width: 120,
     },
@@ -247,6 +248,33 @@ const OrderTable = () => {
         error?.response?.data?.message || "Lỗi kết nối đến máy chủ";
       showError(apiMessage);
     }
+  };
+
+  const toggleSort = (field: string) => {
+    setFilter((prev) => {
+      const currentSort = prev.sortBy ?? "";
+      const isAsc = currentSort === `${field}-asc`;
+      const isDesc = currentSort === `${field}-desc`;
+
+      let nextSortBy = "";
+
+      if (!isAsc && !isDesc) {
+        // chưa có sort -> asc
+        nextSortBy = `${field}-asc`;
+      } else if (isAsc) {
+        // asc -> desc
+        nextSortBy = `${field}-desc`;
+      } else if (isDesc) {
+        // desc -> bỏ sort
+        nextSortBy = "";
+      }
+
+      return {
+        ...prev,
+        sortBy: nextSortBy,
+        pageNumber: 1,
+      };
+    });
   };
 
   return (
@@ -418,7 +446,7 @@ const OrderTable = () => {
         isLoading={isLoading}
         error={!!error}
         sortBy={filter.sortBy}
-        // toggleSort={toggleSort}
+        toggleSort={toggleSort}
         getRowId={(o) => o.orderId}
         onRowClick={(o) => {
           //   setModalOpen(true);
@@ -498,7 +526,7 @@ const OrderTable = () => {
         message={"Bạn có muốn xác nhân đơn hàng này"}
       />
 
-      <OrderDetail 
+      <OrderDetail
         onClose={() => setOrderDetailModal(false)}
         open={orderDetailModal}
         orderId={orderId}
@@ -510,7 +538,6 @@ const OrderTable = () => {
         order={selectedOrder}
         // onSuccess={() => refetch()}
       />
-      
     </Box>
   );
 };
