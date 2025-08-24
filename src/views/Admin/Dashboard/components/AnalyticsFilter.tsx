@@ -24,7 +24,7 @@ export default function AnalyticsFilter({ onApply }: { onApply: (range: string, 
             </FormControl>
           </Grid>
           <Grid item xs={12} sm={4} md={3}>
-            <FormControl fullWidth size="small">
+            {/* <FormControl fullWidth size="small">
               <InputLabel>Kênh bán</InputLabel>
               <Select label="Kênh bán" value={channel} onChange={(e) => setChannel(e.target.value)}>
                 <MenuItem value="all">Tất cả</MenuItem>
@@ -32,7 +32,7 @@ export default function AnalyticsFilter({ onApply }: { onApply: (range: string, 
                 <MenuItem value="tiktok">TikTok</MenuItem>
                 <MenuItem value="facebook">Facebook</MenuItem>
               </Select>
-            </FormControl>
+            </FormControl> */}
           </Grid>
           <Grid item xs={12} sm={4} md={6}>
             <Stack direction="row" spacing={1} justifyContent={{ xs: "flex-start", md: "flex-end" }}>

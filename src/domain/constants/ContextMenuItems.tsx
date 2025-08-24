@@ -52,4 +52,10 @@ export const ContextMenuItems: IContextMenu[] = [
     icon: <VisibilityIcon fontSize="small" />,
     // onClick: (item) => console.log("Xác nhận đơn hàng", item),
   },
+  {
+    id: "DELETE_ORDER",
+    label: "Hủy Đơn",
+    icon: <DeleteIcon fontSize="small" sx={{ color: red[500] }} />,
+    // onClick: (item) => console.log("Xem chi tiết", item),
+  },
 ];

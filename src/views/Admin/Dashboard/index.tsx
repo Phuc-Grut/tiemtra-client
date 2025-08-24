@@ -6,9 +6,6 @@ import DashboardHeader from "./components/DashboardHeader";
 import AnalyticsFilter from "./components/AnalyticsFilter";
 import KpiCards from "./components/KpiCards";
 import RevenueLineChart from "./components/RevenueLineChart";
-import OrdersStatusPie from "./components/OrdersStatusPie";
-import TopProductsBarChart from "./components/TopProductsBarChart";
-import TopCustomersTable from "./components/TopCustomersTable";
 import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
 import CloseIcon from "@mui/icons-material/Close";
@@ -76,21 +73,14 @@ const Dashboard = () => {
           <Grid item xs={12} md={8}>
             <RevenueLineChart />
           </Grid>
-          <Grid item xs={12} md={4}>
+          {/* <Grid item xs={12} md={4}>
             <OrdersStatusPie />
-          </Grid>
+          </Grid> */}
         </Grid>
 
-        <Grid container spacing={2} sx={{ mt: 0.5 }}>
-          <Grid item xs={12} md={8}>
-            <TopProductsBarChart />
-          </Grid>
-          <Grid item xs={12} md={4}>
-            <TopCustomersTable />
-          </Grid>
-        </Grid>
+      
 
-        <Box sx={{ mt: 3, textAlign: "right", mb: 3 }}>
+        <Box sx={{ mt: 0, textAlign: "right", mb: 0 }}>
           <Button startIcon={<ShoppingBagIcon />} variant="contained">
             Xem danh sách đơn hàng
           </Button>

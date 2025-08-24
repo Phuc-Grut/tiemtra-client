@@ -13,8 +13,8 @@ export default function KpiCards() {
   const items = [
     { icon: <MonetizationOnIcon />, label: "Doanh thu", value: currency(demoOverview.revenue), change: demoOverview.revenueChange },
     { icon: <ReceiptLongIcon />, label: "Số đơn", value: demoOverview.orders.toLocaleString("vi-VN"), change: demoOverview.ordersChange },
-    { icon: <TrendingUpIcon />, label: "AOV", value: currency(demoOverview.aov), change: demoOverview.aovChange },
-    { icon: <PeopleAltIcon />, label: "Khách mới", value: demoOverview.newCustomers.toLocaleString("vi-VN"), change: demoOverview.newCustomersChange },
+    // { icon: <TrendingUpIcon />, label: "AOV", value: currency(demoOverview.aov), change: demoOverview.aovChange },
+    // { icon: <PeopleAltIcon />, label: "Khách mới", value: demoOverview.newCustomers.toLocaleString("vi-VN"), change: demoOverview.newCustomersChange },
   ];
 
   return (
