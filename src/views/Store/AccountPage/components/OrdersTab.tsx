@@ -3,18 +3,24 @@ import * as React from "react";
 import {
   Avatar,
   Box,
+  Button,
   Divider,
+  IconButton,
   Paper,
   Stack,
-  Typography,
-  IconButton,
   Tooltip,
+  Typography,
 } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import OpenInNewIcon from "@mui/icons-material/OpenInNew";
-import { useAuth } from "src/views/Auth/hook";
 import getOrderStatusText from "src/utils/getOrderStatusText";
 import formatVietnamTime from "src/utils/formatVietnamTime";
+import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
+import { IOrder, IOrderFilter, OrderStatus } from "src/Interfaces/IOrder";
+import orderApi from "src/services/api/Order";
+import CancelIcon from "@mui/icons-material/Cancel";
+import OpenInNewIcon from "@mui/icons-material/OpenInNew";
+import OrderDetail from "src/views/Admin/Order/components/OrderDetail";
 
 type OrderRow = {
   id: string; // row id (bắt buộc cho DataGrid)
@@ -31,141 +37,143 @@ const OrdersTab: React.FC<{
   rowsProp?: OrderRow[];
   onViewDetail?: (orderCode: string) => void;
 }> = ({ rowsProp, onViewDetail }) => {
-  const { user } = useAuth();
+  const [filter, setFilter] = useState<IOrderFilter>({
+    pageNumber: 1,
+    pageSize: 10,
+    orderCode: "",
+    customerCode: "KH8965",
+    orderStatus: undefined,
+    paymentMethod: undefined,
+    PaymentStatus: undefined,
+    sortBy: "",
+  });
 
-  // TODO: thay bằng data thật từ API
-  const demoRows = React.useMemo<OrderRow[]>(
-    () => [
-      {
-        id: "1",
-        code: "DH001",
-        date: "2025-08-18",
-        total: 99000,
-        status: "Đã hủy",
-      },
-      {
-        id: "2",
-        code: "DH002",
-        date: "2025-08-10",
-        total: 185000,
-        status: "Đang giao",
-      },
-      {
-        id: "3",
-        code: "DH003",
-        date: "2025-08-01",
-        total: 320000,
-        status: "Đã giao",
-      },
-      {
-        id: "4",
-        code: "DH004",
-        date: "2025-08-20",
-        total: 125000,
-        status: "Đã giao",
-      },
-      {
-        id: "5",
-        code: "DH005",
-        date: "2025-08-21",
-        total: 225000,
-        status: "Đang giao",
-      },
-    ],
-    []
-  );
+  const buildCleanFilter = (filter: IOrderFilter) => {
+    const cleaned: any = {
+      pageNumber: filter.pageNumber ?? 1,
+      pageSize: filter.pageSize ?? 10,
+    };
+    if (filter.orderCode?.trim()) cleaned.orderCode = filter.orderCode.trim();
+    if (filter.sortBy?.trim()) cleaned.sortBy = filter.sortBy.trim();
+    if (filter.orderStatus !== undefined)
+      cleaned.orderStatus = filter.orderStatus;
+    if (filter.paymentMethod !== undefined)
+      cleaned.paymentMethod = filter.paymentMethod;
+    if (filter.PaymentStatus !== undefined)
+      cleaned.PaymentStatus = filter.PaymentStatus;
 
-  const rows = rowsProp ?? demoRows;
+    return cleaned;
+  };
 
-  // Tổng quan
-  const totalOrders = rows.length;
-  const delivered = rows.filter((r) => r.status === "Đã giao").length;
-  const totalSpend = rows.reduce(
-    (s, r) => s + (r.status !== "Đã hủy" ? r.total : 0),
+  const [maxPages, setMaxPages] = useState<number>(1);
+
+  const rawUser = localStorage.getItem("user");
+  const user = rawUser ? JSON.parse(rawUser) : null;
+  const userId = user?.userId as string | undefined;
+
+  const [orderDetailModal, setOrderDetailModal] = useState(false);
+  const [orderId, setOrderId] = useState("");
+
+  const { data: orders = [] } = useQuery<IOrder[]>({
+    queryKey: ["orders-by-user", userId, filter],
+    enabled: !!userId,
+    refetchOnWindowFocus: false,
+    queryFn: async () => {
+      const cleaned = buildCleanFilter(filter);
+      const res = await orderApi.getByUserId(userId!, cleaned);
+      setMaxPages(res.data.totalPages ?? 1);
+      return res.data.items ?? [];
+    },
+  });
+
+  const totalOrders = orders.length;
+
+  const delivered = orders.filter(
+    (o) => o.orderStatus === OrderStatus.Delivered
+  ).length;
+
+  const totalSpend = orders.reduce<number>(
+    (s, o) =>
+      s +
+      (o.orderStatus !== OrderStatus.CancelledByShop &&
+      o.orderStatus !== OrderStatus.CancelledByUser &&
+      o.orderStatus !== OrderStatus.Refunded
+        ? o.totalAmount ?? 0
+        : 0),
     0
   );
 
-  // đảm bảo columns khai báo kiểu
-  const columns: GridColDef<OrderRow>[] = [
+  // ===== DataGrid cũng dùng IOrder[]
+  const columns: GridColDef<IOrder>[] = [
+    { field: "orderCode", headerName: "Mã đơn", flex: 1, minWidth: 120 },
+
     {
-      field: "code",
-      headerName: "Mã đơn",
-      flex: 1,
-      minWidth: 120,
-      sortable: true,
-    },
-    {
-      field: "date",
+      field: "createAt",
       headerName: "Ngày",
       flex: 1,
       minWidth: 160,
-      sortable: true,
-      // ✅ v6: lấy giá trị ngày từ nhiều field có thể có
-      valueGetter: (_value, row) =>
-        row.date ?? (row as any).orderDate ?? (row as any).createdAt,
-      // hiển thị bằng helper dayjs của bạn
-      valueFormatter: ({ value }) => formatVietnamTime(value as any),
-      // sort theo time
-      sortComparator: (a, b) =>
-        new Date(String(a)).getTime() - new Date(String(b)).getTime(),
+      renderCell: (p) => formatVietnamTime(p.row.createAt) as any,
     },
+
     {
-      field: "total",
+      field: "totalAmount",
       headerName: "Tổng tiền",
       flex: 1,
       minWidth: 140,
-      type: "number",
-      align: "right",
-      headerAlign: "right",
-      // ✅ v6: row là tham số thứ 2
-      valueGetter: (_value, row) => {
-        const raw =
-          (row as any).total ??
-          (row as any).totalAmount ??
-          (row as any).grandTotal ??
-          (row as any).totalPrice;
-        if (typeof raw === "number") return raw;
-        const n = Number(String(raw ?? "").replace(/[^\d.-]/g, ""));
-        return Number.isNaN(n) ? 0 : n;
-      },
-      valueFormatter: ({ value }) =>
-        (Number(value) || 0).toLocaleString("vi-VN", {
-          style: "currency",
-          currency: "VND",
-        }),
+      align: "center",
+      headerAlign: "center",
+      renderCell: (p) => (
+        <Box sx={{ width: "100%", textAlign: "center", fontWeight: 600 }}>
+          {formatVND(p.row.totalAmount ?? 0)}
+        </Box>
+      ),
     },
+
     {
-      field: "status",
+      field: "orderStatus",
       headerName: "Trạng thái",
       flex: 1,
       minWidth: 170,
-      sortable: true,
-      renderCell: (params) => {
-        const statusNum =
-          typeof params.value === "number"
-            ? params.value
-            : Number((params.row as any).status);
-        return getOrderStatusText(statusNum);
-      },
+      renderCell: (p) => getOrderStatusText(p.row.orderStatus) as any,
+      sortable: false,
     },
+
     {
       field: "actions",
       headerName: "Thao tác",
-      minWidth: 120,
-      align: "right",
-      headerAlign: "right",
+      minWidth: 140,
+      flex: 1,
       sortable: false,
       filterable: false,
       renderCell: (p) => (
-        <Tooltip title="Xem chi tiết">
-          <IconButton
-            size="small"
-            color="primary"
-            onClick={() => onViewDetail?.(p.row.code)}
-          >
-            <OpenInNewIcon fontSize="small" />
-          </IconButton>
-        </Tooltip>
+        <Box sx={{ display: "flex", gap: 1, marginTop: 2 }}>
+          <Tooltip title="Xem chi tiết">
+            <IconButton
+              size="small"
+              color="primary"
+              onClick={() => {
+                setOrderDetailModal(true);
+                setOrderId(p.row.orderId);
+              }}
+            >
+              <OpenInNewIcon fontSize="small" />
+            </IconButton>
+          </Tooltip>
+
+          <Tooltip title="Hủy đơn">
+            <Button
+              variant="outlined"
+              color="error"
+              size="small"
+              onClick={() => {
+                console.log("Hủy đơn:", p.row.orderId);
+                // TODO: gọi API hủy đơn ở đây
+              }}
+            >
+              Hủy đơn
+            </Button>
+          </Tooltip>
+        </Box>
       ),
     },
   ];
@@ -229,17 +237,88 @@ const OrdersTab: React.FC<{
       >
         <DataGrid
           autoHeight
-          rows={rows}
+          rows={orders}
+          getRowId={(r) => r.orderId}
           columns={columns}
           disableRowSelectionOnClick
+          density="comfortable" // compact/comfortable/standard
+          hideFooterSelectedRowCount
           initialState={{
             pagination: { paginationModel: { page: 0, pageSize: 5 } },
-            sorting: { sortModel: [{ field: "date", sort: "desc" }] },
-            filter: { filterModel: { items: [] } },
+            sorting: { sortModel: [{ field: "createAt", sort: "desc" }] },
           }}
           pageSizeOptions={[5, 10, 20]}
+          sx={{
+            // khung & nền
+            border: 0,
+            borderRadius: 2,
+            boxShadow: 3,
+            bgcolor: "background.paper",
+
+            // header
+            "& .MuiDataGrid-columnHeaders": {
+              position: "sticky",
+              top: 0,
+              zIndex: 1,
+              bgcolor: "grey.50",
+              borderBottom: "1px solid",
+              borderColor: "divider",
+              fontWeight: 700,
+            },
+
+            // ô & hàng
+            "& .MuiDataGrid-cell": {
+              borderBottom: "1px dashed",
+              borderColor: "divider",
+              fontSize: 14,
+            },
+            "& .MuiDataGrid-row": {
+              transition: "background-color .2s ease",
+              "&:hover": { bgcolor: "grey.50" },
+            },
+
+            // zebra striping
+            "& .MuiDataGrid-virtualScrollerRenderZone .MuiDataGrid-row:nth-of-type(2n)":
+              {
+                bgcolor: "grey.50",
+                "&:hover": { bgcolor: "grey.100" },
+              },
+
+            // cột tiền: canh phải & font đậm nhẹ
+            '& .MuiDataGrid-cell[data-field="totalAmount"]': {
+              fontWeight: 600,
+              textAlign: "right",
+              pr: 1,
+            },
+            '& .MuiDataGrid-columnHeader[data-field="totalAmount"]': {
+              justifyContent: "flex-end",
+              "& .MuiDataGrid-columnHeaderTitleContainer": {
+                flexDirection: "row-reverse",
+              },
+            },
+
+            // cột trạng thái: căn giữa theo chiều dọc
+            '& .MuiDataGrid-cell[data-field="orderStatus"]': {
+              alignItems: "center",
+            },
+
+            // toolbar / footer
+            "& .MuiDataGrid-footerContainer": {
+              borderTop: "1px solid",
+              borderColor: "divider",
+              bgcolor: "grey.50",
+            },
+
+            // ẩn đường kẻ dọc thô
+            "& .MuiDataGrid-iconSeparator": { display: "none" },
+          }}
         />
       </Box>
+      <OrderDetail
+        onClose={() => setOrderDetailModal(false)}
+        open={orderDetailModal}
+        orderId={orderId}
+      />
     </Paper>
   );
 };
