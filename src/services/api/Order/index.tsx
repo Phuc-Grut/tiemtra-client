@@ -23,6 +23,9 @@ const orderApi = {
 
   getById: (orderId: string) =>
     requester.get(ADMIN_ORDER.URL_API.GET_BY_ID(orderId)),
+
+  getByUserId: (userId: string, params?: IOrderFilter) =>
+    requester.get(STORE_ORDER.URL_API.GET_ORDERS_BY_USER(userId), { params }),
 };
 
 export default orderApi;
