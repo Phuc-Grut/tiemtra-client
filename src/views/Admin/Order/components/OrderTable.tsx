@@ -27,6 +27,7 @@ import ModalConfirm from "src/components/ModalConfirm";
 import useToast from "src/components/Toast";
 import ChangeOrderStatusModal from "./ChangeOrderStatusModal";
 import OrderDetail from "./OrderDetail";
+import AdminCancelOrderDialog from "./AdminCancelOrderDialog";
 
 const OrderTable = () => {
   const buildCleanFilter = (filter: IOrderFilter) => {
@@ -68,6 +69,7 @@ const OrderTable = () => {
     data: orders,
     isLoading,
     error,
+    refetch
   } = useQuery({
     queryKey: ["get-paging-orders", filter],
     queryFn: async () => {
@@ -100,6 +102,7 @@ const OrderTable = () => {
   };
 
   const [orderDetailModal, setOrderDetailModal] = useState(false);
+  const [cancelOpen, setCancelOpen] = useState(false);
 
   const orderMenuActions = orderContextMenuItems.map((item) => ({
     ...item,
@@ -126,10 +129,9 @@ const OrderTable = () => {
           setOrderId(o.orderId);
           // setProductModalMode("edit");
           break;
-        case "DELETE":
-          console.log("delete mục:", o.orderId);
-          // setSelected([p.productId]);
-          // setConfirmModalOpen(true);
+        case "DELETE_ORDER":
+          setOrderId(o.orderId);
+          setCancelOpen(true);
           break;
         default:
         // console.log("Chọn menu:", item.id, o);
@@ -524,6 +526,12 @@ const OrderTable = () => {
         onClose={() => setOrderDetailModal(false)}
         open={orderDetailModal}
         orderId={orderId}
+      />
+      <AdminCancelOrderDialog
+        open={cancelOpen}
+        onClose={() => setCancelOpen(false)}
+        orderId={orderId}
+        onSuccess={refetch}
       />
 
       <ChangeOrderStatusModal

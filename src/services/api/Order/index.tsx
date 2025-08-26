@@ -26,6 +26,12 @@ const orderApi = {
 
   getByUserId: (userId: string, params?: IOrderFilter) =>
     requester.get(STORE_ORDER.URL_API.GET_ORDERS_BY_USER(userId), { params }),
+
+  CANCEL_BY_ADMIN: (orderId: string, reason: string) =>
+    requester.post(ADMIN_ORDER.URL_API.CANCEL_ORDER(orderId), { reason }),
+
+  CANCEL_BY_CUSTOMER: (orderId: string, reason: string) =>
+    requester.post(STORE_ORDER.URL_API.CANCEL_ORDER(orderId), { reason }),
 };
 
 export default orderApi;
