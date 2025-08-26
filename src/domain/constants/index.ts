@@ -106,6 +106,7 @@ export const ADMIN_ORDER = {
     CHANGE_ORDER_STATUS: (orderId: string) =>
       `${URL_ADMIN}/order/change-order-status/${orderId}`,
     GET_BY_ID: (orderId: string) => `${URL_ADMIN}/order/get-by-id/${orderId}`,
+    CANCEL_ORDER: (orderId: string) =>  `${URL_ADMIN}/order/${orderId}/cancel`,
   },
 };
 
@@ -120,6 +121,7 @@ export const STORE_ORDER = {
     CREATE_ORDER: `${URL_STORE}/order/create-order`,
     GENERATE_ORDER_CODE: `${URL_STORE}/order/generate-order-code`,
     GET_ORDERS_BY_USER: (userId: string) => `${URL_STORE}/order/users/${userId}/orders`,
+    CANCEL_ORDER: (orderId: string) =>  `${URL_STORE}/order/${orderId}/cancel`,
   },
 };
 
