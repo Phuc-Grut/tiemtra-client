@@ -13,7 +13,7 @@ interface PageHeaderProps {
 
 const PageHeader: React.FC<PageHeaderProps> = ({
   breadcrumbs,
-  showAddButton = true,
+  showAddButton,
   onAddClick,
   pageTitle,
   pageUrl

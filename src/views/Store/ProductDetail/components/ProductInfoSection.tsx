@@ -17,6 +17,7 @@ import cartApi from "src/services/api/Cart";
 import useToast from "src/components/Toast";
 import { useCurrentUser } from "src/hook/useCurrentUser";
 import { useQueryClient } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
 
 interface ProductInfoSectionProps {
   product: IProduct;
@@ -26,6 +27,7 @@ const ProductInfoSection = ({ product }: ProductInfoSectionProps) => {
   const [variant, setVariant] = useState("");
   const [quantity, setQuantity] = useState(1);
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
 
   const { showSuccess, showError } = useToast();
   const user = useCurrentUser();
@@ -119,13 +121,78 @@ const ProductInfoSection = ({ product }: ProductInfoSectionProps) => {
     }
   };
 
-  const handleBuyNow = () => {
-    console.log("Buy now:", {
-      product,
-      quantity,
-      variant,
-    });
-    // TODO: Thêm logic thanh toán
+  const handleBuyNow = async (data: AddProductToCart) => {
+    // check biến thể
+    const hasVariations = data.product?.productVariations?.length;
+    const selectedVariation = data.product?.productVariations?.find(
+      (v) => v.productVariationId === data.productVariationId
+    );
+
+    if (hasVariations && !selectedVariation) {
+      showError("Vui lòng chọn loại sản phẩm.");
+      return;
+    }
+
+    // add local
+    if (!user) {
+      try {
+        const raw = localStorage.getItem("cart");
+        const cart = raw
+          ? JSON.parse(raw)
+          : { items: [], totalQuantity: 0, totalPrice: 0 };
+
+        const existing = cart.items.find(
+          (item: any) =>
+            item.productId === data.productId &&
+            item.productVariationId === data.productVariationId
+        );
+
+        if (existing) {
+          existing.quantity += data.quantity;
+        } else {
+          cart.items.push({
+            cartItemId: crypto.randomUUID?.() || Date.now().toString(),
+            productId: data.productId,
+            productVariationId: data.productVariationId,
+            productCode: data.product?.productCode,
+            productName: data.product?.productName || "",
+            productVariationName: selectedVariation?.typeName || "",
+            previewImage: data.product?.privewImageUrl || "",
+            price: selectedVariation?.price || data.product?.price || 0,
+            quantity: data.quantity,
+          });
+        }
+
+        cart.totalQuantity = cart.items.reduce(
+          (sum: number, item: any) => sum + item.quantity,
+          0
+        );
+        cart.totalPrice = cart.items.reduce(
+          (sum: number, item: any) => sum + item.quantity * item.price,
+          0
+        );
+
+        localStorage.setItem("cart", JSON.stringify(cart));
+        window.dispatchEvent(new Event("local-cart-updated"));
+        showSuccess("Đã thêm vào giỏ hàng");
+        navigate("/gio-hang");
+      } catch (err) {
+        showError("Lỗi khi thêm vào giỏ hàng tạm");
+      }
+
+      return;
+    }
+
+    // add api
+    try {
+      const res = await cartApi.addProductToCart(data);
+
+      showSuccess(res.data.message);
+      queryClient.invalidateQueries({ queryKey: ["cart-total-quantity"] });
+      navigate("/gio-hang");
+    } catch (err: any) {
+      showError(err.response?.data ?? "Thêm sản phẩm thất bại");
+    }
   };
 
   return (
@@ -219,7 +286,18 @@ const ProductInfoSection = ({ product }: ProductInfoSectionProps) => {
         >
           THÊM VÀO GIỎ HÀNG
         </Button>
-        <Button variant="contained" color="success" onClick={handleBuyNow}>
+        <Button
+          variant="contained"
+          color="success"
+          onClick={() =>
+            handleBuyNow({
+              productId: product.productId,
+              productVariationId: selectedVariationId,
+              quantity: quantity,
+              product: product,
+            })
+          }
+        >
           MUA NGAY
         </Button>
       </Stack>
