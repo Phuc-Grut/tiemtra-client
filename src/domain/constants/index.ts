@@ -132,3 +132,10 @@ export const STORE_CATEGORY = {
     GET_ALL: `${URL_STORE}/category/tree`,
   },
 };
+
+
+export const ANALYTICS = {
+  URL_API: {
+    GET_ALL: `${URL_ADMIN}/dashboard`,
+  },
+};
