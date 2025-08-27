@@ -68,6 +68,7 @@ const OrdersTab: React.FC<{
 
   const rawUser = localStorage.getItem("user");
   const user = rawUser ? JSON.parse(rawUser) : null;
+  console.log("🚀 ~ OrdersTab ~ user:", user)
   const userId = user?.userId as string | undefined;
 
   const [orderDetailModal, setOrderDetailModal] = useState(false);

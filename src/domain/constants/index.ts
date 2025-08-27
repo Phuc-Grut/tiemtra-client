@@ -139,3 +139,12 @@ export const ANALYTICS = {
     GET_ALL: `${URL_ADMIN}/dashboard`,
   },
 };
+
+
+export const PROFILE = {
+  URL_API: {
+    GET_BY_ID: `${URL_STORE}/profile/get-profile-by-userId`,
+    ADD_AVATAR: `${URL_STORE}/profile/add-avatar-user`,
+    EDIT_PROFILE: `${URL_STORE}/profile/edit-profile`,
+  },
+};
