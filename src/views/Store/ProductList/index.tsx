@@ -68,7 +68,7 @@ const ProductList = () => {
   const { data: leafCategories = [], isLoading: isLoadingCategories } =
     useQuery<ICategory[]>({
       queryKey: ["leaf-categories"],
-      queryFn: () => categoryApi.getLeafCategories().then((res) => res.data),
+      queryFn: () => categoryApi.getLeafCategoriesStore().then((res) => res.data),
     });
 
   const matchedCategoryId = useMemo(() => {

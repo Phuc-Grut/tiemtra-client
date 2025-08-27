@@ -127,7 +127,7 @@ const ProductFilterPanel = ({
                   >
                     {cat.categoryName}
                   </Typography>
-                  <Typography
+                  {/* <Typography
                     variant="body2"
                     sx={{
                       fontSize: "12px",
@@ -135,7 +135,7 @@ const ProductFilterPanel = ({
                     }}
                   >
                     ({0})
-                  </Typography>
+                  </Typography> */}
                 </Box>
               }
             />
