@@ -38,7 +38,7 @@ const ProductFormSection = ({
   errors,
 }: ProductFormSectionProps) => {
   const isReadOnly = mode === "view";
-  const MAX_FILE_SIZE = 500 * 1024;
+  const MAX_FILE_SIZE = 600 * 1024;
   const { showSuccess, showError } = useToast();
 
   const handleChange = (
@@ -69,7 +69,7 @@ const ProductFormSection = ({
     if (!file) return;
 
     if (file.size > MAX_FILE_SIZE) {
-      showError(" Vui lòng chọn ảnh dưới 500 KB.");
+      showError(" Vui lòng chọn ảnh dưới 600 KB.");
       return;
     }
 
@@ -262,7 +262,7 @@ const ProductFormSection = ({
               sx={{ bgcolor: "#fff" }}
               InputProps={{ readOnly: isReadOnly }}
             />
-            <FormControl fullWidth variant="outlined" size="small">
+            {/* <FormControl fullWidth variant="outlined" size="small">
               <InputLabel>Thương hiệu</InputLabel>
               <Select
                 label="Thương hiệu"
@@ -281,7 +281,7 @@ const ProductFormSection = ({
                   </MenuItem>
                 ))}
               </Select>
-            </FormControl>
+            </FormControl> */}
           </Box>
 
           {isReadOnly && (
