@@ -88,11 +88,11 @@ const CartPage = () => {
     fetchOrderCode();
   }, []);
 
-  const handleQuantityChange = async (cartItemId: string, delta: number) => {
+  const handleQuantityChange = async (cartItemId: string, newQuantity: number) => {
     const item = cartItems.find((i) => i.cartItemId === cartItemId);
     if (!item) return;
-
-    const newQuantity = Math.max(1, item.quantity + delta);
+  
+    if (newQuantity < 1) return;
     setLoading(true);
 
     if (!user) {
