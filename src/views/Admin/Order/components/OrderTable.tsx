@@ -69,7 +69,7 @@ const OrderTable = () => {
     data: orders,
     isLoading,
     error,
-    refetch
+    refetch,
   } = useQuery({
     queryKey: ["get-paging-orders", filter],
     queryFn: async () => {
@@ -445,9 +445,8 @@ const OrderTable = () => {
         toggleSort={toggleSort}
         getRowId={(o) => o.orderId}
         onRowClick={(o) => {
-          //   setModalOpen(true);
-          //   setProductId(p.productId);
-          //   setProductModalMode("view");
+          setOrderDetailModal(true);
+          setOrderId(o.orderId);
         }}
         onContextMenu={(e, o) => {
           setContextItem(o);

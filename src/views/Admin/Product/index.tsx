@@ -22,6 +22,7 @@ const Product = () => {
         pageTitle="Sản phẩm"
         pageUrl="/admin/product"
         onAddClick={() => setIsAddOpen(true)}
+        showAddButton={true}
       />
 
       <Box

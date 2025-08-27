@@ -68,7 +68,7 @@ const OrdersTab: React.FC<{
 
   const rawUser = localStorage.getItem("user");
   const user = rawUser ? JSON.parse(rawUser) : null;
-  console.log("🚀 ~ OrdersTab ~ user:", user)
+  console.log("🚀 ~ OrdersTab ~ user:", user);
   const userId = user?.userId as string | undefined;
 
   const [orderDetailModal, setOrderDetailModal] = useState(false);
@@ -95,11 +95,11 @@ const OrdersTab: React.FC<{
   const totalSpend = orders.reduce<number>(
     (s, o) =>
       s +
-      (o.orderStatus !== OrderStatus.CancelledByShop &&
-      o.orderStatus !== OrderStatus.CancelledByUser &&
-      o.orderStatus !== OrderStatus.Refunded
-        ? o.totalAmount ?? 0
-        : 0),
+      (o.orderStatus === OrderStatus.CancelledByShop ||
+      o.orderStatus === OrderStatus.CancelledByUser ||
+      o.orderStatus === OrderStatus.Refunded
+        ? 0
+        : Number(o.totalAmount ?? 0) + Number(o.shippingFee ?? 0)),
     0
   );
 
@@ -117,19 +117,20 @@ const OrdersTab: React.FC<{
     },
 
     {
-      field: "totalAmount",
+      field: "grandTotal",
       headerName: "Tổng tiền",
       flex: 1,
       minWidth: 140,
       align: "center",
       headerAlign: "center",
-      renderCell: (p) => (
+      renderCell: ({ row }) => (
         <Box sx={{ width: "100%", textAlign: "center", fontWeight: 600 }}>
-          {formatVND(p.row.totalAmount ?? 0)}
+          {formatVND(
+            Number(row?.totalAmount ?? 0) + Number(row?.shippingFee ?? 0)
+          )}
         </Box>
       ),
     },
-
     {
       field: "orderStatus",
       headerName: "Trạng thái",

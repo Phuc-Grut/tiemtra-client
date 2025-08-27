@@ -24,6 +24,7 @@ const Attribute = () => {
         onAddClick={() => {
           setIsAddOpen(true);
         }}
+        showAddButton={true}
       />
 
       <Box
