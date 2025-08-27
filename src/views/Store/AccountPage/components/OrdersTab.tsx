@@ -3,7 +3,6 @@ import * as React from "react";
 import {
   Avatar,
   Box,
-  Button,
   Divider,
   IconButton,
   Paper,
@@ -18,9 +17,9 @@ import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { IOrder, IOrderFilter, OrderStatus } from "src/Interfaces/IOrder";
 import orderApi from "src/services/api/Order";
-import CancelIcon from "@mui/icons-material/Cancel";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import OrderDetail from "src/views/Admin/Order/components/OrderDetail";
+import CancelOrderButton from "./CancelOrderButton";
 
 type OrderRow = {
   id: string; // row id (bắt buộc cho DataGrid)
@@ -74,7 +73,7 @@ const OrdersTab: React.FC<{
   const [orderDetailModal, setOrderDetailModal] = useState(false);
   const [orderId, setOrderId] = useState("");
 
-  const { data: orders = [] } = useQuery<IOrder[]>({
+  const { data: orders = [], refetch } = useQuery<IOrder[]>({
     queryKey: ["orders-by-user", userId, filter],
     enabled: !!userId,
     refetchOnWindowFocus: false,
@@ -103,7 +102,8 @@ const OrdersTab: React.FC<{
     0
   );
 
-  // ===== DataGrid cũng dùng IOrder[]
+  const isCancellable = (status: number) => status === 10;
+
   const columns: GridColDef<IOrder>[] = [
     { field: "orderCode", headerName: "Mã đơn", flex: 1, minWidth: 120 },
 
@@ -147,6 +147,7 @@ const OrdersTab: React.FC<{
       filterable: false,
       renderCell: (p) => (
         <Box sx={{ display: "flex", gap: 1, marginTop: 2 }}>
+          {/* Nút xem chi tiết */}
           <Tooltip title="Xem chi tiết">
             <IconButton
               size="small"
@@ -160,19 +161,12 @@ const OrdersTab: React.FC<{
             </IconButton>
           </Tooltip>
 
-          <Tooltip title="Hủy đơn">
-            <Button
-              variant="outlined"
-              color="error"
-              size="small"
-              onClick={() => {
-                console.log("Hủy đơn:", p.row.orderId);
-                // TODO: gọi API hủy đơn ở đây
-              }}
-            >
-              Hủy đơn
-            </Button>
-          </Tooltip>
+          {/* Nút hủy đơn */}
+          <CancelOrderButton
+            orderId={p.row.orderId}
+            onSuccess={refetch} // reload lại list sau khi hủy
+            disabled={!isCancellable(p.row.orderStatus)} // disable nếu trạng thái ko cho hủy
+          />
         </Box>
       ),
     },
