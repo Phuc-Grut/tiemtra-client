@@ -5,24 +5,24 @@ import { Box, TextField, Typography, Stack } from "@mui/material";
 import { PaymentMethod } from "src/Interfaces/IOrder";
 
 interface CustomerInfo {
-    fullName: string;
-    phone: string;
-    address: string;
-    note: string;
+  fullName: string;
+  phone: string;
+  address: string;
+  note: string;
 }
 
 type Props = {
-  value: CustomerInfo
+  value: CustomerInfo;
   onChange: (value: Props["value"]) => void;
-  paymentMethod: PaymentMethod; 
+  paymentMethod: PaymentMethod;
 };
 
 const CustomerInfoForm = ({ value, onChange }: Props) => {
-  const handleChange = (field: keyof Props["value"]) => (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    onChange({ ...value, [field]: e.target.value });
-  };
+  const handleChange =
+    (field: keyof Props["value"]) =>
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      onChange({ ...value, [field]: e.target.value });
+    };
 
   return (
     <Box mt={2} padding={1}>

@@ -22,6 +22,32 @@ import CustomerInfoForm from "./components/CustomerInfoForm";
 import orderApi from "src/services/api/Order";
 import { AxiosError } from "axios";
 
+type CustomerInfo = {
+  fullName: string;
+  phone: string;
+  address: string;
+  note: string;
+};
+
+function loadCustomerFromLocal(): CustomerInfo {
+  try {
+    const raw = localStorage.getItem("user");
+    if (!raw) return { fullName: "", phone: "", address: "", note: "" };
+
+    const parsed = JSON.parse(raw);
+    const u = parsed.user ?? parsed; // phòng khi backend bọc trong { user: {...} }
+
+    return {
+      fullName: u.fullName ?? "",
+      phone: u.phone ?? u.phoneNumber ?? "",  // 👈 map đúng key
+      address: u.address ?? "",
+      note: "",
+    };
+  } catch {
+    return { fullName: "", phone: "", address: "", note: "" };
+  }
+}
+
 const CartPage = () => {
   const user = useCurrentUser();
   const { showError, showSuccess } = useToast();
@@ -38,12 +64,9 @@ const CartPage = () => {
     PaymentMethod.COD
   );
 
-  const [customerInfo, setCustomerInfo] = useState({
-    fullName: "",
-    phone: "",
-    address: "",
-    note: "", // thay vì note?: string
-  });
+  const [customerInfo, setCustomerInfo] = React.useState<CustomerInfo>(
+    loadCustomerFromLocal()
+  );
 
   // 1. Lấy giỏ từ local nếu chưa đăng nhập
   const raw = localStorage.getItem("cart");
@@ -88,10 +111,13 @@ const CartPage = () => {
     fetchOrderCode();
   }, []);
 
-  const handleQuantityChange = async (cartItemId: string, newQuantity: number) => {
+  const handleQuantityChange = async (
+    cartItemId: string,
+    newQuantity: number
+  ) => {
     const item = cartItems.find((i) => i.cartItemId === cartItemId);
     if (!item) return;
-  
+
     if (newQuantity < 1) return;
     setLoading(true);
 
@@ -372,7 +398,7 @@ const CartPage = () => {
           <PaymentMethodSelector
             value={paymentMethod}
             onChange={setPaymentMethod}
-            totalPrice={cart?.totalPrice }
+            totalPrice={cart?.totalPrice}
             orderCode={orderCode}
           />
 
