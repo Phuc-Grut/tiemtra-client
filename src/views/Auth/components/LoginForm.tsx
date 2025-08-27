@@ -17,6 +17,7 @@ const LoginForm: React.FC = () => {
     const result = await login(data);
 
     if (result) {
+      window.dispatchEvent(new Event("userChanged"));
       navigate("/");
     }
   };
