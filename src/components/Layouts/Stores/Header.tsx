@@ -79,6 +79,7 @@ const Header = () => {
     localStorage.removeItem("refresh_token");
     window.dispatchEvent(new Event("userChanged"));
     handleMenuClose();
+    navigate("/");
   };
 
   const location = useLocation();

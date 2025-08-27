@@ -18,6 +18,7 @@ export const register = (
 const authApi = {
   login: (params: { email: string; password: string }) =>
     requester.post(AUTHENTICATION.URL_API.LOGIN_API, params),
+  
   refreshToken: (params: { refreshToken: string }) =>
     requester.post(AUTHENTICATION.URL_API.REFRESH_TOKEN_API, params),
   register: (params: {
