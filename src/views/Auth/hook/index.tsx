@@ -1,3 +1,4 @@
+
 import { useDispatch, useSelector } from "react-redux";
 import {
   RootState,
@@ -12,21 +13,17 @@ import {
 
 export const useAuth = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { user, loading, error } = useSelector(
-    (state: RootState) => state.auth
-  );
+  const { user, loading, error } = useSelector((state: RootState) => state.auth);
 
-  // đăng nhập
   const login = async (params: { email: string; password: string }) => {
     try {
       const result = await dispatch(loginApi(params)).unwrap();
-      return result;
-    } catch (error) {
-      return null;
+      return { success: true, data: result.data };
+    } catch (error: any) {
+      return { success: false, message: error || "Đăng nhập thất bại" };
     }
   };
 
-  // đăng ký
   const register = async (params: {
     fullName: string;
     email: string;
@@ -37,58 +34,34 @@ export const useAuth = () => {
       const result = await dispatch(registerApi(params)).unwrap();
       return { success: true, data: result };
     } catch (error: any) {
-      return {
-        success: false,
-        message: error?.message || error || "Đăng ký thất bại!",
-      };
+      return { success: false, message: error?.message || "Đăng ký thất bại!" };
     }
   };
 
-  // xác thực otp
   const verifyOtp = async (params: { email: string; otp: string }) => {
     try {
       const result = await dispatch(verifyOtpApi(params)).unwrap();
       return { success: true, data: result };
     } catch (error: any) {
-      const message =
-        typeof error === "string"
-          ? error
-          : error?.response?.data?.message || "Xác minh OTP thất bại";
-
-      return {
-        success: false,
-        message,
-      };
+      return { success: false, message: error?.message || "Xác minh OTP thất bại" };
     }
   };
 
-  // quên mật khẩu (gửi OTP)
   const forgotPassword = async (params: { email: string }) => {
     try {
       const result = await dispatch(forgotPasswordApi(params)).unwrap();
       return { success: true, data: result };
     } catch (error: any) {
-      return {
-        success: false,
-        message: error?.message || error || "Không gửi được OTP!",
-      };
+      return { success: false, message: error?.message || "Không gửi được OTP!" };
     }
   };
 
-  // đặt lại mật khẩu với OTP
-  const resetPassword = async (params: {
-    email: string;
-    otp: string;
-    newPassword: string;
-  }) => {
+  const resetPassword = async (params: { email: string; otp: string; newPassword: string }) => {
     try {
       const result = await dispatch(resetPasswordApi(params)).unwrap();
       return { success: true, data: result };
     } catch (error: any) {
-      return {
-        success: false,
-        message: error?.message || error || "Đặt lại mật khẩu thất bại!",
-      };
+      return { success: false, message: error?.message || "Đặt lại mật khẩu thất bại!" };
     }
   };
 

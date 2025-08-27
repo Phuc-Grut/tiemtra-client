@@ -1,11 +1,8 @@
-import {
-  configureStore,
-  createSlice,
-  createAsyncThunk,
-} from "@reduxjs/toolkit";
+// src/store/auth.ts
+import { configureStore, createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import authApi from "src/services/api/Authentication";
 
-interface UserType {
+export interface UserType {
   userId: string;
   email: string;
   fullName: string;
@@ -13,24 +10,20 @@ interface UserType {
   [key: string]: any;
 }
 
+// Khởi tạo state, lấy user từ localStorage nếu có
 const initialState: {
   user: UserType | null;
   loading: boolean;
   error: string | null;
 } = {
-  user: null,
+  user: localStorage.getItem("user")
+    ? JSON.parse(localStorage.getItem("user")!)
+    : null,
   loading: false,
   error: null,
 };
 
-// export const register = createAsyncThunk (
-//   "auth/register",
-//   async (userData) => {
-//     const res = await authApi.register(userData)
-//     return res.data
-//   }
-// )
-
+// --- Async Thunks ---
 export const loginApi = createAsyncThunk(
   "auth/login",
   async (params: { email: string; password: string }, thunkAPI) => {
@@ -44,10 +37,12 @@ export const loginApi = createAsyncThunk(
         );
       }
 
+      // Lưu token + user vào localStorage
       localStorage.setItem("access_token", data.token);
       localStorage.setItem("refresh_token", data.refreshToken || "");
       localStorage.setItem("user", JSON.stringify(data.data));
 
+      // Xóa cart cũ nếu có
       localStorage.removeItem("cart");
 
       return data;
@@ -62,12 +57,7 @@ export const loginApi = createAsyncThunk(
 export const registerApi = createAsyncThunk(
   "auth/register",
   async (
-    params: {
-      fullName: string;
-      email: string;
-      password: string;
-      phoneNumber: string;
-    },
+    params: { fullName: string; email: string; password: string; phoneNumber: string },
     thunkAPI
   ) => {
     try {
@@ -80,9 +70,7 @@ export const registerApi = createAsyncThunk(
 
       return data;
     } catch (error: any) {
-      return thunkAPI.rejectWithValue(
-        error.response?.data?.message || "Lỗi khi đăng ký"
-      );
+      return thunkAPI.rejectWithValue(error.response?.data?.message || "Lỗi khi đăng ký");
     }
   }
 );
@@ -100,7 +88,7 @@ export const verifyOtpApi = createAsyncThunk(
 
       return data;
     } catch (error: any) {
-      return thunkAPI.rejectWithValue(error.response?.data?.message);
+      return thunkAPI.rejectWithValue(error.response?.data?.message || "Xác minh OTP thất bại");
     }
   }
 );
@@ -110,42 +98,32 @@ export const forgotPasswordApi = createAsyncThunk(
   async (params: { email: string }, thunkAPI) => {
     try {
       const response = await authApi.forgotPassword(params);
-      const data = response.data;
-      // backend trả message trung lập, chỉ cần return
-      return data;
+      return response.data;
     } catch (error: any) {
-      return thunkAPI.rejectWithValue(
-        error.response?.data?.message || "Không gửi được OTP"
-      );
+      return thunkAPI.rejectWithValue(error.response?.data?.message || "Không gửi được OTP");
     }
   }
 );
 
 export const resetPasswordApi = createAsyncThunk(
   "auth/resetPassword",
-  async (
-    params: { email: string; otp: string; newPassword: string },
-    thunkAPI
-  ) => {
+  async (params: { email: string; otp: string; newPassword: string }, thunkAPI) => {
     try {
       const response = await authApi.resetPassword(params);
       const data = response.data;
 
       if (!data?.success) {
-        return thunkAPI.rejectWithValue(
-          data.message || "Đặt lại mật khẩu thất bại"
-        );
+        return thunkAPI.rejectWithValue(data.message || "Đặt lại mật khẩu thất bại");
       }
 
       return data;
     } catch (error: any) {
-      return thunkAPI.rejectWithValue(
-        error.response?.data?.message || "Lỗi khi đặt lại mật khẩu"
-      );
+      return thunkAPI.rejectWithValue(error.response?.data?.message || "Lỗi khi đặt lại mật khẩu");
     }
   }
 );
 
+// --- Slice ---
 const authSlice = createSlice({
   name: "auth",
   initialState,
@@ -159,6 +137,7 @@ const authSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      // login
       .addCase(loginApi.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -172,12 +151,12 @@ const authSlice = createSlice({
         state.error = action.payload as string;
       })
 
-      // đăng ký
+      // register
       .addCase(registerApi.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(registerApi.fulfilled, (state, action) => {
+      .addCase(registerApi.fulfilled, (state) => {
         state.loading = false;
       })
       .addCase(registerApi.rejected, (state, action) => {
@@ -185,12 +164,12 @@ const authSlice = createSlice({
         state.error = action.payload as string;
       })
 
-      // xác thực otp
+      // verify OTP
       .addCase(verifyOtpApi.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(verifyOtpApi.fulfilled, (state, action) => {
+      .addCase(verifyOtpApi.fulfilled, (state) => {
         state.loading = false;
       })
       .addCase(verifyOtpApi.rejected, (state, action) => {
@@ -198,6 +177,7 @@ const authSlice = createSlice({
         state.error = action.payload as string;
       })
 
+      // forgot password
       .addCase(forgotPasswordApi.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -225,6 +205,7 @@ const authSlice = createSlice({
   },
 });
 
+// --- Store ---
 export const store = configureStore({
   reducer: {
     auth: authSlice.reducer,

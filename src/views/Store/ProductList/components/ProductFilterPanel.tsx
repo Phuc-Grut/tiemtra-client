@@ -134,7 +134,7 @@ const ProductFilterPanel = ({
                       color: "rgba(0, 0, 0, 0.4)",
                     }}
                   >
-                    ({0})
+                    {/* ({0}) */}
                   </Typography>
                 </Box>
               }

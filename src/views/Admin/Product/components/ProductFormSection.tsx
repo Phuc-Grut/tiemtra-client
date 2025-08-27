@@ -262,7 +262,7 @@ const ProductFormSection = ({
               sx={{ bgcolor: "#fff" }}
               InputProps={{ readOnly: isReadOnly }}
             />
-            <FormControl fullWidth variant="outlined" size="small">
+            {/* <FormControl fullWidth variant="outlined" size="small">
               <InputLabel>Thương hiệu</InputLabel>
               <Select
                 label="Thương hiệu"
@@ -281,7 +281,7 @@ const ProductFormSection = ({
                   </MenuItem>
                 ))}
               </Select>
-            </FormControl>
+            </FormControl> */}
           </Box>
 
           {isReadOnly && (

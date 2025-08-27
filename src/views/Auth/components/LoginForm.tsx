@@ -17,6 +17,9 @@ const LoginForm: React.FC = () => {
     const result = await login(data);
 
     if (result) {
+      //dùng gọi sự kiện userChanged cập nhật thông tin user từ localstore ngay mà k cần reload lại
+      window.dispatchEvent(new Event("userChanged"));
+      //sau đó mới chuyển hướng
       navigate("/");
     }
   };
