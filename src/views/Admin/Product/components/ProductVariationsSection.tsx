@@ -15,8 +15,11 @@ import {
 } from "@mui/material";
 import { Delete } from "@mui/icons-material";
 import { CreateProductRequest } from "src/Interfaces/IProduct";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import NumberFormatCustom from "src/utils/numberFormatCustom";
+import productApi from "src/services/api/Products/indext";
+import ModalConfirm from "src/components/ModalConfirm";
+import useToast from "src/components/Toast";
 
 interface props {
   formData: CreateProductRequest;
@@ -33,6 +36,10 @@ const ProductVariationsSection = ({
 }: props) => {
   const isReadOnly = mode === "view";
 
+  const [confirmModalOpen, setConfirmModalOpen] = useState(false);
+  const [productId, setProductId] = useState("");
+  const { showSuccess, showError } = useToast();
+
   const ProductVariationStatus = {
     Active: 1,
     Inactive: 2,
@@ -47,7 +54,7 @@ const ProductVariationsSection = ({
           typeName: "",
           price: null,
           stock: null,
-          status: ProductVariationStatus.Active, // hoặc status mặc định nào đó do user chọn trước
+          status: ProductVariationStatus.Active,
         },
       ];
 
@@ -109,6 +116,27 @@ const ProductVariationsSection = ({
       hasVariations: true,
     }));
   }, [formData.productVariations, setFormData]);
+
+  const handleConfirmDelete = async (id: string) => {
+    try {
+      const res = await productApi.softDeleteProductVariation(id);
+      if (res.data.success) {
+        setFormData((prev) => ({
+          ...prev,
+          productVariations: prev.productVariations?.filter(
+            (v) => v.productVariationId !== id
+          ),
+        }));
+        setConfirmModalOpen(false);
+        showSuccess("Xóa thành công");
+      } else {
+        showError("Xóa thất bại");
+      }
+    } catch (error) {
+      console.error("Delete variation failed:", error);
+      showError("Xóa thất bại");
+    }
+  };
 
   return (
     <Box sx={{ mt: 4, width: "100%" }}>
@@ -234,7 +262,22 @@ const ProductVariationsSection = ({
 
                 <TableCell align="center" sx={Styles.tableCellBody}>
                   <IconButton
-                    onClick={() => handleDelete(index)}
+                    onClick={() => {
+                      if (mode === "create") {
+                        handleDelete(index);
+                      } else if (mode === "edit") {
+                        const id =
+                          formData.productVariations?.[index]
+                            ?.productVariationId ?? "";
+                        // nếu chưa có id (biến thể mới chưa lưu) thì xoá local luôn
+                        if (!id) {
+                          handleDelete(index);
+                          return;
+                        }
+                        setProductId(id);
+                        setConfirmModalOpen(true);
+                      }
+                    }}
                     disabled={isReadOnly}
                     color="error"
                   >
@@ -255,6 +298,17 @@ const ProductVariationsSection = ({
           </TableBody>
         </Table>
       </TableContainer>
+
+      <ModalConfirm
+        open={confirmModalOpen}
+        onClose={() => {
+          setConfirmModalOpen(false);
+          setProductId("");
+        }}
+        onConfirm={() => handleConfirmDelete(productId)}
+        showConfirmButton={true}
+        message={`Bạn có chắc chắn xóa sản phẩm này ?`}
+      />
     </Box>
   );
 };

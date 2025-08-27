@@ -170,6 +170,18 @@ const ProductModal = ({
   };
 
   const handleUpdateSubmit = async () => {
+    const v = validateProduct(formData);
+    setErrors(v);
+    if (Object.keys(v).length > 0) {
+      showError("Vui lòng kiểm tra các trường bắt buộc");
+      return;
+    }
+
+    if (!formData.categoryId) {
+      showError("Vui lòng chọn danh mục");
+      return;
+    }
+
     try {
       const res = await productApi.updateProduct(productId ?? "", formData);
 

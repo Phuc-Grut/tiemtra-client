@@ -40,6 +40,11 @@ const productApi = {
   deleteProducts: (ids: string[]) =>
     requester.post(ADMIN_PRODUCT.URL_API.DELETE_PRODUCT_BY_IDS, { ids }),
 
+  softDeleteProductVariation: (
+    id: string
+  ): Promise<AxiosResponse<{ success: boolean }>> =>
+    requester.post(ADMIN_PRODUCT.URL_API.DELETE_PRODUCT_VARIATION(id)),
+
   // Stroe
 
   storeGetAllProduct: (params: IProductFilter) =>
