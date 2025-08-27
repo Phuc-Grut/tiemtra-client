@@ -47,6 +47,9 @@ const categoryApi = {
 
   getAllTree: (): Promise<AxiosResponse<ICategoryTreeDto[]>> =>
     requester.get(STORE_CATEGORY.URL_API.GET_ALL),
+
+  getLeafCategoriesStore: (): Promise<AxiosResponse<ICategory[]>> =>
+    requester.get(CATEGORY.URL_API.GET_LEAF_CATEGORY_STORE),
 };
 
 export default categoryApi;

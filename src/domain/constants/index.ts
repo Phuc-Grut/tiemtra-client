@@ -46,6 +46,9 @@ export const CATEGORY = {
       `${URL_ADMIN}/category/${id}/select-attributes`,
     SET_ATTRIBUTES_API: `${URL_ADMIN}/category/set-attributes`,
     GET_LEAF_CATEGORY: `${URL_ADMIN}/category/get-leaf-categories`,
+
+    
+    GET_LEAF_CATEGORY_STORE: `${URL_STORE}/category/get-leaf-categories`,
   },
 };
 
