@@ -17,7 +17,7 @@ import QuantityInput from "./QuantityInput";
 
 type CartItemProps = {
   item: ICartItem;
-  onQuantityChange: (id: string, delta: number) => void;
+  onQuantityChange: (id: string, newQuantity: number) => void;
   onRemove: (id: string) => void;
 };
 
@@ -145,7 +145,7 @@ const CartItem: React.FC<CartItemProps> = ({
           <QuantityInput item={item} onQuantityChange={onQuantityChange} />
           <IconButton
             size="small"
-            onClick={() => onQuantityChange(item.cartItemId, 1)}
+            onClick={() => onQuantityChange(item.cartItemId, item.quantity + 1)}
           >
             <AddIcon fontSize="small" />
           </IconButton>
