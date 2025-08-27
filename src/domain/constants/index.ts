@@ -75,6 +75,8 @@ export const ADMIN_PRODUCT = {
     GET_BY_ID: `${URL_ADMIN}/product/get-by-id`,
 
     DELETE_PRODUCT_BY_IDS: `${URL_ADMIN}/product/soft-delete`,
+
+    DELETE_PRODUCT_VARIATION: (id: string) => `${URL_ADMIN}/product/${id}/soft-delete-variation`
   },
 };
 
