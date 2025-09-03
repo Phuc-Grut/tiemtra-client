@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import {
   Box,
   Typography,
@@ -16,6 +16,7 @@ import { Pagination } from "swiper/modules";
 import { IProduct, ProductVariation } from "src/Interfaces/IProduct";
 import { Link } from "react-router-dom";
 import { slugify } from "src/utils/slugify";
+import { Swiper as SwiperType } from "swiper";
 
 interface Props {
   products?: IProduct[];
@@ -47,17 +48,29 @@ const ProductSlider3 = ({ products = [] }: Props) => {
       ? `${min.toLocaleString()}đ`
       : `${min.toLocaleString()}đ - ${max.toLocaleString()}đ`;
   };
-
+  const swiperRef = useRef<SwiperType | null>(null);
+   const perViewDesired = isMobile ? 2 : 3;
+  const actualPerView = Math.min(perViewDesired, Math.max(products.length, 1));
+  const centerSingle = products.length <= 1;
+ 
+  const enableLoop = products.length > actualPerView;
   return (
     <Box sx={{ maxWidth: 1200, width: "100%", textAlign: "center" }}>
       <Swiper
         modules={[Pagination]}
-        pagination={{ clickable: true }}
-        spaceBetween={isMobile ? 0 : 220}
-        slidesPerView={isMobile ? 2 : 4}
+        pagination={{
+          clickable: true,
+          dynamicBullets: true,
+        }}
+        onSwiper={(swiper: SwiperType) => {
+          swiperRef.current = swiper;
+        }}
+        spaceBetween={isMobile ? 8 : 0}
+        slidesPerView={actualPerView}
+        centeredSlides={centerSingle}
+        loop={enableLoop}
+        watchOverflow={true}
         style={{ paddingBottom: "32px" }}
-        loop={true} 
-        
       >
         {products.map((product, idx) => (
           <SwiperSlide key={idx}>
