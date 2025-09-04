@@ -20,14 +20,14 @@ import CloseIcon from "@mui/icons-material/Close";
 interface Props {
   open: boolean;
   onClose: () => void;
-  orderId?: string;
+  orderId: string;
 }
 
 const OrderDetail = ({ open, onClose, orderId }: Props) => {
     
   const { data: order, isLoading } = useQuery<IOrderDetail>({
     queryKey: ["order-detail", orderId],
-    queryFn: () => orderApi.getById(orderId!).then((res) => res.data),
+    queryFn: () => orderApi.getById(orderId).then((res) => res.data),
     enabled: !!orderId,
   });
 
