@@ -40,7 +40,7 @@ const OrdersTab: React.FC<{
     pageNumber: 1,
     pageSize: 10,
     orderCode: "",
-    customerCode: "KH8965",
+    customerCode: "",
     orderStatus: undefined,
     paymentMethod: undefined,
     PaymentStatus: undefined,
@@ -48,10 +48,7 @@ const OrdersTab: React.FC<{
   });
 
   const buildCleanFilter = (filter: IOrderFilter) => {
-    const cleaned: any = {
-      pageNumber: filter.pageNumber ?? 1,
-      pageSize: filter.pageSize ?? 10,
-    };
+    const cleaned: any = {};
     if (filter.orderCode?.trim()) cleaned.orderCode = filter.orderCode.trim();
     if (filter.sortBy?.trim()) cleaned.sortBy = filter.sortBy.trim();
     if (filter.orderStatus !== undefined)
