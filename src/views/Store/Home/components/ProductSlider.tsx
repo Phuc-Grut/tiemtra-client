@@ -4,7 +4,6 @@ import "swiper/css";
 import "swiper/css/pagination";
 import { IProduct } from "src/Interfaces/IProduct";
 import ProductSlider2 from "src/components/ProductSlider2";
-import ProductSlider3 from "src/components/ProductSlider3";
 
 interface Props {
   products?: IProduct[];

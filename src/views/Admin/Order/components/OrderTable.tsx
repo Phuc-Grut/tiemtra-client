@@ -20,7 +20,6 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import DataTableContainer from "src/components/DataTableContainer";
 import GenericContextMenu from "src/components/GenericContextMenu";
 import CustomPagination from "src/components/CustomPagination";
-import NoteCell from "src/components/NoteCell";
 import { getPaymentMethodChip } from "src/utils/getPaymentMethodChip";
 import { getPaymentStatusChip } from "src/utils/getPaymentStatusChip";
 import ModalConfirm from "src/components/ModalConfirm";
@@ -533,7 +532,7 @@ const OrderTable = () => {
       />
 
       <ChangeOrderStatusModal
-        open={!!selectedOrder}
+        open={!!selectedOrder && changeOrderStatusModal}
         onClose={() => setSelectedOrder(null)}
         order={selectedOrder}
         // onSuccess={() => refetch()}
