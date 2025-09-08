@@ -1,6 +1,5 @@
 import { IProduct, ProductVariation } from "src/Interfaces/IProduct";
 
-
 interface Props {
   product: IProduct;
   selectedTypeName?: string; // optional
@@ -18,9 +17,13 @@ const ProductRenderPrice = ({ product, selectedTypeName }: Props) => {
     }
   }
 
+  if (!product.productVariations || product.productVariations.length === 0) {
+    return <>{(product.price ?? 0).toLocaleString()}₫</>;
+  }
+
   // Nếu chưa chọn loại → hiển thị min - max
-  const variations = product.productVariations || [];
-  const prices = variations
+
+  const prices = product.productVariations
     .map((v: ProductVariation) => v.price)
     .filter((price: any): price is number => typeof price === "number");
 
