@@ -355,7 +355,6 @@ const OrderTable = () => {
             <MenuItem value={4}>Giao thất bại</MenuItem>
             <MenuItem value={5}>Shop huỷ</MenuItem>
             <MenuItem value={6}>Người mua huỷ</MenuItem>
-            <MenuItem value={7}>Đã hoàn tiền</MenuItem>
           </Select>
         </FormControl>
 

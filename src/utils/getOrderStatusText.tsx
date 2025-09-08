@@ -91,19 +91,6 @@ export const getOrderStatusText = (status: number) => {
         />
       );
 
-    case OrderStatus.Refunded:
-      return (
-        <Chip
-          label="Đã hoàn tiền"
-          size="small"
-          sx={{
-            backgroundColor: " #3f51b5",
-            color: "#fff",
-            fontWeight: "bold",
-          }}
-        />
-      );
-
     default:
       return (
         <Chip

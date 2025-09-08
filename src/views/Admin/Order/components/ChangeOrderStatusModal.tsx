@@ -31,10 +31,14 @@ type Props = {
 
 const ChangeOrderStatusModal = ({ open, onClose, order, onSuccess }: Props) => {
   const [selectedStatus, setSelectedStatus] = useState<OrderStatus | "">("");
-
   const [loading, setLoading] = useState(false);
   const { showSuccess, showError } = useToast();
   const queryClient = useQueryClient();
+
+  if (!order) return <></>;
+
+  const validTransitions = getValidTransitions(order.orderStatus);
+  const hasNoTransition = validTransitions.length === 0;
 
   const handleChangeStatus = async () => {
     if (!order) return;
@@ -52,30 +56,22 @@ const ChangeOrderStatusModal = ({ open, onClose, order, onSuccess }: Props) => {
         selectedStatus === OrderStatus.Confirmed
       ) {
         const res = await orderApi.comfirmOrder(order.orderId);
-
         if (!res.data.success) {
           showError(res.data.message || "Chuyển trạng thái thất bại");
           return;
         }
-
         showSuccess(res.data.message || "Chuyển trạng thái thành công");
       } else {
-        const res = await orderApi.changeOrderStatus(
-          order.orderId,
-          selectedStatus
-        );
-
+        const res = await orderApi.changeOrderStatus(order.orderId, selectedStatus as OrderStatus);
         if (!res.data.success) {
           showError(res.data.message || "Chuyển trạng thái thất bại");
           return;
         }
-
         showSuccess(res.data.message || "Chuyển trạng thái thành công");
       }
+
       setSelectedStatus("");
-
       queryClient.invalidateQueries({ queryKey: ["get-paging-orders"] });
-
       onClose();
       onSuccess?.();
     } catch (error: any) {
@@ -85,42 +81,53 @@ const ChangeOrderStatusModal = ({ open, onClose, order, onSuccess }: Props) => {
     }
   };
 
-  if (!order) return <></>;
-
   return (
     <Dialog open={open} onClose={onClose}>
       <DialogTitle>Chuyển trạng thái đơn hàng</DialogTitle>
+
       <DialogContent sx={{ minWidth: 400 }}>
         <Typography gutterBottom>
           <strong>Mã đơn hàng:</strong> {order.orderCode}
         </Typography>
         <Typography gutterBottom>
-          <strong>Trạng thái hiện tại:</strong>{" "}
-          {getStatusDisplayName(order.orderStatus)}
+          <strong>Trạng thái hiện tại:</strong> {getStatusDisplayName(order.orderStatus)}
         </Typography>
 
-        <FormControl fullWidth margin="normal">
-          <InputLabel>Trạng thái mới</InputLabel>
-          <Select
-            value={selectedStatus}
-            label="Trạng thái mới"
-            onChange={(e) => setSelectedStatus(e.target.value as OrderStatus)}
-          >
-            {getValidTransitions(order.orderStatus).map((status) => (
-              <MenuItem key={status} value={status}>
-                {getStatusDisplayName(status)}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
+        {/* Nếu có transition thì hiển thị Select, ngược lại hiển thị thông báo */}
+        {!hasNoTransition ? (
+          <FormControl fullWidth margin="normal">
+            <InputLabel id="status-label">Trạng thái mới</InputLabel>
+            <Select
+              labelId="status-label"
+              value={selectedStatus}
+              label="Trạng thái mới"
+              onChange={(e) => setSelectedStatus(e.target.value as OrderStatus)}
+            >
+              {validTransitions.map((status) => (
+                <MenuItem key={status} value={status}>
+                  {getStatusDisplayName(status)}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        ) : (
+          <Typography sx={{ mt: 2 }} color="text.secondary">
+            Trạng thái hiện tại không thể thay đổi.
+          </Typography>
+        )}
       </DialogContent>
 
       <DialogActions>
         <Button onClick={onClose}>Hủy</Button>
         <Button
           variant="contained"
-          disabled={selectedStatus === order.orderStatus || loading}
           onClick={handleChangeStatus}
+          disabled={
+            loading ||
+            hasNoTransition ||                 // Không có transition thì tắt nút
+            selectedStatus === "" ||           // Chưa chọn trạng thái
+            selectedStatus === order.orderStatus // Phòng thủ
+          }
         >
           Cập nhật
         </Button>
@@ -128,5 +135,6 @@ const ChangeOrderStatusModal = ({ open, onClose, order, onSuccess }: Props) => {
     </Dialog>
   );
 };
+
 
 export default ChangeOrderStatusModal;

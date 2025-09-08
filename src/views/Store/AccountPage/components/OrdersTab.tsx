@@ -90,15 +90,15 @@ const OrdersTab: React.FC<{
   ).length;
 
   const totalSpend = orders.reduce<number>(
-    (s, o) =>
-      s +
-      (o.orderStatus === OrderStatus.CancelledByShop ||
-      o.orderStatus === OrderStatus.CancelledByUser ||
-      o.orderStatus === OrderStatus.Refunded
-        ? 0
-        : Number(o.totalAmount ?? 0) + Number(o.shippingFee ?? 0)),
-    0
-  );
+  (s, o) =>
+    s +
+    (o.orderStatus === OrderStatus.CancelledByShop ||
+    o.orderStatus === OrderStatus.CancelledByUser
+      ? 0
+      : Number(o.totalAmount ?? 0) + Number(o.shippingFee ?? 0)),
+  0
+);
+
 
   const isCancellable = (status: number) => status === 10;
 

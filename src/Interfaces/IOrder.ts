@@ -27,7 +27,6 @@ export enum OrderStatus {
   DeliveryFailed = 4, // Giao hàng ko thành công
   CancelledByShop = 5, // Đã hủy
   CancelledByUser = 6, // Người dùng hủy đơn hàng
-  Refunded = 7, // Đã hoàn tiền
 }
 
 export enum PaymentMethod {
