@@ -19,6 +19,7 @@ import Customer from "src/views/Admin/Customer";
 import ForgotPasswordPage from "src/views/Auth/pages/ForgotPassword";
 import ResetPasswordPage from "src/views/Auth/pages/ResetPasswordPage";
 import AccountPage from "src/views/Store/AccountPage";
+import Voucher from "src/views/Admin/Voucher";
 const AppRoutes = () => {
   return (
     <Routes>
@@ -32,7 +33,10 @@ const AppRoutes = () => {
         <Route path="san-pham/:code/:slug" element={<ProductDetail />} />
         <Route path="/gio-hang" element={<CartPage />} />
         <Route path="/san-pham" element={<ProductList />} />
-        <Route path="/san-pham/danh-muc-san-pham/:categorySlug" element={<ProductList />} />
+        <Route
+          path="/san-pham/danh-muc-san-pham/:categorySlug"
+          element={<ProductList />}
+        />
         <Route path="/thanh-toan" element={<CheckOut />} />
         <Route path="/thong-tin-ca-nhan" element={<AccountPage />} />
       </Route>
@@ -51,6 +55,9 @@ const AppRoutes = () => {
         <Route path="category/*" element={<Category />} />
         <Route path="order/*" element={<Order />} />
         <Route path="customer" element={<Customer />} />
+
+        {/* Route Voucher */}
+        <Route path="voucher" element={<Voucher />}/>
       </Route>
     </Routes>
   );

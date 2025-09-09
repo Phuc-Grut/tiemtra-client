@@ -17,12 +17,13 @@ import {
   ChevronRight,
   TuneOutlined,
   Inventory2,
+  LocalOffer,
 } from "@mui/icons-material";
 import { Link } from "react-router-dom";
 import { useTheme } from "@mui/material/styles";
 import { useMediaQuery } from "@mui/material";
-import LibraryBooks from '@mui/icons-material/LibraryBooks';
-import InsertEmoticonRoundedIcon from '@mui/icons-material/InsertEmoticonRounded';
+import LibraryBooks from "@mui/icons-material/LibraryBooks";
+import InsertEmoticonRoundedIcon from "@mui/icons-material/InsertEmoticonRounded";
 
 type SidebarProps = {
   expanded: boolean;
@@ -67,7 +68,10 @@ const Sidebar = ({ expanded, setExpanded }: SidebarProps) => {
           marginTop: "0px",
         }}
       >
-        <Link to="/admin/dashboard" style={{ display: "flex", alignItems: "center" }}>
+        <Link
+          to="/admin/dashboard"
+          style={{ display: "flex", alignItems: "center" }}
+        >
           <img
             src={
               expanded ? "/image/logo/fullLogo.png" : "/image/logo/LogoIcon.png"
@@ -126,7 +130,7 @@ const Sidebar = ({ expanded, setExpanded }: SidebarProps) => {
                 justifyContent: "center",
               }}
             >
-              <Inventory2  />
+              <Inventory2 />
             </ListItemIcon>
             {expanded && <ListItemText primary="Sản phẩm" />}
           </ListItem>
@@ -178,6 +182,30 @@ const Sidebar = ({ expanded, setExpanded }: SidebarProps) => {
           </ListItem>
         </Tooltip>
 
+        {/* Link Voucher */}
+        <Tooltip
+          title="Voucher"
+          placement="right"
+          disableHoverListener={expanded}
+        >
+          <ListItem
+            component={Link}
+            to="/admin/voucher"
+            sx={{ cursor: "pointer", justifyContent: "center" }}
+          >
+            <ListItemIcon
+              sx={{
+                minWidth: 0,
+                paddingRight: expanded ? 1 : "auto",
+                justifyContent: "center",
+              }}
+            >
+              <LocalOffer  />
+            </ListItemIcon>
+            {expanded && <ListItemText primary="Voucher" />}
+          </ListItem>
+        </Tooltip>
+
         <Tooltip
           title="category"
           placement="right"
@@ -218,7 +246,7 @@ const Sidebar = ({ expanded, setExpanded }: SidebarProps) => {
                 justifyContent: "center",
               }}
             >
-              <TuneOutlined  />
+              <TuneOutlined />
             </ListItemIcon>
             {expanded && <ListItemText primary="Thuộc tính" />}
           </ListItem>
