@@ -37,7 +37,9 @@ const ForgotPasswordPage: React.FC = () => {
       setValue("email", email, { shouldValidate: true, shouldTouch: true });
       return;
     }
-    const res = await forgotPassword({ email });
+
+    await forgotPassword({ email });
+    
     setOtpSent(true);
     setEmailStored(email);
     setCooldown(60); // 60s mới cho gửi lại

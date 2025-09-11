@@ -40,7 +40,7 @@ const OrdersTab: React.FC<{
     pageNumber: 1,
     pageSize: 10,
     orderCode: "",
-    customerCode: "KH8965",
+    customerCode: "",
     orderStatus: undefined,
     paymentMethod: undefined,
     PaymentStatus: undefined,
@@ -48,10 +48,7 @@ const OrdersTab: React.FC<{
   });
 
   const buildCleanFilter = (filter: IOrderFilter) => {
-    const cleaned: any = {
-      pageNumber: filter.pageNumber ?? 1,
-      pageSize: filter.pageSize ?? 10,
-    };
+    const cleaned: any = {};
     if (filter.orderCode?.trim()) cleaned.orderCode = filter.orderCode.trim();
     if (filter.sortBy?.trim()) cleaned.sortBy = filter.sortBy.trim();
     if (filter.orderStatus !== undefined)
@@ -68,7 +65,6 @@ const OrdersTab: React.FC<{
 
   const rawUser = localStorage.getItem("user");
   const user = rawUser ? JSON.parse(rawUser) : null;
-  console.log("🚀 ~ OrdersTab ~ user:", user);
   const userId = user?.userId as string | undefined;
 
   const [orderDetailModal, setOrderDetailModal] = useState(false);
@@ -93,15 +89,15 @@ const OrdersTab: React.FC<{
   ).length;
 
   const totalSpend = orders.reduce<number>(
-    (s, o) =>
-      s +
-      (o.orderStatus === OrderStatus.CancelledByShop ||
-      o.orderStatus === OrderStatus.CancelledByUser ||
-      o.orderStatus === OrderStatus.Refunded
-        ? 0
-        : Number(o.totalAmount ?? 0) + Number(o.shippingFee ?? 0)),
-    0
-  );
+  (s, o) =>
+    s +
+    (o.orderStatus === OrderStatus.CancelledByShop ||
+    o.orderStatus === OrderStatus.CancelledByUser
+      ? 0
+      : Number(o.totalAmount ?? 0) + Number(o.shippingFee ?? 0)),
+  0
+);
+
 
   const isCancellable = (status: number) => status === 10;
 
