@@ -21,6 +21,7 @@ import PaymentMethodSelector from "./components/PaymentMethodSelector";
 import CustomerInfoForm from "./components/CustomerInfoForm";
 import orderApi from "src/services/api/Order";
 import { AxiosError } from "axios";
+import VoucherList from "./components/VoucherList";
 
 type CustomerInfo = {
   fullName: string;
@@ -39,7 +40,7 @@ function loadCustomerFromLocal(): CustomerInfo {
 
     return {
       fullName: u.fullName ?? "",
-      phone: u.phone ?? u.phoneNumber ?? "",  // 👈 map đúng key
+      phone: u.phone ?? u.phoneNumber ?? "", // 👈 map đúng key
       address: u.address ?? "",
       note: "",
     };
@@ -395,6 +396,10 @@ const CartPage = () => {
 
         <Grid item xs={12} md={4}>
           <CartSummary subtotal={cart?.totalPrice} />
+
+          {/* Voucher dropdown */}
+          <VoucherList />
+
           <PaymentMethodSelector
             value={paymentMethod}
             onChange={setPaymentMethod}
