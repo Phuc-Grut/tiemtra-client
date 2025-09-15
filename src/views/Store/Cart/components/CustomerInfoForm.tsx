@@ -33,9 +33,20 @@ type Props = {
   value: CustomerInfo;
   onChange: (value: Props["value"]) => void;
   paymentMethod: PaymentMethod;
+  submitAttempted?: boolean;
+  onAddressPartsChange?: (v: {
+    province?: Province | null;
+    district?: District | null;
+    ward?: Ward | null;
+  }) => void;
 };
 
-const CustomerInfoForm = ({ value, onChange }: Props) => {
+const CustomerInfoForm = ({
+  value,
+  onChange,
+  submitAttempted,
+  onAddressPartsChange,
+}: Props) => {
   const handleChange =
     (field: keyof Props["value"]) =>
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -96,10 +107,8 @@ const CustomerInfoForm = ({ value, onChange }: Props) => {
       .filter(Boolean)
       .join(", ");
 
-    const current = value.address?.trim() ?? "";
-    if (addr && addr !== current) {
-      onChange({ ...value, address: addr });
-    }
+    // luôn overwrite address, không merge với cũ
+    onChange({ ...value, address: addr });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [province, district, ward]);
 
@@ -126,11 +135,18 @@ const CustomerInfoForm = ({ value, onChange }: Props) => {
           onChange={handleChange("phone")}
         />
 
-        <Grid container sx={{gap: 1}}>
+        <Grid container sx={{ gap: 1 }}>
+          {/* Province */}
           <Grid item xs={10} md={3}>
-            <FormControl fullWidth>
+            <FormControl
+              fullWidth
+              required
+              error={Boolean(submitAttempted && !province)}
+              disabled={!province || loadingD}
+            >
               <InputLabel>Tỉnh/Thành</InputLabel>
               <Select
+                required
                 label="Tỉnh/Thành"
                 value={province?.code ?? ""}
                 onChange={(e) => {
@@ -147,12 +163,20 @@ const CustomerInfoForm = ({ value, onChange }: Props) => {
                   </MenuItem>
                 ))}
               </Select>
-              {!province && <FormHelperText>Chọn tỉnh/thành</FormHelperText>}
+              {submitAttempted && !province && (
+                <FormHelperText>Vui lòng chọn Tỉnh/Thành</FormHelperText>
+              )}
             </FormControl>
           </Grid>
 
+          {/* District */}
           <Grid item xs={10} md={4}>
-            <FormControl fullWidth disabled={!province || loadingD}>
+            <FormControl
+              fullWidth
+              required
+              error={Boolean(submitAttempted && !district)}
+              disabled={!province || loadingD}
+            >
               <InputLabel>Quận/Huyện</InputLabel>
               <Select
                 label="Quận/Huyện"
@@ -171,11 +195,20 @@ const CustomerInfoForm = ({ value, onChange }: Props) => {
                   </MenuItem>
                 ))}
               </Select>
+              {submitAttempted && !district && (
+                <FormHelperText>Vui lòng chọn Quận/Huyện</FormHelperText>
+              )}
             </FormControl>
           </Grid>
 
+          {/* Ward */}
           <Grid item xs={12} md={4}>
-            <FormControl fullWidth disabled={!district || loadingW}>
+            <FormControl
+              fullWidth
+              required
+              error={Boolean(submitAttempted && !ward)}
+              disabled={!district || loadingW}
+            >
               <InputLabel>Phường/Xã</InputLabel>
               <Select
                 label="Phường/Xã"
@@ -194,6 +227,9 @@ const CustomerInfoForm = ({ value, onChange }: Props) => {
                   </MenuItem>
                 ))}
               </Select>
+              {submitAttempted && !ward && (
+                <FormHelperText>Vui lòng chọn Phường/Xã</FormHelperText>
+              )}
             </FormControl>
           </Grid>
         </Grid>
