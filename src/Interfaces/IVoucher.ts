@@ -1,4 +1,4 @@
-export interface Voucher {
+export interface IVoucher {
   id: string;
   voucherId: string;
   voucherCode: string;
@@ -24,7 +24,7 @@ export interface CreateVoucherRequest {
 
 // List Voucher
 export interface VoucherPagingResponse {
-  items: Voucher[];
+  items: IVoucher[];
   totalItems: number;
   totalPages: number;
   currentPage: number;
@@ -33,3 +33,15 @@ export interface VoucherPagingResponse {
 
 // Update Voucher
 export interface UpdateVoucherRequest extends CreateVoucherRequest {}
+
+export interface IVoucherFilter {
+  pageNumber: number;
+  pageSize: number; 
+  status?: VoucherStatus;        
+  keyword?: string;
+}
+
+export enum VoucherStatus {
+  Pending = 0,
+  Publish = 1,
+}

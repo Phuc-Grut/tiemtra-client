@@ -6,7 +6,7 @@ import {
   TextField,
   MenuItem,
 } from "@mui/material";
-import { Voucher } from "src/Interfaces/IVoucher";
+import { IVoucher } from "src/Interfaces/IVoucher";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
@@ -16,7 +16,7 @@ dayjs.extend(utc);
 dayjs.extend(timezone);
 
 const VoucherPublicList = () => {
-  const [vouchers, setVouchers] = useState<Voucher[]>([]);
+  const [vouchers, setVouchers] = useState<IVoucher[]>([]);
   const [loading, setLoading] = useState(false);
   const [selectedVoucherId, setSelectedVoucherId] = useState("");
 

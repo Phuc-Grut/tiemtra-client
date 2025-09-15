@@ -8,7 +8,7 @@ import {
   MenuItem,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
-import { Voucher } from "src/Interfaces/IVoucher";
+import { IVoucher } from "src/Interfaces/IVoucher";
 import VoucherTable from "./VoucherTable";
 import VoucherDialog from "./VoucherDialog";
 import VoucherDetailDialog from "./VoucherDetailDialog";
@@ -17,7 +17,7 @@ import VoucherApi from "src/services/api/Voucher";
 
 const VoucherComponent = () => {
   const [loading, setLoading] = useState(false);
-  const [vouchers, setVouchers] = useState<Voucher[]>([]);
+  const [vouchers, setVouchers] = useState<IVoucher[]>([]);
   const [totalPages, setTotalPages] = useState(1);
 
   const [pageNumber, setPageNumber] = useState(1);
@@ -25,7 +25,7 @@ const VoucherComponent = () => {
   const [status, setStatus] = useState<number | undefined>(undefined);
   const [keyword, setKeyword] = useState("");
 
-  const [selectedVoucher, setSelectedVoucher] = useState<Voucher | null>(null);
+  const [selectedVoucher, setSelectedVoucher] = useState<IVoucher | null>(null);
   const [isAddEditOpen, setIsAddEditOpen] = useState(false);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
@@ -57,13 +57,13 @@ const VoucherComponent = () => {
     setIsAddEditOpen(true);
   };
 
-  const handleEdit = (voucher: Voucher) => {
+  const handleEdit = (voucher: IVoucher) => {
     setSelectedVoucher(voucher);
     console.log("Voucher ID", voucher);
     setIsAddEditOpen(true);
   };
 
-  const handleChangeStatus = async (voucher: Voucher) => {
+  const handleChangeStatus = async (voucher: IVoucher) => {
     try {
       await VoucherApi.updateVoucherStatus(voucher.voucherId, 1); // chuyển sang Public
       fetchData();
@@ -72,12 +72,12 @@ const VoucherComponent = () => {
     }
   };
 
-  const handleDetail = (voucher: Voucher) => {
+  const handleDetail = (voucher: IVoucher) => {
     setSelectedVoucher(voucher);
     setIsDetailOpen(true);
   };
 
-  const handleDelete = (voucher: Voucher) => {
+  const handleDelete = (voucher: IVoucher) => {
     setSelectedVoucher(voucher);
     setIsConfirmOpen(true);
   };
@@ -122,11 +122,11 @@ const VoucherComponent = () => {
         <CircularProgress />
       ) : (
         <VoucherTable
-          vouchers={vouchers}
-          onEdit={handleEdit}
-          onDetail={handleDetail}
-          onDelete={handleDelete}
-          onChangeStatus={handleChangeStatus}
+          // vouchers={vouchers}
+          // onEdit={handleEdit}
+          // onDetail={handleDetail}
+          // onDelete={handleDelete}
+          // onChangeStatus={handleChangeStatus}
         />
       )}
 

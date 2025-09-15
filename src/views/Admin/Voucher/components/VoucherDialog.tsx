@@ -7,13 +7,13 @@ import {
   TextField,
 } from "@mui/material";
 import { useEffect, useState } from "react";
-import { Voucher } from "src/Interfaces/IVoucher";
+import { IVoucher } from "src/Interfaces/IVoucher";
 import VoucherApi from "src/services/api/Voucher";
 
 interface Props {
   open: boolean;
   onClose: () => void;
-  voucher: Voucher | null;
+  voucher: IVoucher | null;
   refresh: () => void;
 }
 

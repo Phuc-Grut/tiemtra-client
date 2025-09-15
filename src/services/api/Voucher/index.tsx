@@ -1,26 +1,13 @@
 import { AxiosResponse } from "axios";
 import requester from "src/services/extended/axiosInstance";
 import {
-  Voucher,
-  CreateVoucherRequest,
+  IVoucher,
   UpdateVoucherRequest,
-  VoucherPagingResponse,
+  IVoucherFilter,
 } from "src/Interfaces/IVoucher";
+import { ADMIN_VOUCHER } from "src/domain/constants";
 
-const ADMIN_VOUCHER = {
-  CREATE: "admin/voucher/create",
-  GET_PAGING: "admin/voucher/get-paging",
-  GET_BY_ID: (id: string) => `admin/voucher/get-by-id/${id}`,
-  UPDATE_STATUS: (id: string) => `admin/voucher/update-status/${id}`,
-  UPDATE: (id: string) => `admin/voucher/update/${id}`,
-  GENERATE_CODE: "admin/voucher/generate-code",
-};
-
-const STORE_VOUCHER = {
-  GET_PUBLIC: "store/voucher/public",
-};
-
-const VoucherApi = {
+const voucherApi = {
   // Tạo Voucher
   createVoucher: (data: {
     voucherName: string;
@@ -28,36 +15,19 @@ const VoucherApi = {
     quantity: number;
     discountPercentage: number;
     endDate: string; // ISO format: YYYY-MM-DDTHH:mm:ss
-  }): Promise<AxiosResponse<Voucher>> =>
-    requester.post(ADMIN_VOUCHER.CREATE, data, {
+  }): Promise<AxiosResponse<IVoucher>> =>
+    requester.post(ADMIN_VOUCHER.URL_API.CREATE, data, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
         "Content-Type": "application/json",
       },
     }),
-
-  // Liệt kê voucher
-  getPagingVoucher: (params: {
-    pageNumber: number;
-    pageSize: number;
-    status?: number;
-    keyword?: string;
-  }): Promise<AxiosResponse<VoucherPagingResponse>> =>
-    requester.get(ADMIN_VOUCHER.GET_PAGING, {
-      params: {
-        pageNumber: params.pageNumber,
-        pageSize: params.pageSize,
-        status: params.status ?? undefined,
-        keyword: params.keyword ?? undefined,
-      },
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`, // lấy token admin
-      },
-    }),
+  getPagingVoucher: (params: IVoucherFilter) =>
+    requester.get(ADMIN_VOUCHER.URL_API.GET_PAGING, { params }),
 
   // Call voucher bằng ID (chưa dùng)
-  getVoucherById: (id: string): Promise<AxiosResponse<Voucher>> =>
-    requester.get(ADMIN_VOUCHER.GET_BY_ID(id)),
+  getVoucherById: (id: string): Promise<AxiosResponse<IVoucher>> =>
+    requester.get(ADMIN_VOUCHER.URL_API.GET_BY_ID(id)),
 
   // Update Voucher Trạng thái
   updateVoucherStatus: (
@@ -65,7 +35,7 @@ const VoucherApi = {
     status: number
   ): Promise<AxiosResponse<any>> =>
     requester.put(
-      ADMIN_VOUCHER.UPDATE_STATUS(encodeURIComponent(id)),
+      ADMIN_VOUCHER.URL_API.UPDATE_STATUS(encodeURIComponent(id)),
       { status },
       {
         headers: {
@@ -79,8 +49,8 @@ const VoucherApi = {
   updateVoucher: (
     id: string,
     data: UpdateVoucherRequest
-  ): Promise<AxiosResponse<Voucher>> =>
-    requester.put(ADMIN_VOUCHER.UPDATE(id), data, {
+  ): Promise<AxiosResponse<IVoucher>> =>
+    requester.put(ADMIN_VOUCHER.URL_API.UPDATE(id), data, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
         "Content-Type": "application/json",
@@ -89,15 +59,15 @@ const VoucherApi = {
 
   // Tạo Code ngẫu nhiên cho voucher (không dùng)
   generateVoucherCode: (): Promise<AxiosResponse<{ code: string }>> =>
-    requester.get(ADMIN_VOUCHER.GENERATE_CODE),
+    requester.get(ADMIN_VOUCHER.URL_API.GENERATE_CODE),
 
   // List các Voucher Public
-  getPublicVouchers: (): Promise<AxiosResponse<Voucher[]>> =>
-  requester.get("store/voucher/public", {
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem("token")}`,
-    },
-  }),
+  getPublicVouchers: (): Promise<AxiosResponse<IVoucher[]>> =>
+    requester.get("store/voucher/public", {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    }),
 };
 
-export default VoucherApi;
+export default voucherApi;

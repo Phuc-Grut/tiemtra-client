@@ -1,12 +1,12 @@
 import {
   Dialog, DialogTitle, DialogContent, Typography
 } from "@mui/material";
-import { Voucher } from "src/Interfaces/IVoucher";
+import { IVoucher } from "src/Interfaces/IVoucher";
 
 interface Props {
   open: boolean;
   onClose: () => void;
-  voucher: Voucher | null;
+  voucher: IVoucher | null;
 }
 
 const VoucherDetailDialog = ({ open, onClose, voucher }: Props) => {

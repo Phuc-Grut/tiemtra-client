@@ -2,6 +2,7 @@ import { Box } from "@mui/material";
 import { useState } from "react";
 import PageHeader from "src/components/Layouts/Admin/PageHeader";
 import VoucherComponent from "./components/VoucherComponent";
+import VoucherTable from "./components/VoucherTable";
 
 const VoucherPage = () => {
 
@@ -29,7 +30,7 @@ const VoucherPage = () => {
           flexDirection: "column",
         }}
       >
-        <VoucherComponent />
+        <VoucherTable />
       </Box>
     </Box>
   );

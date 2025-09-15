@@ -1,147 +1,166 @@
-import {
-  Table,
-  TableHead,
-  TableRow,
-  TableCell,
-  TableBody,
-  Paper,
-  TableContainer,
-  Chip,
-  IconButton,
-  Menu,
-  MenuItem,
-} from "@mui/material";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { useState } from "react";
-import { Voucher } from "src/Interfaces/IVoucher";
-import dayjs from "dayjs";
-import utc from "dayjs/plugin/utc";
-import timezone from "dayjs/plugin/timezone";
+import { IVoucher, IVoucherFilter } from "src/Interfaces/IVoucher";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import useToast from "src/components/Toast";
+import voucherApi from "src/services/api/Voucher";
+import { Box, FormControl, MenuItem, Select, SelectChangeEvent } from "@mui/material";
+import { ColumnConfig } from "src/Interfaces/Table";
 
-interface Props {
-  vouchers: Voucher[];
-  onEdit: (v: Voucher) => void;
-  onDetail: (v: Voucher) => void;
-  onDelete: (v: Voucher) => void;
-  onChangeStatus: (v: Voucher) => void;
-}
+const VoucherTable = () => {
+  const buildCleanFilter = (filter: IVoucherFilter) => {
+    const cleaned: any = {
+      pageNumber: filter.pageNumber ?? 1,
+      pageSize: filter.pageSize ?? 10,
+    };
+    if (filter.keyword?.trim()) cleaned.orderCode = filter.keyword.trim();
 
-dayjs.extend(utc);
-dayjs.extend(timezone);
+    if (filter.status !== undefined) {
+      cleaned.status = filter.status;
+    }
 
-const VoucherTable = ({
-  vouchers,
-  onEdit,
-  onDetail,
-  onDelete,
-  onChangeStatus,
-}: Props) => {
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const [selectedVoucher, setSelectedVoucher] = useState<Voucher | null>(null);
-
-  const handleMenuOpen = (
-    event: React.MouseEvent<HTMLButtonElement>,
-    voucher: Voucher
-  ) => {
-    setAnchorEl(event.currentTarget);
-    setSelectedVoucher(voucher);
+    return cleaned;
   };
 
-  const handleMenuClose = () => {
-    setAnchorEl(null);
-    setSelectedVoucher(null);
+  const [anchorEl, setAnchorEl] = useState<
+    HTMLElement | { mouseX: number; mouseY: number } | null
+  >(null);
+
+  const queryClient = useQueryClient();
+  const { showSuccess, showError } = useToast();
+  const [maxPages, setMaxPages] = useState<number>(1);
+
+  const [filter, setFilter] = useState<IVoucherFilter>({
+    pageNumber: 1,
+    pageSize: 10,
+    status: undefined,
+  });
+
+  const {
+    data: vouchers,
+    isLoading,
+    error,
+    refetch,
+  } = useQuery({
+    queryKey: ["get-paging-orders", filter],
+    queryFn: async () => {
+      const cleanedFilter = buildCleanFilter(filter);
+      const response = await voucherApi.getPagingVoucher(cleanedFilter);
+      const realTotalPages = response.data.totalPages;
+      setMaxPages(realTotalPages);
+
+      return response.data.items ?? [];
+    },
+    retry: false,
+    refetchOnWindowFocus: false,
+  });
+  console.log("🚀 ~ VoucherTable ~ vouchers:", vouchers);
+
+  const colums: ColumnConfig<IVoucher>[] = [
+    {
+      key: "voucherCode",
+      label: "Mã Voucher",
+      width: 120,
+    },
+    {
+      key: "voucherName",
+      label: "Tên Voucher",
+      width: 120,
+    },
+    {
+      key: "Quantity",
+      label: "Số lượng",
+      width: 120,
+    },
+  ];
+
+  const handleVoucherStatusChange = (e: SelectChangeEvent) => {
+    const value = e.target.value;
+    setFilter((prev) => ({
+      ...prev,
+      orderStatus: value === "" ? undefined : parseInt(value),
+      pageNumber: 1,
+    }));
   };
 
   return (
-    <TableContainer component={Paper}>
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell>Mã</TableCell>
-            <TableCell>Tên</TableCell>
-            <TableCell>Giảm giá</TableCell>
-            <TableCell>Ngày hết hạn</TableCell>
-            <TableCell>Trạng thái</TableCell>
-            <TableCell>Hành động</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {vouchers.map((v) => (
-            <TableRow key={v.id}>
-              <TableCell>{v.voucherCode}</TableCell>
-              <TableCell>{v.voucherName}</TableCell>
-              <TableCell>{v.discountPercentage}%</TableCell>
-              <TableCell>
-                {dayjs
-                  .utc(v.endDate)
-                  .tz("Asia/Ho_Chi_Minh")
-                  .format("YYYY-MM-DD HH:mm:ss")}
-              </TableCell>
-              <TableCell>
-                {v.status === 1 ? (
-                  <Chip label="Public" color="success" size="small" />
-                ) : (
-                  <Chip label="Pending" color="warning" size="small" />
-                )}
-              </TableCell>
-              <TableCell>
-                <IconButton onClick={(e) => handleMenuOpen(e, v)}>
-                  <MoreVertIcon />
-                </IconButton>
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-
-      {/* Dropdown menu */}
-      <Menu
-        anchorEl={anchorEl}
-        open={Boolean(anchorEl)}
-        onClose={handleMenuClose}
+    <Box
+      sx={{
+        flexGrow: 1,
+        display: "flex",
+        flexDirection: "column",
+        backgroundColor: "#fff",
+        borderRadius: "8px",
+        boxShadow: "0px 2px 5px rgba(0, 0, 0, 0.1)",
+        minHeight: "calc(100vh - 171px)",
+        overflow: "auto",
+        maxHeight: "calc(100vh - 198px)",
+      }}
+    >
+      <Box
+        sx={{
+          padding: "6px",
+          borderBottom: "3px solid #ddd",
+          height: "33px",
+          display: "flex",
+          alignItems: "center",
+          gap: 1,
+        }}
       >
-        <MenuItem
-          onClick={() => {
-            if (selectedVoucher) onDetail(selectedVoucher);
-            handleMenuClose();
+        <input
+          type="text"
+          placeholder="Tìm kiếm..."
+          style={{
+            width: "100%",
+            maxWidth: "200px",
+            height: "130%",
+            fontSize: "13px",
+            padding: "0px 8px",
+            borderRadius: "4px",
+            border: "1px solid #ccc",
           }}
-        >
-          Xem chi tiết
-        </MenuItem>
-        <MenuItem
-          onClick={() => {
-            if (selectedVoucher) onEdit(selectedVoucher);
-            handleMenuClose();
-          }}
-        >
-          Chỉnh sửa
-        </MenuItem>
+        />
 
-        {/* Chưa có Xóa voucher được */}
-        <MenuItem
-          onClick={() => {
-            if (selectedVoucher) onDelete(selectedVoucher);
-            handleMenuClose();
+        <FormControl
+          size="small"
+          sx={{
+            width: "180px",
+            height: "130%",
+            overflow: "hidden",
           }}
-          sx={{ color: "error.main" }}
         >
-          Xóa
-        </MenuItem>
-
-        
-        {selectedVoucher?.status === 0 && (
-          <MenuItem
-            onClick={() => {
-              if (selectedVoucher) onChangeStatus(selectedVoucher);
-              handleMenuClose();
+          <Select
+            value={filter.status !== undefined ? String(filter.status) : ""}
+            onChange={handleVoucherStatusChange}
+            displayEmpty
+            sx={{
+              height: "24px",
+              fontSize: "14px",
+              padding: "0px 8px",
+              borderRadius: "4px",
+              border: "1px solid #ccc",
+              backgroundColor: "white",
+              boxSizing: "border-box",
+              "& fieldset": {
+                border: "none",
+              },
             }}
-            sx={{ color: "success.main" }}
+            MenuProps={{
+              PaperProps: {
+                sx: {
+                  fontSize: "14px",
+                  maxHeight: "50vh",
+                  overflowY: "auto",
+                },
+              },
+            }}
           >
-            Mở voucher
-          </MenuItem>
-        )}
-      </Menu>
-    </TableContainer>
+            <MenuItem value="">Trạng thái</MenuItem>
+            <MenuItem value={0}>Chờ xác nhận</MenuItem>
+            <MenuItem value={1}>Đã xác nhận</MenuItem>
+          </Select>
+        </FormControl>
+      </Box>
+    </Box>
   );
 };
 

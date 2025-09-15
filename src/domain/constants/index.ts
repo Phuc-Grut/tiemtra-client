@@ -47,7 +47,6 @@ export const CATEGORY = {
     SET_ATTRIBUTES_API: `${URL_ADMIN}/category/set-attributes`,
     GET_LEAF_CATEGORY: `${URL_ADMIN}/category/get-leaf-categories`,
 
-    
     GET_LEAF_CATEGORY_STORE: `${URL_STORE}/category/get-leaf-categories`,
   },
 };
@@ -79,7 +78,8 @@ export const ADMIN_PRODUCT = {
 
     DELETE_PRODUCT_BY_IDS: `${URL_ADMIN}/product/soft-delete`,
 
-    DELETE_PRODUCT_VARIATION: (id: string) => `${URL_ADMIN}/product/${id}/soft-delete-variation`
+    DELETE_PRODUCT_VARIATION: (id: string) =>
+      `${URL_ADMIN}/product/${id}/soft-delete-variation`,
   },
 };
 
@@ -111,7 +111,7 @@ export const ADMIN_ORDER = {
     CHANGE_ORDER_STATUS: (orderId: string) =>
       `${URL_ADMIN}/order/change-order-status/${orderId}`,
     GET_BY_ID: (orderId: string) => `${URL_ADMIN}/order/get-by-id/${orderId}`,
-    CANCEL_ORDER: (orderId: string) =>  `${URL_ADMIN}/order/${orderId}/cancel`,
+    CANCEL_ORDER: (orderId: string) => `${URL_ADMIN}/order/${orderId}/cancel`,
   },
 };
 
@@ -125,8 +125,9 @@ export const STORE_ORDER = {
   URL_API: {
     CREATE_ORDER: `${URL_STORE}/order/create-order`,
     GENERATE_ORDER_CODE: `${URL_STORE}/order/generate-order-code`,
-    GET_ORDERS_BY_USER: (userId: string) => `${URL_STORE}/order/users/${userId}/orders`,
-    CANCEL_ORDER: (orderId: string) =>  `${URL_STORE}/order/${orderId}/cancel`,
+    GET_ORDERS_BY_USER: (userId: string) =>
+      `${URL_STORE}/order/users/${userId}/orders`,
+    CANCEL_ORDER: (orderId: string) => `${URL_STORE}/order/${orderId}/cancel`,
   },
 };
 
@@ -136,18 +137,29 @@ export const STORE_CATEGORY = {
   },
 };
 
-
 export const ANALYTICS = {
   URL_API: {
     GET_ALL: `${URL_ADMIN}/dashboard`,
   },
 };
 
-
 export const PROFILE = {
   URL_API: {
     GET_BY_ID: `${URL_STORE}/profile/get-profile-by-userId`,
     ADD_AVATAR: `${URL_STORE}/profile/add-avatar-user`,
     EDIT_PROFILE: `${URL_STORE}/profile/edit-profile`,
+  },
+};
+
+export const ADMIN_VOUCHER = {
+  URL_API: {
+    CREATE: "admin/voucher/create",
+    GET_PAGING: "admin/voucher/get-paging",
+    GET_BY_ID: (id: string) => `admin/voucher/get-by-id/${id}`,
+    UPDATE_STATUS: (id: string) => `admin/voucher/update-status/${id}`,
+    UPDATE: (id: string) => `admin/voucher/update/${id}`,
+    GENERATE_CODE: "admin/voucher/generate-code",
+
+     GET_PUBLIC: "store/voucher/public",
   },
 };
