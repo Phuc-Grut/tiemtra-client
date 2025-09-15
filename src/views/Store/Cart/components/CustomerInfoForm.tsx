@@ -1,8 +1,26 @@
-// components/CustomerInfoForm.tsx
-
-import React from "react";
-import { Box, TextField, Typography, Stack } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import {
+  Box,
+  TextField,
+  Typography,
+  Stack,
+  Grid,
+  InputLabel,
+  FormControl,
+  Select,
+  CircularProgress,
+  MenuItem,
+  FormHelperText,
+} from "@mui/material";
 import { PaymentMethod } from "src/Interfaces/IOrder";
+import {
+  District,
+  fetchDistricts,
+  fetchProvinces,
+  fetchWards,
+  Province,
+  Ward,
+} from "src/services/api/ProvinceAPI";
 
 interface CustomerInfo {
   fullName: string;
@@ -23,6 +41,67 @@ const CustomerInfoForm = ({ value, onChange }: Props) => {
     (e: React.ChangeEvent<HTMLInputElement>) => {
       onChange({ ...value, [field]: e.target.value });
     };
+
+  const [provinces, setProvinces] = useState<Province[]>([]);
+  const [districts, setDistricts] = useState<District[]>([]);
+  const [wards, setWards] = useState<Ward[]>([]);
+
+  const [province, setProvince] = useState<Province | undefined>(undefined);
+  const [district, setDistrict] = useState<District | undefined>(undefined);
+  const [ward, setWard] = useState<Ward | undefined>(undefined);
+
+  const [loadingP, setLoadingP] = useState(false);
+  const [loadingD, setLoadingD] = useState(false);
+  const [loadingW, setLoadingW] = useState(false);
+
+  useEffect(() => {
+    setLoadingP(true);
+    fetchProvinces()
+      .then(setProvinces)
+      .finally(() => setLoadingP(false));
+  }, []);
+
+  useEffect(() => {
+    if (!province) {
+      setDistrict(undefined);
+      setWard(undefined);
+      setDistricts([]);
+      setWards([]);
+      return;
+    }
+    setLoadingD(true);
+    fetchDistricts(province.code)
+      .then(setDistricts)
+      .finally(() => setLoadingD(false));
+  }, [province]);
+
+  useEffect(() => {
+    if (!district) {
+      setWard(undefined);
+      setWards([]);
+      return;
+    }
+    setLoadingW(true);
+    fetchWards(district.code)
+      .then(setWards)
+      .finally(() => setLoadingW(false));
+  }, [district]);
+
+  useEffect(() => {
+    const addr = [
+      ward?.name?.trim(),
+      district?.name?.trim(),
+      province?.name?.trim(),
+    ]
+      .filter(Boolean)
+      .join(", ");
+
+    const current = value.address?.trim() ?? "";
+    if (addr && addr !== current) {
+      onChange({ ...value, address: addr });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [province, district, ward]);
 
   return (
     <Box mt={2} padding={1}>
@@ -46,15 +125,90 @@ const CustomerInfoForm = ({ value, onChange }: Props) => {
           value={value.phone}
           onChange={handleChange("phone")}
         />
+
+        <Grid container sx={{gap: 1}}>
+          <Grid item xs={10} md={3}>
+            <FormControl fullWidth>
+              <InputLabel>Tỉnh/Thành</InputLabel>
+              <Select
+                label="Tỉnh/Thành"
+                value={province?.code ?? ""}
+                onChange={(e) => {
+                  const p = provinces.find(
+                    (x) => x.code === Number(e.target.value)
+                  );
+                  setProvince(p);
+                }}
+                endAdornment={loadingP ? <CircularProgress size={18} /> : null}
+              >
+                {provinces.map((p) => (
+                  <MenuItem key={p.code} value={p.code}>
+                    {p.name}
+                  </MenuItem>
+                ))}
+              </Select>
+              {!province && <FormHelperText>Chọn tỉnh/thành</FormHelperText>}
+            </FormControl>
+          </Grid>
+
+          <Grid item xs={10} md={4}>
+            <FormControl fullWidth disabled={!province || loadingD}>
+              <InputLabel>Quận/Huyện</InputLabel>
+              <Select
+                label="Quận/Huyện"
+                value={district?.code ?? ""}
+                onChange={(e) => {
+                  const d = districts.find(
+                    (x) => x.code === Number(e.target.value)
+                  );
+                  setDistrict(d);
+                }}
+                endAdornment={loadingD ? <CircularProgress size={18} /> : null}
+              >
+                {districts.map((d) => (
+                  <MenuItem key={d.code} value={d.code}>
+                    {d.name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Grid>
+
+          <Grid item xs={12} md={4}>
+            <FormControl fullWidth disabled={!district || loadingW}>
+              <InputLabel>Phường/Xã</InputLabel>
+              <Select
+                label="Phường/Xã"
+                value={ward?.code ?? ""}
+                onChange={(e) => {
+                  const w = wards.find(
+                    (x) => x.code === Number(e.target.value)
+                  );
+                  setWard(w);
+                }}
+                endAdornment={loadingW ? <CircularProgress size={18} /> : null}
+              >
+                {wards.map((w) => (
+                  <MenuItem key={w.code} value={w.code}>
+                    {w.name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Grid>
+        </Grid>
+
         <TextField
-          label="Địa chỉ nhận hàng"
+          label="Địa chỉ chi tiết"
           fullWidth
           required
           multiline
           rows={1}
           value={value.address}
           onChange={handleChange("address")}
+          placeholder="Số nhà, đường, phường/xã, quận/huyện, tỉnh/thành"
         />
+
         <TextField
           label="Ghi chú đơn hàng (tuỳ chọn)"
           fullWidth
