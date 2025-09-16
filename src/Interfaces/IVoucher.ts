@@ -33,3 +33,20 @@ export interface VoucherPagingResponse {
 
 // Update Voucher
 export interface UpdateVoucherRequest extends CreateVoucherRequest {}
+
+
+//Apply Voucher
+export interface ApplyVoucherRequest {
+  voucherCode : string;
+  orderTotal: number;
+}
+
+export interface ApplyVoucherResponse {
+  isValid: boolean;
+  message: string;
+  discountAmount: number;
+  finalAmount: number;
+  voucherCode: string;
+  discountPercentage: number;
+  voucherId: string;
+}

@@ -61,6 +61,7 @@ export interface ICreateOrder {
   orderItems: ICreateOrderItem[];
   paymentMethod: PaymentMethod;
   shippingFee: number;
+  voucherCode?: string; // Thêm field voucherCode
 }
 
 export interface IOrderItem {

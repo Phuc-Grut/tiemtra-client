@@ -18,6 +18,7 @@ const ADMIN_VOUCHER = {
 
 const STORE_VOUCHER = {
   GET_PUBLIC: "store/voucher/public",
+  APPLY: "store/voucher/apply",
 };
 
 const VoucherApi = {
@@ -98,6 +99,26 @@ const VoucherApi = {
       Authorization: `Bearer ${localStorage.getItem("token")}`,
     },
   }),
+
+  //Apply Voucher
+  applyVoucher: (data: {
+    voucherCode: string;
+    orderTotal: number;
+  }): Promise<AxiosResponse<{
+    isValid: boolean;
+    message: string;
+    discountAmount: number;
+    finalAmount: number;
+    voucherCode: string;
+    discountPercentage: number;
+    voucherId: string;
+  }>> =>
+    requester.post(STORE_VOUCHER.APPLY, data, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        "Content-Type": "application/json",
+      },
+    }),
 };
 
 export default VoucherApi;
