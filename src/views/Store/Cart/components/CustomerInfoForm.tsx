@@ -107,7 +107,6 @@ const CustomerInfoForm = ({
       .filter(Boolean)
       .join(", ");
 
-    // luôn overwrite address, không merge với cũ
     onChange({ ...value, address: addr });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [province, district, ward]);
