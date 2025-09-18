@@ -69,6 +69,13 @@ const CartPage = () => {
     loadCustomerFromLocal()
   );
 
+  // Add voucher state
+  const [voucherDiscount, setVoucherDiscount] = useState<{
+    discountAmount: number;
+    finalAmount: number;
+    voucherCode?: string; // Thêm voucherCode vào state
+  } | null>(null);
+
   // 1. Lấy giỏ từ local nếu chưa đăng nhập
   const raw = localStorage.getItem("cart");
   const localCart = raw
@@ -267,6 +274,7 @@ const CartPage = () => {
       recipientAddress: customerInfo.address,
       recipientPhone: customerInfo.phone,
       paymentMethod: paymentMethod,
+      voucherCode: voucherDiscount?.voucherCode, // Thêm voucherCode vào payload
       orderItems: cartItems.map((item) => ({
         productId: item.productId,
         productVariationId: item.productVariationId,
@@ -395,15 +403,27 @@ const CartPage = () => {
         </Grid>
 
         <Grid item xs={12} md={4}>
-          <CartSummary subtotal={cart?.totalPrice} />
+          <CartSummary 
+            subtotal={cart?.totalPrice} 
+            discountAmount={voucherDiscount?.discountAmount}
+            finalAmount={voucherDiscount?.finalAmount}
+          />
 
           {/* Voucher dropdown */}
-          <VoucherList />
+          <VoucherList 
+            orderTotal={(cart?.totalPrice || 0) + 30000}
+            onVoucherApplied={(discountAmount, finalAmount, voucherCode) => {
+              setVoucherDiscount({ discountAmount, finalAmount, voucherCode });
+            }}
+            onVoucherRemoved={() => {
+              setVoucherDiscount(null);
+            }}
+          />
 
           <PaymentMethodSelector
             value={paymentMethod}
             onChange={setPaymentMethod}
-            totalPrice={cart?.totalPrice}
+            totalPrice={voucherDiscount?.finalAmount || cart?.totalPrice}
             orderCode={orderCode}
           />
 

@@ -1,9 +1,18 @@
 import React from "react";
 import { Box, Typography, Divider } from "@mui/material";
 
-const CartSummary = ({ subtotal }: { subtotal?: number }) => {
+interface CartSummaryProps {
+  subtotal?: number;
+  discountAmount?: number;
+  finalAmount?: number;
+}
+
+const CartSummary = ({ subtotal, discountAmount, finalAmount }: CartSummaryProps) => {
   const shipping = 30000;
-  const total = (subtotal || 0) + shipping;
+  const originalTotal = (subtotal || 0) + shipping;
+  const total = finalAmount || originalTotal;
+  const hasDiscount = discountAmount && discountAmount > 0;
+
   return (
     <Box borderLeft="1px solid #ddd" pl={3} borderBottom={"1px solid #ddd"}>
       <Typography variant="h6" fontWeight="bold" gutterBottom>
@@ -21,6 +30,24 @@ const CartSummary = ({ subtotal }: { subtotal?: number }) => {
           {shipping.toLocaleString()}₫
         </Typography>
       </Box>
+      
+      {hasDiscount && (
+        <>
+          <Box display="flex" justifyContent="space-between" mt={1}>
+            <Typography>Tạm tính:</Typography>
+            <Typography fontWeight="bold" color="gray">
+              {originalTotal.toLocaleString()}₫
+            </Typography>
+          </Box>
+          <Box display="flex" justifyContent="space-between" mt={1}>
+            <Typography color="red">Giảm giá voucher:</Typography>
+            <Typography fontWeight="bold" color="red">
+              -{discountAmount?.toLocaleString()}₫
+            </Typography>
+          </Box>
+        </>
+      )}
+      
       <Divider sx={{ my: 1 }} />
       <Box display="flex" justifyContent="space-between" marginBottom={1}>
         <Typography fontWeight="bold" fontSize={18}>Tổng Tiền</Typography>
@@ -28,11 +55,6 @@ const CartSummary = ({ subtotal }: { subtotal?: number }) => {
           {total.toLocaleString()}₫
         </Typography>
       </Box>
-      {/* <Box mt={3}>
-        <Button fullWidth variant="contained" color="success" onClick={() => navigate("/thanh-toan")}>
-          THANH TOÁN
-        </Button>
-      </Box> */}
     </Box>
   );
 };
