@@ -266,6 +266,12 @@ const CartPage = () => {
   }
 
   const createOrderPayload = (): ICreateOrder => {
+
+    const subtotal = cart?.totalPrice || 0;
+    const shipping = 30000;
+    const discount = voucherDiscount?.discountAmount || 0;
+    const totalAmount = subtotal + shipping - discount;
+    console.log("totalAmount", totalAmount);
     return {
       orderCode: orderCode,
       note: customerInfo.note,
@@ -275,6 +281,7 @@ const CartPage = () => {
       recipientPhone: customerInfo.phone,
       paymentMethod: paymentMethod,
       voucherCode: voucherDiscount?.voucherCode, // Thêm voucherCode vào payload
+      totalAmount: totalAmount,
       orderItems: cartItems.map((item) => ({
         productId: item.productId,
         productVariationId: item.productVariationId,
@@ -304,9 +311,9 @@ const CartPage = () => {
       queryClient.invalidateQueries({ queryKey: ["cart-total-quantity"] });
 
       showSuccess("Đặt hàng thành công");
-      setTimeout(() => {
-        window.location.href = "/";
-      }, 1000);
+      // setTimeout(() => {
+      //   window.location.href = "/";
+      // }, 1000);
     } catch (err) {
       const axiosError = err as AxiosError<any>;
       const message =

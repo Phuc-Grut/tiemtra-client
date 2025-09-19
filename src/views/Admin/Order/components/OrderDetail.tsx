@@ -79,6 +79,7 @@ const OrderDetail = ({ open, onClose, orderId }: Props) => {
               totalItems={order.totalOrderItems ?? 0}
               totalAmount={order.totalAmount ?? 0}
               shippingFee={order.shippingFee ?? 0}
+              appliedVouchers={order.appliedVouchers ?? []}
             />
           </>
         )}
