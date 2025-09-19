@@ -73,7 +73,7 @@ const CartPage = () => {
   const [voucherDiscount, setVoucherDiscount] = useState<{
     discountAmount: number;
     finalAmount: number;
-    voucherCode?: string; // Thêm voucherCode vào state
+    voucherCode?: string;
   } | null>(null);
 
   // 1. Lấy giỏ từ local nếu chưa đăng nhập
@@ -411,7 +411,7 @@ const CartPage = () => {
 
           {/* Voucher dropdown */}
           <VoucherList 
-            orderTotal={(cart?.totalPrice || 0) + 30000}
+            orderTotal={(cart?.totalPrice || 0)}
             onVoucherApplied={(discountAmount, finalAmount, voucherCode) => {
               setVoucherDiscount({ discountAmount, finalAmount, voucherCode });
             }}

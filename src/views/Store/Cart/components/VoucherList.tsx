@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Box,
   Typography,
@@ -8,27 +8,43 @@ import {
   Button,
   Alert,
 } from "@mui/material";
-import { Voucher } from "src/Interfaces/IVoucher";
+import { SelectChangeEvent } from "@mui/material/Select";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
 import VoucherApi from "src/services/api/Voucher";
 import useToast from "src/components/Toast";
+import { Voucher } from "src/Interfaces/IVoucher";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
 interface VoucherListProps {
   orderTotal: number;
-  onVoucherApplied: (discountAmount: number, finalAmount: number, voucherCode: string) => void; // Thêm voucherCode parameter
+  onVoucherApplied: (
+    discountAmount: number,
+    finalAmount: number,
+    voucherCode: string
+  ) => void;
   onVoucherRemoved: () => void;
 }
 
-const VoucherList = ({ orderTotal, onVoucherApplied, onVoucherRemoved }: VoucherListProps) => {
+interface ApplyVoucherResponse {
+  isValid: boolean;
+  discountAmount: number;
+  finalAmount: number;
+  message: string;
+}
+
+const VoucherList = ({
+  orderTotal,
+  onVoucherApplied,
+  onVoucherRemoved,
+}: VoucherListProps) => {
   const { showError, showSuccess } = useToast();
-  const [vouchers, setVouchers] = useState<Voucher[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [applying, setApplying] = useState(false);
+  const qc = useQueryClient();
+
   const [selectedVoucherId, setSelectedVoucherId] = useState("");
   const [appliedVoucher, setAppliedVoucher] = useState<{
     voucherCode: string;
@@ -36,109 +52,90 @@ const VoucherList = ({ orderTotal, onVoucherApplied, onVoucherRemoved }: Voucher
     finalAmount: number;
   } | null>(null);
 
-  const fetchData = async () => {
-    setLoading(true);
-    try {
+  // 1) Lấy danh sách public vouchers
+  const {
+    data: vouchers = [],
+    isLoading: loadingVouchers,
+    isError: loadVouchersError,
+  } = useQuery<Voucher[]>({
+    queryKey: ["public-vouchers"],
+    queryFn: async () => {
       const res = await VoucherApi.getPublicVouchers();
-      setVouchers(res.data);
-      console.log("=== FETCHED VOUCHERS ===");
-      console.log("Vouchers:", res.data);
-      console.log("Voucher IDs:", res.data.map(v => v.voucherId)); // Sửa từ v.id thành v.voucherId
-    } catch (error) {
-      console.error("Error fetching vouchers:", error);
-    }
-    setLoading(false);
-  };
+      return res.data as Voucher[];
+    },
+  });
+
+  const selectedVoucher = useMemo(
+    () => vouchers.find((v) => v.voucherId === selectedVoucherId) ?? null,
+    [vouchers, selectedVoucherId]
+  );
+
+  const {
+    data: voucherResult,
+    isFetching: applying,
+    isError: applyError,
+    error: applyErr,
+  } = useQuery<ApplyVoucherResponse>({
+    queryKey: ["voucher-apply", selectedVoucher?.voucherCode, orderTotal],
+    queryFn: async () => {
+      const res = await VoucherApi.applyVoucher({
+        voucherCode: selectedVoucher!.voucherCode,
+        orderTotal,
+      });
+      return res.data as ApplyVoucherResponse;
+    },
+    enabled: !!selectedVoucher?.voucherCode && orderTotal > 0,
+    retry: 1,
+  });
 
   useEffect(() => {
-    fetchData();
-  }, []);
-
-  const handleApplyVoucher = async (voucherId: string) => {
-    if (!voucherId) {
-      console.log("No voucher ID provided");
-      return;
-    }
-
-    const selectedVoucher = vouchers.find((v) => v.voucherId === voucherId); // Sửa từ v.id thành v.voucherId
-    if (!selectedVoucher) {
-      console.log("Voucher not found for ID:", voucherId);
-      showError("Voucher không hợp lệ");
-      return;
-    }
-
-    setApplying(true);
-    try {
-      console.log("=== APPLYING VOUCHER ===");
-      console.log("Voucher code:", selectedVoucher.voucherCode);
-      console.log("Order total:", orderTotal);
-      
-      const res = await VoucherApi.applyVoucher({
+    if (!voucherResult) return;
+    if (voucherResult.isValid && selectedVoucher?.voucherCode) {
+      setAppliedVoucher({
         voucherCode: selectedVoucher.voucherCode,
-        orderTotal: orderTotal,
+        discountAmount: voucherResult.discountAmount,
+        finalAmount: voucherResult.finalAmount,
       });
-
-      console.log("=== VOUCHER RESPONSE ===");
-      console.log("Response:", res.data);
-
-      if (res.data.isValid) {
-        console.log("=== VOUCHER APPLIED SUCCESSFULLY ===");
-        setAppliedVoucher({
-          voucherCode: selectedVoucher.voucherCode,
-          discountAmount: res.data.discountAmount,
-          finalAmount: res.data.finalAmount,
-        });
-        onVoucherApplied(res.data.discountAmount, res.data.finalAmount, selectedVoucher.voucherCode); // Truyền voucherCode
-        showSuccess(res.data.message);
-      } else {
-        console.log("=== VOUCHER INVALID ===");
-        showError(res.data.message);
-        setSelectedVoucherId(""); // Reset selection if invalid
-      }
-    } catch (error: any) {
-      console.log("=== VOUCHER ERROR ===");
-      console.error("Voucher apply error:", error);
-      showError(error.response?.data?.message || "Có lỗi xảy ra khi áp dụng voucher");
-      setSelectedVoucherId(""); // Reset selection on error
-    } finally {
-      setApplying(false);
+      onVoucherApplied(
+        voucherResult.discountAmount,
+        voucherResult.finalAmount,
+        selectedVoucher.voucherCode
+      );
+      showSuccess(voucherResult.message);
+    } else if (!voucherResult.isValid) {
+      showError(voucherResult.message);
     }
-  };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [voucherResult, selectedVoucher?.voucherCode]);
 
-  const handleVoucherChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const voucherId = event.target.value;
-    console.log("=== VOUCHER CHANGE EVENT ===");
-    console.log("Event type:", event.type);
-    console.log("Event target:", event.target);
-    console.log("Event target value:", event.target.value);
-    console.log("Voucher ID:", voucherId);
-    console.log("Type of voucher ID:", typeof voucherId);
-    
+  // 4) Xử lý lỗi apply
+  useEffect(() => {
+    if (applyError) {
+      const err = applyErr as any;
+      showError(
+        err?.response?.data?.message || "Có lỗi xảy ra khi áp dụng voucher"
+      );
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [applyError, applyErr]);
+
+  // 5) Chọn / bỏ chọn voucher
+  const handleVoucherChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const voucherId = e.target.value as string;
     setSelectedVoucherId(voucherId);
-    
-    if (voucherId && voucherId !== "") {
-      console.log("Applying voucher with ID:", voucherId);
-      handleApplyVoucher(voucherId);
-    } else {
-      console.log("Removing voucher (empty selection)");
-      handleRemoveVoucher();
-    }
+    if (!voucherId) handleRemoveVoucher();
   };
 
   const handleRemoveVoucher = () => {
-    console.log("=== REMOVING VOUCHER ===");
     setAppliedVoucher(null);
     setSelectedVoucherId("");
     onVoucherRemoved();
+    // dọn cache apply để sạch sẽ
+    qc.removeQueries({ queryKey: ["voucher-apply"] });
     showSuccess("Đã xóa voucher");
   };
 
-  console.log("=== VOUCHER STATE ===");
-  console.log("Selected voucher ID:", selectedVoucherId);
-  console.log("Applied voucher:", appliedVoucher);
-  console.log("Applying:", applying);
-  console.log("Available vouchers:", vouchers.length);
-
+  // UI
   return (
     <Box mt={3}>
       <Typography variant="h6" fontWeight="bold" gutterBottom>
@@ -170,34 +167,36 @@ const VoucherList = ({ orderTotal, onVoucherApplied, onVoucherRemoved }: Voucher
         </Box>
       ) : (
         <Box>
-          {loading ? (
+          {loadingVouchers ? (
             <CircularProgress />
+          ) : loadVouchersError ? (
+            <Alert severity="error">Không tải được danh sách voucher</Alert>
           ) : (
             <TextField
               select
               fullWidth
               size="small"
               value={selectedVoucherId}
-              onChange={handleVoucherChange}
+              onChange={handleVoucherChange} // OK
               placeholder="Chọn voucher"
               disabled={applying}
             >
               <MenuItem value="">
                 <em>Chọn voucher</em>
               </MenuItem>
-              {vouchers.map((v) => {
-                console.log("Rendering voucher:", v.voucherId, v.voucherName); // Sửa từ v.id thành v.voucherId
-                return (
-                  <MenuItem key={v.voucherId} value={v.voucherId}> {/* Sửa từ v.id thành v.voucherId */}
-                    {v.voucherName} - Giảm {v.discountPercentage}% (hết hạn:{" "}
-                    {dayjs.utc(v.endDate).tz("Asia/Ho_Chi_Minh").format("DD/MM/YYYY")}
-                    )
-                  </MenuItem>
-                );
-              })}
+              {vouchers.map((v) => (
+                <MenuItem key={v.voucherId} value={v.voucherId}>
+                  {v.voucherName} - Giảm {v.discountPercentage}% (hết hạn:{" "}
+                  {dayjs
+                    .utc(v.endDate)
+                    .tz("Asia/Ho_Chi_Minh")
+                    .format("DD/MM/YYYY")}
+                  )
+                </MenuItem>
+              ))}
             </TextField>
           )}
-          
+
           {applying && (
             <Box display="flex" justifyContent="center" mt={2}>
               <CircularProgress size={20} />

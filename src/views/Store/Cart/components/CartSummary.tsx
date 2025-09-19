@@ -7,11 +7,17 @@ interface CartSummaryProps {
   finalAmount?: number;
 }
 
-const CartSummary = ({ subtotal, discountAmount, finalAmount }: CartSummaryProps) => {
+const CartSummary = ({
+  subtotal,
+  discountAmount,
+  finalAmount,
+}: CartSummaryProps) => {
   const shipping = 30000;
   const originalTotal = (subtotal || 0) + shipping;
-  const total = finalAmount || originalTotal;
   const hasDiscount = discountAmount && discountAmount > 0;
+  console.log("🚀 ~ CartSummary ~ discountAmount:", discountAmount);
+
+  const total = hasDiscount ? originalTotal - (discountAmount || 0): originalTotal;
 
   return (
     <Box borderLeft="1px solid #ddd" pl={3} borderBottom={"1px solid #ddd"}>
@@ -30,7 +36,7 @@ const CartSummary = ({ subtotal, discountAmount, finalAmount }: CartSummaryProps
           {shipping.toLocaleString()}₫
         </Typography>
       </Box>
-      
+
       {hasDiscount && (
         <>
           <Box display="flex" justifyContent="space-between" mt={1}>
@@ -40,17 +46,19 @@ const CartSummary = ({ subtotal, discountAmount, finalAmount }: CartSummaryProps
             </Typography>
           </Box>
           <Box display="flex" justifyContent="space-between" mt={1}>
-            <Typography color="red">Giảm giá voucher:</Typography>
+            <Typography color="red">Giảm giá tiền hàng:</Typography>
             <Typography fontWeight="bold" color="red">
               -{discountAmount?.toLocaleString()}₫
             </Typography>
           </Box>
         </>
       )}
-      
+
       <Divider sx={{ my: 1 }} />
       <Box display="flex" justifyContent="space-between" marginBottom={1}>
-        <Typography fontWeight="bold" fontSize={18}>Tổng Tiền</Typography>
+        <Typography fontWeight="bold" fontSize={18}>
+          Tổng Tiền
+        </Typography>
         <Typography fontWeight="bold" fontSize={18} color="green">
           {total.toLocaleString()}₫
         </Typography>
