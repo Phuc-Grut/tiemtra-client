@@ -21,7 +21,7 @@ export const ContextMenuItems: IContextMenu[] = [
   },
   {
     id: "DELETE",
-    label: "Xóa khoản mục",
+    label: "Xóa",
     icon: <DeleteIcon fontSize="small" sx={{ color: red[500] }} />,
     // onClick: (item) => console.log("Xem chi tiết", item),
   },
