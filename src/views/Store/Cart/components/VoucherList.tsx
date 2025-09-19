@@ -15,7 +15,7 @@ import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
 import VoucherApi from "src/services/api/Voucher";
 import useToast from "src/components/Toast";
-import { Voucher } from "src/Interfaces/IVoucher";
+import { IVoucher } from "src/Interfaces/IVoucher";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -57,11 +57,11 @@ const VoucherList = ({
     data: vouchers = [],
     isLoading: loadingVouchers,
     isError: loadVouchersError,
-  } = useQuery<Voucher[]>({
+  } = useQuery<IVoucher[]>({
     queryKey: ["public-vouchers"],
     queryFn: async () => {
       const res = await VoucherApi.getPublicVouchers();
-      return res.data as Voucher[];
+      return res.data as IVoucher[];
     },
   });
 

@@ -1,10 +1,12 @@
 import { Box } from "@mui/material";
-import { useState } from "react";
 import PageHeader from "src/components/Layouts/Admin/PageHeader";
-import VoucherComponent from "./components/VoucherComponent";
+import VoucherTable from "./components/VoucherTable";
+import { useState } from "react";
+import VoucherDetailDialog from "./components/VoucherDetailDialog";
 
 const VoucherPage = () => {
-
+  const [isAddOpen, setIsAddOpen] = useState(false);
+  
   return (
     <Box
       sx={{
@@ -19,6 +21,8 @@ const VoucherPage = () => {
       <PageHeader
         pageTitle="Voucher"
         pageUrl="/admin/voucher"
+        onAddClick={() => setIsAddOpen(true)}
+        showAddButton={true}
       />
 
       <Box
@@ -29,8 +33,10 @@ const VoucherPage = () => {
           flexDirection: "column",
         }}
       >
-        <VoucherComponent />
+        <VoucherTable />
       </Box>
+
+      <VoucherDetailDialog open={isAddOpen} onClose={() => setIsAddOpen(false)} mode="create" />
     </Box>
   );
 };
