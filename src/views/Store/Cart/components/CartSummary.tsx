@@ -4,18 +4,16 @@ import { Box, Typography, Divider } from "@mui/material";
 interface CartSummaryProps {
   subtotal?: number;
   discountAmount?: number;
-  finalAmount?: number;
+  shipping?: number
 }
 
 const CartSummary = ({
   subtotal,
   discountAmount,
-  finalAmount,
+  shipping
 }: CartSummaryProps) => {
-  const shipping = 30000;
-  const originalTotal = (subtotal || 0) + shipping;
+  const originalTotal = (subtotal || 0) + (shipping || 0);
   const hasDiscount = discountAmount && discountAmount > 0;
-  console.log("🚀 ~ CartSummary ~ discountAmount:", discountAmount);
 
   const total = hasDiscount ? originalTotal - (discountAmount || 0): originalTotal;
 
@@ -33,7 +31,7 @@ const CartSummary = ({
       <Box display="flex" justifyContent="space-between" mt={1}>
         <Typography>Phí vận chuyển:</Typography>
         <Typography fontWeight="bold" color="gray">
-          {shipping.toLocaleString()}₫
+          {shipping?.toLocaleString()}₫
         </Typography>
       </Box>
 

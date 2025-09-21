@@ -22,6 +22,8 @@ import CustomerInfoForm from "./components/CustomerInfoForm";
 import orderApi from "src/services/api/Order";
 import { AxiosError } from "axios";
 import VoucherList from "./components/VoucherList";
+import { District, Province, Ward } from "src/services/api/ProvinceAPI";
+import useShippingFee from "./hooks/useShippingFee";
 
 type CustomerInfo = {
   fullName: string;
@@ -30,17 +32,23 @@ type CustomerInfo = {
   note: string;
 };
 
+type AddrParts = {
+  province?: Province | null;
+  district?: District | null;
+  ward?: Ward | null;
+};
+
 function loadCustomerFromLocal(): CustomerInfo {
   try {
     const raw = localStorage.getItem("user");
     if (!raw) return { fullName: "", phone: "", address: "", note: "" };
 
     const parsed = JSON.parse(raw);
-    const u = parsed.user ?? parsed; // phòng khi backend bọc trong { user: {...} }
+    const u = parsed.user ?? parsed;
 
     return {
       fullName: u.fullName ?? "",
-      phone: u.phone ?? u.phoneNumber ?? "", // 👈 map đúng key
+      phone: u.phone ?? u.phoneNumber ?? "",
       address: u.address ?? "",
       note: "",
     };
@@ -68,6 +76,9 @@ const CartPage = () => {
   const [customerInfo, setCustomerInfo] = React.useState<CustomerInfo>(
     loadCustomerFromLocal()
   );
+
+  const [addrParts, setAddrParts] = useState<AddrParts>({});
+  const [submitAttempted, setSubmitAttempted] = useState(false);
 
   // Add voucher state
   const [voucherDiscount, setVoucherDiscount] = useState<{
@@ -225,6 +236,14 @@ const CartPage = () => {
     }
   };
 
+  const chargeable = voucherDiscount?.finalAmount ?? cart?.totalPrice ?? 0;
+
+  const feeState = useShippingFee(addrParts, cartItems, {
+    insurance_value: chargeable, // giá trị khai báo hàng hóa
+    coupon: null, // nếu có mã coupon GHN thì truyền vào
+    debounceMs: 350,
+  });
+
   if (cartItems.length === 0) {
     return (
       <Box
@@ -269,7 +288,7 @@ const CartPage = () => {
     return {
       orderCode: orderCode,
       note: customerInfo.note,
-      shippingFee: 30000,
+      shippingFee: feeState.fee ?? 0,
       recipientName: customerInfo.fullName,
       recipientAddress: customerInfo.address,
       recipientPhone: customerInfo.phone,
@@ -284,6 +303,19 @@ const CartPage = () => {
   };
 
   const handlePlaceOrder = async () => {
+    setSubmitAttempted(true); // báo cho form hiển thị lỗi nếu thiếu
+
+    const missingAddr =
+      !addrParts.province || !addrParts.district || !addrParts.ward;
+    const missingName = !customerInfo.fullName?.trim();
+    const missingPhone = !customerInfo.phone?.trim();
+    const missingAddress = !customerInfo.address?.trim(); // address do form tự ghép
+
+    if (missingAddr || missingName || missingPhone || missingAddress) {
+      showError("Vui lòng nhập đầy đủ Họ tên, SĐT và chọn Tỉnh/Quận/Phường.");
+      return;
+    }
+
     try {
       setLoading(true);
 
@@ -398,20 +430,22 @@ const CartPage = () => {
               value={customerInfo}
               onChange={setCustomerInfo}
               paymentMethod={paymentMethod}
+              submitAttempted={submitAttempted}
+              onAddressPartsChange={(p) => setAddrParts(p)}
             />
           </Grid>
         </Grid>
 
         <Grid item xs={12} md={4}>
-          <CartSummary 
-            subtotal={cart?.totalPrice} 
+          <CartSummary
+            subtotal={cart?.totalPrice}
             discountAmount={voucherDiscount?.discountAmount}
-            finalAmount={voucherDiscount?.finalAmount}
+            shipping={feeState?.fee || 0}
           />
 
           {/* Voucher dropdown */}
-          <VoucherList 
-            orderTotal={(cart?.totalPrice || 0)}
+          <VoucherList
+            orderTotal={cart?.totalPrice || 0}
             onVoucherApplied={(discountAmount, finalAmount, voucherCode) => {
               setVoucherDiscount({ discountAmount, finalAmount, voucherCode });
             }}

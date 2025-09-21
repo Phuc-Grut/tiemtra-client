@@ -108,7 +108,7 @@ const VoucherTable = () => {
   const columns: ColumnConfig<IVoucher>[] = [
     {
       key: "voucherCode",
-      label: "Mã đơn hàng",
+      label: "Mã voucher",
       width: 120,
     },
     {

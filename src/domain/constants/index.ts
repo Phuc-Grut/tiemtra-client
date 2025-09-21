@@ -99,6 +99,8 @@ export const STORE_CART = {
     REMOVE_CART_ITEM: `${URL_STORE}/cart/remove-cart-item`,
 
     GET_TOTAL_QUANTITY: `${URL_STORE}/cart/get-total-quantity`,
+
+    CALCULATE_SHIPPING: `${URL_STORE}/ghn/calculate-fee`
   },
 };
 
