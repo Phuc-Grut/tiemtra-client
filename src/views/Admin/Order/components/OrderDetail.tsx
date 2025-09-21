@@ -24,12 +24,12 @@ interface Props {
 }
 
 const OrderDetail = ({ open, onClose, orderId }: Props) => {
-    
   const { data: order, isLoading } = useQuery<IOrderDetail>({
     queryKey: ["order-detail", orderId],
     queryFn: () => orderApi.getById(orderId).then((res) => res.data),
     enabled: !!orderId,
   });
+  console.log("🚀 ~ OrderDetail ~ order:", order)
 
   if (isLoading || !order) {
     return (
@@ -55,7 +55,14 @@ const OrderDetail = ({ open, onClose, orderId }: Props) => {
         },
       }}
     >
-      <DialogTitle sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", pr: 1 }}>
+      <DialogTitle
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          pr: 1,
+        }}
+      >
         <Typography variant="h6" fontWeight={600}>
           Đơn hàng: {order?.orderCode || "..."}
         </Typography>
@@ -77,8 +84,9 @@ const OrderDetail = ({ open, onClose, orderId }: Props) => {
             <Divider sx={{ my: 2 }} />
             <OrderSummary
               totalItems={order.totalOrderItems ?? 0}
-              totalAmount={order.totalAmount ?? 0}
+              itemsSubtotal={order.itemsSubtotal ?? 0}
               shippingFee={order.shippingFee ?? 0}
+              appliedVouchers={order.appliedVouchers ?? []}
             />
           </>
         )}

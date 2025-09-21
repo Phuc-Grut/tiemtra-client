@@ -61,6 +61,7 @@ export interface ICreateOrder {
   orderItems: ICreateOrderItem[];
   paymentMethod: PaymentMethod;
   shippingFee: number;
+  voucherCode?: string; // Thêm field voucherCode
 }
 
 export interface IOrderItem {
@@ -89,6 +90,7 @@ export interface IOrderDetail {
   receivertName?: string;
   receiverAddress?: string;
   receiverPhone?: string;
+  itemsSubtotal?: number
   totalAmount?: number;
   note: string;
   orderStatus: number;
@@ -100,4 +102,11 @@ export interface IOrderDetail {
   shippingFee: number;
   totalOrderItems: number;
   orderItems: IOrderItem[];
+  appliedVouchers : AppliedVoucher[]
+}
+
+export interface AppliedVoucher {
+  voucherCode: string;
+  discountAmount: number;
+  usedAt: string;
 }

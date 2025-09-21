@@ -1,14 +1,14 @@
-export interface Voucher {
+export interface IVoucher {
   id: string;
   voucherId: string;
   voucherCode: string;
   voucherName: string;
   description: string;
   quantity: number;
-  usedquantity: number;
+  usedQuantity: number;
   discountPercentage: number;
   endDate: string;
-  status: number;
+  status: VoucherStatus;
   createdAt?: string;
   updatedAt?: string;
 }
@@ -24,7 +24,7 @@ export interface CreateVoucherRequest {
 
 // List Voucher
 export interface VoucherPagingResponse {
-  items: Voucher[];
+  items: IVoucher[];
   totalItems: number;
   totalPages: number;
   currentPage: number;
@@ -33,3 +33,32 @@ export interface VoucherPagingResponse {
 
 // Update Voucher
 export interface UpdateVoucherRequest extends CreateVoucherRequest {}
+
+//Apply Voucher
+export interface ApplyVoucherRequest {
+  voucherCode: string;
+  orderTotal: number;
+}
+
+export interface ApplyVoucherResponse {
+  isValid: boolean;
+  message: string;
+  discountAmount: number;
+  finalAmount: number;
+  voucherCode: string;
+  discountPercentage: number;
+  voucherId: string;
+}
+
+export interface IVoucherFilter {
+  pageNumber: number;
+  pageSize: number;
+  status?: VoucherStatus;
+  keyword?: string;
+}
+
+
+export enum VoucherStatus {
+  Pending = 0,   // Chờ áp dụng
+  Publish = 1    // Đang hoạt động
+}
