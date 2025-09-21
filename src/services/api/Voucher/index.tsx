@@ -3,7 +3,6 @@ import requester from "src/services/extended/axiosInstance";
 import {
   IVoucher,
   UpdateVoucherRequest,
-  VoucherPagingResponse,
   IVoucherFilter,
 } from "src/Interfaces/IVoucher";
 import { ADMIN_VOUCHER, STORE_VOUCHER } from "src/domain/constants";

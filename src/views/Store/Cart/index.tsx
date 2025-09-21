@@ -23,6 +23,7 @@ import orderApi from "src/services/api/Order";
 import { AxiosError } from "axios";
 import VoucherList from "./components/VoucherList";
 import { District, Province, Ward } from "src/services/api/ProvinceAPI";
+import useShippingFee from "./hooks/useShippingFee";
 
 type CustomerInfo = {
   fullName: string;
@@ -235,6 +236,14 @@ const CartPage = () => {
     }
   };
 
+  const chargeable = voucherDiscount?.finalAmount ?? cart?.totalPrice ?? 0;
+
+  const feeState = useShippingFee(addrParts, cartItems, {
+    insurance_value: chargeable, // giá trị khai báo hàng hóa
+    coupon: null, // nếu có mã coupon GHN thì truyền vào
+    debounceMs: 350,
+  });
+
   if (cartItems.length === 0) {
     return (
       <Box
@@ -279,7 +288,7 @@ const CartPage = () => {
     return {
       orderCode: orderCode,
       note: customerInfo.note,
-      shippingFee: 30000,
+      shippingFee: feeState.fee ?? 0,
       recipientName: customerInfo.fullName,
       recipientAddress: customerInfo.address,
       recipientPhone: customerInfo.phone,
@@ -421,22 +430,22 @@ const CartPage = () => {
               value={customerInfo}
               onChange={setCustomerInfo}
               paymentMethod={paymentMethod}
-              submitAttempted={submitAttempted} // 👈 thêm
-              onAddressPartsChange={(p) => setAddrParts(p)} // 👈 thêm
+              submitAttempted={submitAttempted}
+              onAddressPartsChange={(p) => setAddrParts(p)}
             />
           </Grid>
         </Grid>
 
         <Grid item xs={12} md={4}>
-          <CartSummary 
-            subtotal={cart?.totalPrice} 
+          <CartSummary
+            subtotal={cart?.totalPrice}
             discountAmount={voucherDiscount?.discountAmount}
-            finalAmount={voucherDiscount?.finalAmount}
+            shipping={feeState?.fee || 0}
           />
 
           {/* Voucher dropdown */}
-          <VoucherList 
-            orderTotal={(cart?.totalPrice || 0)}
+          <VoucherList
+            orderTotal={cart?.totalPrice || 0}
             onVoucherApplied={(discountAmount, finalAmount, voucherCode) => {
               setVoucherDiscount({ discountAmount, finalAmount, voucherCode });
             }}

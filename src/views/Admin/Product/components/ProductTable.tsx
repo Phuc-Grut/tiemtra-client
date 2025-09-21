@@ -131,12 +131,10 @@ const ProductTable = () => {
           setProductModalMode("edit");
           break;
         case "DELETE":
-          console.log("delete mục:", p.productId);
           setSelected([p.productId]);
           setConfirmModalOpen(true);
           break;
         default:
-          console.log("Chọn menu:", item.id, p);
       }
     },
   }));

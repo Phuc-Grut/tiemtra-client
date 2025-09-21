@@ -57,57 +57,87 @@ const CustomerInfoForm = ({
   const [districts, setDistricts] = useState<District[]>([]);
   const [wards, setWards] = useState<Ward[]>([]);
 
-  const [province, setProvince] = useState<Province | undefined>(undefined);
-  const [district, setDistrict] = useState<District | undefined>(undefined);
-  const [ward, setWard] = useState<Ward | undefined>(undefined);
+  const [province, setProvince] = useState<Province | null>(null);
+  const [district, setDistrict] = useState<District | null>(null);
+  const [ward, setWard] = useState<Ward | null>(null);
 
   const [loadingP, setLoadingP] = useState(false);
   const [loadingD, setLoadingD] = useState(false);
   const [loadingW, setLoadingW] = useState(false);
 
+  const sortByVi = (
+    a: { ProvinceName?: string; DistrictName?: string; WardName?: string },
+    b: { ProvinceName?: string; DistrictName?: string; WardName?: string }
+  ) =>
+    (a.ProvinceName ?? a.DistrictName ?? a.WardName ?? "").localeCompare(
+      b.ProvinceName ?? b.DistrictName ?? b.WardName ?? "",
+      "vi",
+      { sensitivity: "base" }
+    );
+
   useEffect(() => {
     setLoadingP(true);
     fetchProvinces()
-      .then(setProvinces)
+      .then((data) => setProvinces([...data].sort(sortByVi))) // <-- SORT HERE
       .finally(() => setLoadingP(false));
   }, []);
 
+  // DISTRICTS when province changes
   useEffect(() => {
     if (!province) {
-      setDistrict(undefined);
-      setWard(undefined);
+      setDistrict(null);
+      setWard(null);
       setDistricts([]);
       setWards([]);
       return;
     }
     setLoadingD(true);
-    fetchDistricts(province.code)
-      .then(setDistricts)
+    fetchDistricts(province.ProvinceID)
+      .then((ds) => {
+        setDistricts([...(ds || [])].sort(sortByVi)); // <-- SORT HERE
+        setDistrict(null);
+        setWard(null);
+        setWards([]);
+      })
       .finally(() => setLoadingD(false));
   }, [province]);
 
+  // WARDS when district changes
   useEffect(() => {
     if (!district) {
-      setWard(undefined);
+      setWard(null);
       setWards([]);
       return;
     }
     setLoadingW(true);
-    fetchWards(district.code)
-      .then(setWards)
+    fetchWards(district.DistrictID)
+      .then((ws) => {
+        setWards([...(ws || [])].sort(sortByVi)); // <-- SORT HERE
+        setWard(null);
+      })
       .finally(() => setLoadingW(false));
   }, [district]);
 
+  // Build full address text
   useEffect(() => {
     const addr = [
-      ward?.name?.trim(),
-      district?.name?.trim(),
-      province?.name?.trim(),
+      ward?.WardName?.trim(),
+      district?.DistrictName?.trim(),
+      province?.ProvinceName?.trim(),
     ]
       .filter(Boolean)
       .join(", ");
 
     onChange({ ...value, address: addr });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [province, district, ward]);
+
+  useEffect(() => {
+    onAddressPartsChange?.({
+      province,
+      district,
+      ward,
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [province, district, ward]);
 
@@ -141,24 +171,24 @@ const CustomerInfoForm = ({
               fullWidth
               required
               error={Boolean(submitAttempted && !province)}
-              disabled={!province || loadingD}
+              // disabled={!province || loadingD}
             >
               <InputLabel>Tỉnh/Thành</InputLabel>
               <Select
                 required
                 label="Tỉnh/Thành"
-                value={province?.code ?? ""}
+                value={province?.ProvinceID ?? ""}
                 onChange={(e) => {
                   const p = provinces.find(
-                    (x) => x.code === Number(e.target.value)
+                    (x) => x.ProvinceID === Number(e.target.value)
                   );
-                  setProvince(p);
+                  setProvince(p || null);
                 }}
                 endAdornment={loadingP ? <CircularProgress size={18} /> : null}
               >
                 {provinces.map((p) => (
-                  <MenuItem key={p.code} value={p.code}>
-                    {p.name}
+                  <MenuItem key={p.ProvinceID} value={p.ProvinceID}>
+                    {p.ProvinceName}
                   </MenuItem>
                 ))}
               </Select>
@@ -179,18 +209,18 @@ const CustomerInfoForm = ({
               <InputLabel>Quận/Huyện</InputLabel>
               <Select
                 label="Quận/Huyện"
-                value={district?.code ?? ""}
+                value={district?.DistrictID ?? ""}
                 onChange={(e) => {
                   const d = districts.find(
-                    (x) => x.code === Number(e.target.value)
+                    (x) => x.DistrictID === Number(e.target.value)
                   );
-                  setDistrict(d);
+                  setDistrict(d || null);
                 }}
                 endAdornment={loadingD ? <CircularProgress size={18} /> : null}
               >
                 {districts.map((d) => (
-                  <MenuItem key={d.code} value={d.code}>
-                    {d.name}
+                  <MenuItem key={d.DistrictID} value={d.DistrictID}>
+                    {d.DistrictName}
                   </MenuItem>
                 ))}
               </Select>
@@ -211,18 +241,16 @@ const CustomerInfoForm = ({
               <InputLabel>Phường/Xã</InputLabel>
               <Select
                 label="Phường/Xã"
-                value={ward?.code ?? ""}
+                value={ward?.WardCode ?? ""}
                 onChange={(e) => {
-                  const w = wards.find(
-                    (x) => x.code === Number(e.target.value)
-                  );
-                  setWard(w);
+                  const w = wards.find((x) => x.WardCode === e.target.value);
+                  setWard(w || null);
                 }}
                 endAdornment={loadingW ? <CircularProgress size={18} /> : null}
               >
                 {wards.map((w) => (
-                  <MenuItem key={w.code} value={w.code}>
-                    {w.name}
+                  <MenuItem key={w.WardCode} value={w.WardCode}>
+                    {w.WardName}
                   </MenuItem>
                 ))}
               </Select>
