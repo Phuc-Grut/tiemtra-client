@@ -9,9 +9,12 @@ import {
   Grid,
   Button,
   CircularProgress,
+  MenuItem,
+  Box,
+  Chip,
 } from "@mui/material";
 import dayjs from "dayjs";
-import { IVoucher } from "src/Interfaces/IVoucher";
+import { IVoucher, VoucherStatus } from "src/Interfaces/IVoucher";
 import voucherApi from "src/services/api/Voucher";
 import { useQueryClient } from "@tanstack/react-query";
 import useToast from "src/components/Toast";
@@ -33,7 +36,17 @@ type FormState = {
   discountPercentage: number | "";
   endDate: string; // yyyy-MM-ddTHH:mm
   usedQuantity?: number | "";
+  status?: VoucherStatus;
 };
+
+const STATUS = {
+  Pending: 0,
+  Publish: 1,
+  Expired: 2, // chỉ hiển thị, không cho chọn
+  UsedUp: 3, // chỉ hiển thị, không cho chọn
+  Inactive: 4, // tạm ngưng (tùy enum BE)
+  Deleted: 5, // action riêng
+} as const;
 
 const emptyForm: FormState = {
   voucherName: "",
@@ -89,11 +102,13 @@ const VoucherDetailDialog = ({
             discountPercentage: (v.discountPercentage as any) ?? "",
             endDate: toLocalInputValue(v.endDate as any),
             usedQuantity: v.usedQuantity,
+            status: v.status,
           });
         })
         .catch((e: { response: { data: { message: any } } }) => {
           if (!mounted) return;
           setError(e?.response?.data?.message || "Không tải được voucher.");
+          showError("Đã có lỗi khi lấy thông tin")
         })
         .finally(() => mounted && setLoading(false));
     } else if (open && isCreate) {
@@ -137,6 +152,12 @@ const VoucherDetailDialog = ({
     if (!form.endDate) return "Vui lòng chọn ngày hết hạn.";
     if (dayjs(form.endDate).isBefore(dayjs()))
       return "Ngày hết hạn phải ở tương lai.";
+    if ((form.status ?? STATUS.Pending) === STATUS.Publish) {
+      if (dayjs(form.endDate).isBefore(dayjs()))
+        return "Không thể bật 'Đang hoạt động' khi đã hết hạn.";
+      if ((Number(form.quantity) ?? 0) - (Number(form.usedQuantity) ?? 0) <= 0)
+        return "Không thể bật 'Đang hoạt động' khi đã hết lượt.";
+    }
     return null;
   };
 
@@ -155,6 +176,7 @@ const VoucherDetailDialog = ({
         quantity: Number(form.quantity),
         discountPercentage: Number(form.discountPercentage),
         endDate: toServerIso(form.endDate),
+        status: form.status,
       };
 
       if (isCreate) {
@@ -170,10 +192,16 @@ const VoucherDetailDialog = ({
       onClose();
     } catch (e: any) {
       setError(e?.response?.data?.message || "Lưu voucher thất bại.");
+      showError(" Lưu thất bại ")
     } finally {
       setSaving(false);
     }
   };
+
+  const statusOptionsEdit = [
+    { value: VoucherStatus.Pending, label: "Chờ áp dụng" },
+    { value: VoucherStatus.Publish, label: "Đang hoạt động" },
+  ];
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
@@ -263,8 +291,33 @@ const VoucherDetailDialog = ({
                   variant="outlined"
                 />
               </Grid>
+              {(mode === "edit") && (
+                <Grid item xs={5}>
+                  <TextField
+                    select
+                    fullWidth
+                    label="Trạng thái"
+                    value={form.status ?? VoucherStatus.Pending}
+                    onChange={(e) =>
+                      setForm((f) => ({
+                        ...f,
+                        status: Number(e.target.value) as VoucherStatus,
+                      }))
+                    }
+                  >
+                    {(mode === "edit"
+                      ? statusOptionsEdit
+                      : statusOptionsEdit
+                    ).map((opt) => (
+                      <MenuItem key={opt.value} value={opt.value}>
+                        {opt.label}
+                      </MenuItem>
+                    ))}
+                  </TextField>
+                </Grid>
+              )}
 
-              <Grid item xs={12}>
+              <Grid item xs={7}>
                 <TextField
                   label="Ngày hết hạn"
                   type="datetime-local"
@@ -272,6 +325,8 @@ const VoucherDetailDialog = ({
                   value={form.endDate}
                   onChange={handleChange("endDate")}
                   InputLabelProps={{ shrink: true }}
+                  variant="outlined"
+                  InputProps={{ readOnly }}
                   sx={{
                     "& .MuiInputBase-root": {
                       borderRadius: 2,
