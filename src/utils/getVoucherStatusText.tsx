@@ -29,6 +29,32 @@ export const getVoucherStatusText = (status: number) => {
         />
       );
 
+    case VoucherStatus.OutDate:
+      return (
+        <Chip
+          label="Hết Hạn"
+          size="small"
+          sx={{
+            backgroundColor: "#f44336",
+            color: "#fff",
+            fontWeight: "bold",
+          }}
+        />
+      );
+
+    case VoucherStatus.OutStock:
+      return (
+        <Chip
+          label="Hết lượt dùng"
+          size="small"
+          sx={{
+            backgroundColor: "#ff9800",
+            color: "#fff",
+            fontWeight: "bold",
+          }}
+        />
+      );
+
     default:
       return (
         <Chip

@@ -60,5 +60,7 @@ export interface IVoucherFilter {
 
 export enum VoucherStatus {
   Pending = 0,   // Chờ áp dụng
-  Publish = 1    // Đang hoạt động
+  Publish = 1,    // Đang hoạt động
+  OutDate = 3,
+  OutStock = 4
 }
