@@ -10,8 +10,6 @@ import {
   Button,
   CircularProgress,
   MenuItem,
-  Box,
-  Chip,
 } from "@mui/material";
 import dayjs from "dayjs";
 import { IVoucher, VoucherStatus } from "src/Interfaces/IVoucher";
@@ -36,7 +34,7 @@ type FormState = {
   discountPercentage: number | "";
   endDate: string; // yyyy-MM-ddTHH:mm
   usedQuantity?: number | "";
-  status?: VoucherStatus;
+  voucherStatus?: VoucherStatus;
 };
 
 const STATUS = {
@@ -102,7 +100,7 @@ const VoucherDetailDialog = ({
             discountPercentage: (v.discountPercentage as any) ?? "",
             endDate: toLocalInputValue(v.endDate as any),
             usedQuantity: v.usedQuantity,
-            status: v.status,
+            voucherStatus: v.status,
           });
         })
         .catch((e: { response: { data: { message: any } } }) => {
@@ -152,7 +150,7 @@ const VoucherDetailDialog = ({
     if (!form.endDate) return "Vui lòng chọn ngày hết hạn.";
     if (dayjs(form.endDate).isBefore(dayjs()))
       return "Ngày hết hạn phải ở tương lai.";
-    if ((form.status ?? STATUS.Pending) === STATUS.Publish) {
+    if ((form.voucherStatus ?? STATUS.Pending) === STATUS.Publish) {
       if (dayjs(form.endDate).isBefore(dayjs()))
         return "Không thể bật 'Đang hoạt động' khi đã hết hạn.";
       if ((Number(form.quantity) ?? 0) - (Number(form.usedQuantity) ?? 0) <= 0)
@@ -176,7 +174,7 @@ const VoucherDetailDialog = ({
         quantity: Number(form.quantity),
         discountPercentage: Number(form.discountPercentage),
         endDate: toServerIso(form.endDate),
-        status: form.status,
+        voucherStatus: form.voucherStatus,
       };
 
       if (isCreate) {
@@ -297,7 +295,7 @@ const VoucherDetailDialog = ({
                     select
                     fullWidth
                     label="Trạng thái"
-                    value={form.status ?? VoucherStatus.Pending}
+                    value={form.voucherStatus ?? VoucherStatus.Pending}
                     onChange={(e) =>
                       setForm((f) => ({
                         ...f,
