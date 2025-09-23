@@ -40,10 +40,10 @@ type FormState = {
 const STATUS = {
   Pending: 0,
   Publish: 1,
-  Expired: 2, // chỉ hiển thị, không cho chọn
-  UsedUp: 3, // chỉ hiển thị, không cho chọn
-  Inactive: 4, // tạm ngưng (tùy enum BE)
-  Deleted: 5, // action riêng
+  Expired: 2,
+  UsedUp: 3,
+  Inactive: 4,
+  Deleted: 5,
 } as const;
 
 const emptyForm: FormState = {
@@ -53,6 +53,7 @@ const emptyForm: FormState = {
   discountPercentage: "",
   endDate: dayjs().add(7, "day").startOf("day").format("YYYY-MM-DDTHH:mm"),
   usedQuantity: "",
+  voucherStatus: VoucherStatus.Pending,
 };
 
 const toLocalInputValue = (iso?: string) =>
@@ -106,7 +107,7 @@ const VoucherDetailDialog = ({
         .catch((e: { response: { data: { message: any } } }) => {
           if (!mounted) return;
           setError(e?.response?.data?.message || "Không tải được voucher.");
-          showError("Đã có lỗi khi lấy thông tin")
+          showError("Đã có lỗi khi lấy thông tin");
         })
         .finally(() => mounted && setLoading(false));
     } else if (open && isCreate) {
@@ -190,7 +191,7 @@ const VoucherDetailDialog = ({
       onClose();
     } catch (e: any) {
       setError(e?.response?.data?.message || "Lưu voucher thất bại.");
-      showError(" Lưu thất bại ")
+      showError(" Lưu thất bại ");
     } finally {
       setSaving(false);
     }
@@ -289,7 +290,7 @@ const VoucherDetailDialog = ({
                   variant="outlined"
                 />
               </Grid>
-              {(mode === "edit") && (
+              {mode === "edit" && (
                 <Grid item xs={5}>
                   <TextField
                     select
@@ -299,14 +300,11 @@ const VoucherDetailDialog = ({
                     onChange={(e) =>
                       setForm((f) => ({
                         ...f,
-                        status: Number(e.target.value) as VoucherStatus,
+                        voucherStatus: Number(e.target.value) as VoucherStatus, // <-- Đúng key
                       }))
                     }
                   >
-                    {(mode === "edit"
-                      ? statusOptionsEdit
-                      : statusOptionsEdit
-                    ).map((opt) => (
+                    {statusOptionsEdit.map((opt) => (
                       <MenuItem key={opt.value} value={opt.value}>
                         {opt.label}
                       </MenuItem>
