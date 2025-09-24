@@ -321,12 +321,14 @@ const CartPage = () => {
 
       const payload = createOrderPayload();
       const res = await orderApi.createOrder(payload);
-
+      console.log(res);
       if (!res.data.success) {
         showError(res.data.message || "Đặt hàng thất bại");
         return;
       }
-
+      if (res.data.data.navigate){
+        window.location.href = res.data.data.paymentUrl;
+      }
       if (!user) {
         localStorage.removeItem("cart");
         window.dispatchEvent(new Event("local-cart-updated"));
@@ -337,7 +339,7 @@ const CartPage = () => {
 
       showSuccess("Đặt hàng thành công");
       setTimeout(() => {
-        window.location.href = "/";
+        //window.location.href = "/";
       }, 1000);
     } catch (err) {
       const axiosError = err as AxiosError<any>;

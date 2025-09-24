@@ -71,13 +71,13 @@ const PaymentMethodSelector = ({
                 : "text.secondary"
             }
           >
-            Chuyển khoản ngân hàng
+            Thanh toán qua VNPAY
           </Typography>
         </Box>
       </Stack>
 
       {/* Thông tin chuyển khoản nếu chọn BankTransfer */}
-      {value === PaymentMethod.BankTransfer && totalPrice && (
+      {/* {value === PaymentMethod.BankTransfer && totalPrice && (
         <Box mt={2} p={2} border="1px solid #ccc" borderRadius={2}>
           <Typography fontWeight="bold" mb={1}>
             Thông tin chuyển khoản
@@ -109,7 +109,7 @@ const PaymentMethodSelector = ({
             />
           </Box>
         </Box>
-      )}
+      )} */}
     </Box>
   );
 };
