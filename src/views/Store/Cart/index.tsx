@@ -337,7 +337,7 @@ const CartPage = () => {
       queryClient.invalidateQueries({ queryKey: ["cart"] });
       queryClient.invalidateQueries({ queryKey: ["cart-total-quantity"] });
 
-      showSuccess("Đặt hàng thành công");
+      // showSuccess("Đặt hàng thành công");
       setTimeout(() => {
         //window.location.href = "/";
       }, 1000);
