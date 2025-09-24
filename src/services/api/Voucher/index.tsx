@@ -69,6 +69,9 @@ const voucherApi = {
       voucherId: string;
     }>
   > => requester.post(STORE_VOUCHER.URL_API.APPLY, data),
+
+   deleteVoucher: (ids: string[]) =>
+    requester.post(ADMIN_VOUCHER.URL_API.DELETE_VOUCHER_BY_IDS, { ids }),
 };
 
 export default voucherApi;

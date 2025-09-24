@@ -21,6 +21,8 @@ import DataTableContainer from "src/components/DataTableContainer";
 import CustomPagination from "src/components/CustomPagination";
 import GenericContextMenu from "src/components/GenericContextMenu";
 import VoucherDetailDialog from "./VoucherDetailDialog";
+import useToast from "src/components/Toast";
+import ModalConfirm from "src/components/ModalConfirm";
 
 const VoucherTable = () => {
   const buildCleanFilter = (filter: IVoucherFilter) => {
@@ -50,6 +52,7 @@ const VoucherTable = () => {
     data: vouchers,
     isLoading,
     error,
+    refetch
   } = useQuery({
     queryKey: ["get-paging-vouchers", filter],
     queryFn: async () => {
@@ -69,6 +72,8 @@ const VoucherTable = () => {
   
   const [contextItem, setContextItem] = useState<IVoucher | null>(null);
   const [cancelOpen, setCancelOpen] = useState(false);
+  const [confirmDeleteModalOpen, setConfirmDeleteModalOpen] = useState(false);
+  console.log("🚀 ~ VoucherTable ~ confirmDeleteModalOpen:", confirmDeleteModalOpen)
 
   const [voucherModalOpen, setVoucherModalOpen] = useState(false);
   const [voucherModalMode, setVoucherModalMode] = useState<"view" | "edit">(
@@ -95,9 +100,9 @@ const VoucherTable = () => {
           setVoucherModalMode("edit");
           setVoucherId(v.voucherId);
           break;
-        case "DELETE_ORDER":
-          setVoucherId(v.voucherId);
-          setCancelOpen(true);
+        case "DELETE":
+          setSelected([v.voucherId]);
+          setConfirmDeleteModalOpen(true);
           break;
         default:
         // console.log("Chọn menu:", item.id, o);
@@ -158,6 +163,47 @@ const VoucherTable = () => {
       pageNumber: 1,
     }));
   };
+
+   const { showSuccess, showError, showInfo } = useToast();
+
+  const handleConfirmDelete = async (
+      productIds: Array<string | number> = selected
+    ): Promise<void> => {
+      const ids = Array.from(
+        new Set((productIds ?? []).map(String).filter(Boolean))
+      );
+  
+      if (ids.length === 0) {
+        showError?.("Bạn chưa chọn sản phẩm nào.");
+        setConfirmDeleteModalOpen(false);
+        setSelected([]);
+        return;
+      }
+  
+      try {
+        const res = await voucherApi.deleteVoucher(ids);
+        const requested = res?.data?.requested ?? ids.length;
+        const affected = res?.data?.affected ?? 0;
+  
+        if (affected === requested && requested > 0) {
+          showSuccess?.(`Đã xóa ${affected}/${requested} voucher`);
+          await refetch?.();
+          setConfirmDeleteModalOpen(false);
+          setSelected([])
+        } else if (affected > 0) {
+          showInfo?.(
+            `Đã xóa ${affected}/${requested}. Một số ID không tồn tại/đã bị xóa trước đó.`
+          );
+          setConfirmDeleteModalOpen(false);
+          setSelected([])
+        } else {
+          showError?.("Xóa thất bại! Không có sản phẩm nào được cập nhật.");
+        }
+      } catch (error: any) {
+        console.error("Error deleting products:", error);
+        showError?.(error?.response?.data?.message || "Xóa thất bại!");
+      }
+    };
 
   return (
     <Box
@@ -258,6 +304,7 @@ const VoucherTable = () => {
                 backgroundColor: "#cc0000",
               },
             }}
+            onClick={() => setConfirmDeleteModalOpen(true)}
           >
             Xoá ({selected.length})
           </Button>
@@ -349,6 +396,17 @@ const VoucherTable = () => {
           setVoucherId("");
           setSelected([]);
         }}
+      />
+
+      <ModalConfirm
+        open={confirmDeleteModalOpen}
+        onClose={() => {
+          setConfirmDeleteModalOpen(false);
+          setSelected([]);
+        }}
+        onConfirm={() => handleConfirmDelete()}
+        showConfirmButton={true}
+        message={`Bạn có chắc chắn xóa ${selected.length} voucher đã chọn ?`}
       />
     </Box>
   );

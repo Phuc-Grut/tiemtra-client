@@ -161,6 +161,7 @@ export const ADMIN_VOUCHER = {
     UPDATE_STATUS: (id: string) => `${URL_ADMIN}/voucher/update-status/${id}`,
     UPDATE: (id: string) => `${URL_ADMIN}/voucher/update/${id}`,
     GENERATE_CODE: `${URL_ADMIN}/voucher/generate-code`,
+    DELETE_VOUCHER_BY_IDS: `${URL_ADMIN}/voucher/soft-delete`,
   },
 };
 
