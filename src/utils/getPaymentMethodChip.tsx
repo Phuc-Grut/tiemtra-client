@@ -18,7 +18,7 @@ export const getPaymentMethodChip = (method: PaymentMethod) => {
     case PaymentMethod.BankTransfer:
       return (
         <Chip
-          label="Chuyển khoản"
+          label="VNPAY"
           size="small"
           sx={{
             backgroundColor: "#1976d2", // xanh dương
