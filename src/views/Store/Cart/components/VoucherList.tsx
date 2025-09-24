@@ -22,6 +22,7 @@ dayjs.extend(timezone);
 
 interface VoucherListProps {
   orderTotal: number;
+  shipingFee: number
   onVoucherApplied: (
     discountAmount: number,
     finalAmount: number,
@@ -39,6 +40,7 @@ interface ApplyVoucherResponse {
 
 const VoucherList = ({
   orderTotal,
+  shipingFee,
   onVoucherApplied,
   onVoucherRemoved,
 }: VoucherListProps) => {
@@ -135,6 +137,7 @@ const VoucherList = ({
     showSuccess("Đã xóa voucher");
   };
 
+  const totalPrice = (appliedVoucher?.finalAmount ?? 0) + shipingFee;
   // UI
   return (
     <Box mt={3}>
@@ -149,10 +152,10 @@ const VoucherList = ({
               Voucher {appliedVoucher.voucherCode} đã được áp dụng
             </Typography>
             <Typography variant="body2">
-              Giảm: {appliedVoucher.discountAmount.toLocaleString()}₫
+              Giảm: {appliedVoucher.discountAmount.toLocaleString()}₫ tiền hàng
             </Typography>
             <Typography variant="body2">
-              Tổng tiền sau giảm: {appliedVoucher.finalAmount.toLocaleString()}₫
+              Tổng tiền sau giảm: {totalPrice.toLocaleString()}₫
             </Typography>
           </Alert>
           <Button

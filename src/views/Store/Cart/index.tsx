@@ -448,6 +448,7 @@ const CartPage = () => {
           {/* Voucher dropdown */}
           <VoucherList
             orderTotal={cart?.totalPrice || 0}
+            shipingFee = {feeState.fee ?? 0}
             onVoucherApplied={(discountAmount, finalAmount, voucherCode) => {
               setVoucherDiscount({ discountAmount, finalAmount, voucherCode });
             }}
