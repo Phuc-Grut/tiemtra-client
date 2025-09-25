@@ -1,4 +1,4 @@
-import { STORE_CART } from "src/domain/constants";
+import { GHN, STORE_CART } from "src/domain/constants";
 import { AddProductToCart } from "src/Interfaces/ICart";
 import { FeeReqBase, FeeResponse } from "src/Interfaces/IGHN";
 import requester from "src/services/extended/axiosInstance";
@@ -20,7 +20,7 @@ const cartApi = {
   getTotalQuantity: () => requester.get(STORE_CART.URL_API.GET_TOTAL_QUANTITY),
 
   calculateShippingFee: (data: FeeReqBase) =>
-    requester.post(STORE_CART.URL_API.CALCULATE_SHIPPING, data),
+    requester.post(GHN.URL_API.CALCULATE_SHIPPING, data),
 };
 
 export default cartApi;

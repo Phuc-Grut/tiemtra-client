@@ -99,10 +99,16 @@ export const STORE_CART = {
     REMOVE_CART_ITEM: `${URL_STORE}/cart/remove-cart-item`,
 
     GET_TOTAL_QUANTITY: `${URL_STORE}/cart/get-total-quantity`,
+  },
+};
 
+
+export const GHN = {
+  URL_API: {
     CALCULATE_SHIPPING: `${URL_STORE}/ghn/calculate-fee`
   },
 };
+
 
 export const ADMIN_ORDER = {
   URL_API: {
@@ -167,7 +173,7 @@ export const ADMIN_VOUCHER = {
 
 export const STORE_VOUCHER = {
   URL_API: {
-    GET_PUBLIC: "store/voucher/public",
-    APPLY: "store/voucher/apply",
+    GET_PUBLIC: `${URL_STORE}/voucher/public`,
+    APPLY: `${URL_STORE}store/voucher/apply`,
   },
 };
