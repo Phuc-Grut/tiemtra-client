@@ -8,7 +8,7 @@ import {
   TextField,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import productApi from "src/services/api/Products/indext";
 import {
@@ -70,19 +70,32 @@ const ProductTable = () => {
   const [productId, setProductId] = useState("");
   const [confirmModalOpen, setConfirmModalOpen] = useState(false);
 
+  const [searchText, setSearchText] = useState("");
+  useEffect(() => {
+    const t = setTimeout(() => {
+      setFilter((f) => ({
+        ...f,
+        pageNumber: 1, // reset trang khi đổi từ khóa
+        keyword: searchText.trim(),
+        // productCode: undefined    // nếu còn field này, đừng gửi kèm để tránh AND
+      }));
+    }, 400); // 300–500ms
+    return () => clearTimeout(t);
+  }, [searchText]);
+
+  const cleanedFilter = useMemo(() => buildCleanFilter(filter), [filter]);
+
   const {
     data: products = [],
     isLoading,
     error,
     refetch,
   } = useQuery({
-    queryKey: ["get-paging-product", filter],
+    queryKey: ["get-paging-product", cleanedFilter],
     queryFn: async () => {
-      const cleanedFilter = buildCleanFilter(filter);
-      const response = await productApi.getPagingProduct(cleanedFilter);
-      const realTotalPages = response.data.totalPages ?? 1;
-      setMaxPages(realTotalPages);
-      return response.data.items ?? [];
+      const res = await productApi.getPagingProduct(cleanedFilter);
+      setMaxPages(res.data.totalPages ?? 1);
+      return res.data.items ?? [];
     },
   });
 
@@ -258,13 +271,13 @@ const ProductTable = () => {
         showSuccess?.(`Đã xóa ${affected}/${requested} sản phẩm.`);
         await refetch?.();
         setConfirmModalOpen(false);
-        setSelected([])
+        setSelected([]);
       } else if (affected > 0) {
         showInfo?.(
           `Đã xóa ${affected}/${requested}. Một số ID không tồn tại/đã bị xóa trước đó.`
         );
         setConfirmModalOpen(false);
-        setSelected([])
+        setSelected([]);
       } else {
         showError?.("Xóa thất bại! Không có sản phẩm nào được cập nhật.");
       }
@@ -301,6 +314,8 @@ const ProductTable = () => {
         <input
           type="text"
           placeholder="Tìm kiếm..."
+          value={filter.keyword ?? ""}
+          onChange={(e) => setSearchText(e.target.value)}
           style={{
             width: "100%",
             maxWidth: "220px",
