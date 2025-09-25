@@ -293,7 +293,7 @@ const CartPage = () => {
       recipientAddress: customerInfo.address,
       recipientPhone: customerInfo.phone,
       paymentMethod: paymentMethod,
-      voucherCode: voucherDiscount?.voucherCode, // Thêm voucherCode vào payload
+      voucherCode: voucherDiscount?.voucherCode,
       orderItems: cartItems.map((item) => ({
         productId: item.productId,
         productVariationId: item.productVariationId,

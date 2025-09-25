@@ -174,6 +174,6 @@ export const ADMIN_VOUCHER = {
 export const STORE_VOUCHER = {
   URL_API: {
     GET_PUBLIC: `${URL_STORE}/voucher/public`,
-    APPLY: `${URL_STORE}store/voucher/apply`,
+    APPLY: `${URL_STORE}/voucher/apply`,
   },
 };
