@@ -16,6 +16,7 @@ import { IVoucher, VoucherStatus } from "src/Interfaces/IVoucher";
 import voucherApi from "src/services/api/Voucher";
 import { useQueryClient } from "@tanstack/react-query";
 import useToast from "src/components/Toast";
+import formatVietnamTime from "src/utils/formatVietnamTime";
 
 type Mode = "create" | "edit" | "view";
 
@@ -59,9 +60,9 @@ const emptyForm: FormState = {
 const toLocalInputValue = (iso?: string) =>
   iso ? dayjs(iso).format("YYYY-MM-DDTHH:mm") : "";
 
-const toServerIso = (localDT: string) =>
-  localDT ? dayjs(localDT).toISOString() : "";
-
+function toServerIso(localStr: string) {
+  return new Date(localStr).toISOString(); // chuẩn UTC
+}
 const VoucherDetailDialog = ({
   open,
   onClose,
@@ -99,7 +100,7 @@ const VoucherDetailDialog = ({
             description: v.description ?? "",
             quantity: (v.quantity as any) ?? "",
             discountPercentage: (v.discountPercentage as any) ?? "",
-            endDate: toLocalInputValue(v.endDate as any),
+            endDate: formatVietnamTime(v.endDate),
             usedQuantity: v.usedQuantity,
             voucherStatus: v.status,
           });
