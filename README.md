@@ -1,46 +1,183 @@
-# Getting Started with Create React App
+# TiemTra - Frontend (tiemtra-client)
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Frontend của ứng dụng TiemTra — một SPA React (TypeScript) cho cả cửa hàng (store) và dashboard quản trị (admin).
 
-## Available Scripts
+## Tổng quan
+- Framework: React 18 (Create React App, TypeScript)
+- State / Data:
+  - Redux (một phần cho auth)
+  - @tanstack/react-query cho fetch/caching
+- UI: MUI (Material UI), @mantine, CKEditor
+- HTTP client: axios (custom instance)
+- Các tính năng chính: danh sách sản phẩm, chi tiết sản phẩm, giỏ hàng, checkout, auth (OTP), dashboard admin (CRUD sản phẩm/danh mục/thuộc tính/đơn hàng/voucher), upload ảnh.
 
-In the project directory, you can run:
+---
 
-### `yarn start`
+## Mục lục
+1. Yêu cầu
+2. Biến môi trường (REACT_APP_API_URL)
+3. Cài đặt & chạy (dev)
+4. Build production
+5. Triển khai (hosting/static)
+6. Lint / test / scripts
+7. Cấu trúc thư mục (tóm tắt)
+8. Lưu ý vận hành & gợi ý cải thiện
+9. Troubleshooting nhanh
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+---
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+## 1. Yêu cầu
+- Node.js LTS (16/18/20) — tương thích với Create React App
+- Yarn (khuyến khích) hoặc npm
+- Backend API sẵn sàng (hoặc mock)
 
-### `yarn test`
+---
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## 2. Biến môi trường
+Frontend sử dụng biến môi trường để biết URL backend API. Đặt biến trong file `.env` ở root dự án hoặc trên môi trường CI/CD.
 
-### `yarn build`
+Bắt buộc:
+- REACT_APP_API_URL — URL base của backend API (ví dụ `https://api.tiemtra.example/api` hoặc `https://localhost:7021/api`)
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Ví dụ `.env`:
+REACT_APP_API_URL="https://localhost:7021/api"
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+Ghi chú:
+- Create React App chỉ nạp biến bắt đầu bằng `REACT_APP_`.
+- Sau khi thay đổi `.env`, bạn cần restart dev server.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+---
 
-### `yarn eject`
+## 3. Cài đặt & chạy phát triển (dev)
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+1. Clone repo và chuyển vào thư mục:
+   - git clone <repo-url>
+   - cd tiemtra-client
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+2. Cài dependencies:
+   - Yarn:
+     - yarn install
+   - Hoặc npm:
+     - npm install
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+3. Tạo file `.env` (hoặc dùng biến môi trường) với REACT_APP_API_URL:
+   - REACT_APP_API_URL="https://localhost:7021/api"
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+4. Chạy dev server:
+   - yarn start
+   - hoặc npm start
 
-## Learn More
+5. Mở trình duyệt:
+   - http://localhost:3000
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+---
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## 4. Build production
+
+1. Xây dựng bundle:
+   - yarn build
+   - hoặc npm run build
+
+2. Thư mục đầu ra: `build/` — chứa file static sẵn để deploy.
+
+---
+
+## 5. Triển khai (hosting / static)
+
+Một vài lựa chọn phổ biến:
+
+- Netlify / Vercel:
+  - Kéo từ repo, set biến môi trường `REACT_APP_API_URL`.
+  - Netlify/Vercel sẽ tự động build (chỉ cần cấu hình build command `yarn build` và publish `build`).
+
+- GitHub Pages:
+  - Cần cấu hình thêm (không phải lựa chọn tối ưu cho SPA có nhiều route).
+
+- Máy chủ tĩnh (nginx):
+  - Copy nội dung `build/` lên server.
+  - Nginx cấu hình phục vụ static và chuyển về `index.html` cho SPA (fallback) — cần cấu hình `try_files $uri /index.html;`.
+
+- Serve (cho test nhanh trên server):
+  - npm i -g serve
+  - serve -s build -l 3000
+
+Lưu ý CORS:
+- Backend phải cho phép origin của frontend (hoặc sử dụng proxy) để gọi API.
+
+---
+
+## 6. Scripts hữu dụng
+
+- yarn start — chạy dev server
+- yarn build — build production
+- yarn test — chạy test (CRA)
+- yarn eject — (một chiều; dùng cẩn thận)
+
+Bạn cũng có thể thêm script để chạy lint hoặc format nếu cần.
+
+---
+
+## 7. Cấu trúc thư mục (tóm tắt)
+- src/
+  - assets/ — style, theme, hình ảnh
+  - components/ — các component dùng chung (Toast, ProtectedRoute, DataTable, ...)
+  - views/
+    - Store/ — pages cửa hàng (Home, ProductList, ProductDetail, Cart, Checkout, Account)
+    - Admin/ — pages dashboard (Product, Category, Order, Customer, Voucher, Dashboard)
+    - Auth/ — Login/Register/OTP
+  - routes/ — AppRoutes.tsx (định nghĩa routes store và `/admin`)
+  - services/
+    - api/ — wrappers gọi API (productApi, categoryApi, authApi, ...)
+    - extended/axiosInstance.ts — cấu hình axios (baseURL, interceptors, refresh token)
+  - hooks/ — custom hooks (ví dụ useCartLocalInit)
+  - Interfaces/ — kiểu TypeScript (IProduct, DTOs...)
+  - layouts/ — StoreLayout, DashboardLayout
+  - utils/ — helper functions
+
+---
+
+## 8. Lưu ý vận hành & gợi ý cải thiện
+
+1. REACT_APP_API_URL
+   - Hiện tại axiosInstance có `const API_URL = "https://localhost:7021/api"` (hard-coded).
+   - Nên thay bằng:
+     - const API_URL = process.env.REACT_APP_API_URL || "https://localhost:7021/api";
+
+2. Token & bảo mật
+   - Token hiện lưu trong localStorage (`access_token`, `refresh_token`) — dễ implement nhưng có rủi ro XSS.
+   - Xem xét lưu refresh token httpOnly cookie để an toàn hơn.
+
+3. Handling 401 / refresh
+   - Interceptor hiện xử lý refresh token; đảm bảo backend trả chuẩn response (refresh endpoint).
+
+4. Thêm file `env.sample`
+   - Liệt kê biến môi trường cần thiết (REACT_APP_API_URL).
+
+5. Tài liệu hóa API
+   - Tạo Postman collection hoặc OpenAPI reference để phối hợp với backend.
+
+6. Cấu hình CI/CD
+   - Thiết lập pipeline build trên GitHub Actions / Netlify / Vercel.
+
+---
+
+## 9. Troubleshooting nhanh
+
+- Trang trắng / 404 khi refresh route trên production:
+  - Đảm bảo server static (nginx) chuyển tất cả request về `index.html` (SPA fallback).
+
+- Lỗi CORS khi gọi API:
+  - Kiểm tra backend đã cấu hình CORS cho origin frontend chưa.
+
+- Token không được gửi:
+  - Kiểm tra `REACT_APP_API_URL` đúng không; kiểm tra axiosInstance interceptors (xem nếu path excluded).
+
+- Refresh token không thành công:
+  - Kiểm tra endpoint refresh token backend, format response, và localStorage keys.
+
+---
+
+## 10. Thực thi thay đổi mẫu cho mã hiện tại (gợi ý nhanh)
+- Sửa baseURL trong `src/services/extended/axiosInstance.ts`:
+```ts
+const API_URL = process.env.REACT_APP_API_URL || "https://localhost:7021/api";
